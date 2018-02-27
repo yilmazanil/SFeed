@@ -15,17 +15,33 @@ namespace SFeed.Business.Services
     {
         private readonly ISqlRepository<SocialPost> socialPostRepository;
         private readonly ISqlRepository<UserWall> userWallRepository;
+        private readonly IRedisTypedRepository<SocialPost> cachedPostRepo;
+        private readonly IRedisListRepository<int, int> cachedFollowersRepo;
+        private readonly IRedisUserFeedRepository cachedFeedRepo;
 
-        public SocialPostService(ISqlRepository<SocialPost> postRepository, ISqlRepository<UserWall> userWallRepository)
+
+
+        public SocialPostService(ISqlRepository<SocialPost> postRepository,
+            ISqlRepository<UserWall> userWallRepository,
+            IRedisTypedRepository<SocialPost> cachedPostRepo,
+            IRedisListRepository<int, int> cachedFollowersRepo,
+            IRedisUserFeedRepository cachedFeedRepo
+            )
         {
             this.socialPostRepository = postRepository;
             this.userWallRepository = userWallRepository;
+            this.cachedPostRepo = cachedPostRepo;
+            this.cachedFollowersRepo = cachedFollowersRepo;
+            this.cachedFeedRepo = cachedFeedRepo;
         }
 
         public SocialPostService()
         {
             this.socialPostRepository = new SocialPostRepository();
             this.userWallRepository = new UserWallRepository();
+            this.cachedPostRepo = new RedisSocialPostRepository();
+            this.cachedFollowersRepo = new RedisUserFollowerRepository();
+            this.cachedFeedRepo = new RedisFeedRepository();
         }
 
         public long Create(SocialPostViewModel model, int targetUserId)
@@ -43,17 +59,17 @@ namespace SFeed.Business.Services
                 userWallRepository.Add(userWallEntry);
                 userWallRepository.Commit();
 
-                SocialPostCacheRepository cacheRepo = new SocialPostCacheRepository();
-                cacheRepo.Add(dbEntry);
 
-                var userFollowerCache = new UserFollowerCacheRepository();
-                var followers = userFollowerCache.Retrieve(model.CreatedBy);
+                cachedPostRepo.Add(dbEntry);
+
+
+                var followers = cachedFollowersRepo.Retrieve(model.CreatedBy);
                 if (model.CreatedBy != targetUserId)
                 {
-                    var targetUserFollowers = userFollowerCache.Retrieve(targetUserId);
+                    var targetUserFollowers = cachedFollowersRepo.Retrieve(targetUserId);
                     followers = Enumerable.Union<int>(followers, targetUserFollowers);
                 }
-                UserFeedRedisCache.AddFeed(followers, model.Id);
+                cachedFeedRepo.AddToUserFeeds(followers, model.Id);
 
             }
             catch (Exception)

@@ -3,7 +3,7 @@ using SFeed.Data.Infrastructure;
 
 namespace SFeed.Data.RedisRepositories
 {
-    public class SocialPostCacheRepository : RedisRepositoryBase<SocialPost>
+    public class RedisSocialPostRepository : RedisRepositoryBase<SocialPost>
     {
     }
 }

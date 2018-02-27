@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SFeed.Data.Infrastructure
 {
-    public abstract class RedisListRepositoryBase<T, K> : ICacheListRepository<T, K>
+    public abstract class RedisListRepositoryBase<T, K> : IRedisListRepository<T, K>
     {
         protected abstract string ListPrefix { get; }
 

@@ -1,14 +1,14 @@
 ﻿using SFeed.Data.Infrastructure;
-using SFeed.Model;
 using System.Collections.Generic;
 
-namespace SFeed.Business.Caching
+namespace SFeed.Data.RedisRepositories
 {
-    public class UserFeedRedisCache
+    public class RedisFeedRepository : RedisListRepositoryBase<int, long>, IRedisUserFeedRepository
     {
-        private static readonly string listKey = "userFeed";
+        protected override string ListPrefix => "userFeed";
 
-        public static void AddFeed(IEnumerable<int> userIds, long postId)
+
+        public void AddToUserFeeds(IEnumerable<int> userIds, long postId)
         {
             using (var redis = RedisConnectionHelper.ClientManager.GetClient())
             {
@@ -16,24 +16,23 @@ namespace SFeed.Business.Caching
 
                 foreach (var userId in userIds)
                 {
-                    feedlist.Lists[listKey + userId].Add(postId);
+                    feedlist.Lists[ListPrefix + userId].Add(postId);
                 }
             }
         }
 
-        public static IEnumerable<SocialPostViewModel> GetFeed(int userId)
+        public IEnumerable<SocialPost> GetUserFeeds(int userId)
         {
             using (var redis = RedisConnectionHelper.ClientManager.GetClient())
             {
                 var feedlist = redis.As<long>();
 
-                var postIds = feedlist.Lists[listKey + userId].GetAll();
+                var postIds = feedlist.Lists[ListPrefix + userId].GetAll();
 
-                var posts = redis.As<SocialPostViewModel>();
+                var posts = redis.As<SocialPost>();
 
                 return posts.GetByIds(postIds);
             }
-
         }
     }
 }

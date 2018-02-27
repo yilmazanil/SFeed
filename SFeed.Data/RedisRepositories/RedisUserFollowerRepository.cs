@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFeed.Data.RedisRepositories
 {
-    public class UserFollowerCacheRepository : RedisListRepositoryBase<int, int>
+    public class RedisUserFollowerRepository : RedisListRepositoryBase<int, int>
     {
         protected override string ListPrefix
         {

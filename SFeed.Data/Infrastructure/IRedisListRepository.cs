@@ -2,7 +2,7 @@
 
 namespace SFeed.Data.Infrastructure
 {
-    public interface ICacheListRepository<T,K>
+    public interface IRedisListRepository<T,K>
     {
         void Add(T key, K item);
         IEnumerable<K> Retrieve(T key);
