@@ -1,11 +1,10 @@
-﻿using SFeed.Business.Caching;
+﻿using AutoMapper;
 using SFeed.Data;
 using SFeed.Data.Infrastructure;
 using SFeed.Data.RedisRepositories;
 using SFeed.Data.SqlRepositories;
 using SFeed.Model;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -80,10 +79,11 @@ namespace SFeed.Business.Services
             return dbEntry.Id;
         }
 
-        public IEnumerable<SocialPostViewModel> GetUserFeed(int userId)
+        public IEnumerable<SocialPost> GetUserFeed(int userId)
         {
-            return UserFeedRedisCache.GetFeed(userId);
+            return cachedFeedRepo.GetUserFeeds(userId);
         }
+  
         public void Dispose()
         {
             socialPostRepository.Dispose();

@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Model", "SFeed.Model\SFeed.Model.csproj", "{E1E45824-EBAC-4386-951E-9B7B053B7995}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Data", "SFeed.Data\SFeed.Data.csproj", "{E5011688-6975-4DD8-8867-597BA1E3F5F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Business", "SFeed.Business\SFeed.Business.csproj", "{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Common", "SFeed.Common\SFeed.Common.csproj", "{5138BFCB-89F9-441C-9986-489278600AB6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15CC9588-DFDB-4C00-B4D2-EC32A63E853E}"
 	ProjectSection(SolutionItems) = preProject
@@ -36,10 +34,6 @@ Global
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5138BFCB-89F9-441C-9986-489278600AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5138BFCB-89F9-441C-9986-489278600AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5138BFCB-89F9-441C-9986-489278600AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5138BFCB-89F9-441C-9986-489278600AB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Release|Any CPU.ActiveCfg = Release|Any CPU
