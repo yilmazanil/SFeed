@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15CC9588-DFDB-4C00-B4D2-EC32A63E853E}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		SFeed.postman_collection.json = SFeed.postman_collection.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.WebUI", "SFeed.WebUI\SFeed.WebUI.csproj", "{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}"
