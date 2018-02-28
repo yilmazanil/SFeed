@@ -1,0 +1,231 @@
+{
+	"info": {
+		"name": "SFeed",
+		"_postman_id": "cf08f102-b05e-4e40-b903-700b7ee4fd48",
+		"description": "SFeed Project Requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateWallEntrySelf",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Body",
+							"value": "Test",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/socialpost/Create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"socialpost",
+						"Create"
+					]
+				},
+				"description": "User posts an entry to his/her own wall"
+			},
+			"response": []
+		},
+		{
+			"name": "CreateWallEntryAnotherUser",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Body",
+							"value": "Another User Wall Entry",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "TargetUserId",
+							"value": "3",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/socialpost/Create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"socialpost",
+						"Create"
+					]
+				},
+				"description": "User posts an entry to his/her own wall"
+			},
+			"response": []
+		},
+		{
+			"name": "GetUserFeed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost/user/feed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"user",
+						"feed"
+					]
+				},
+				"description": "Returns NewsFeed of CurrentUser"
+			},
+			"response": []
+		},
+		{
+			"name": "FollowUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userId",
+							"value": "3",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/user/follow/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"user",
+						"follow",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetUserFollowers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost/user/followers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"user",
+						"followers"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "UnFollowUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userId",
+							"value": "3",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/user/unfollow/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"user",
+						"unfollow",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteEntry",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Body",
+							"value": "Test",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/socialpost/Create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "62923",
+					"path": [
+						"socialpost",
+						"Create"
+					]
+				},
+				"description": "User posts an entry to his/her own wall"
+			},
+			"response": []
+		}
+	]
+}
