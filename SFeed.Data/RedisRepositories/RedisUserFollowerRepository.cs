@@ -13,7 +13,7 @@ namespace SFeed.Data.RedisRepositories
         {
             get
             {
-                return "userfeed";
+                return "userFollower";
             }
         }
     }

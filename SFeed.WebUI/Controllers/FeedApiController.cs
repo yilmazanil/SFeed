@@ -8,7 +8,7 @@ namespace SFeed.WebUI.Controllers
     [Route("api/feeds")]
     public class FeedApiController : ApiController
     {
-        public IEnumerable<SocialPostViewModel> Get()
+        public IEnumerable<SocialPostModel> Get()
         {
             using (var service = new SocialPostService())
             {

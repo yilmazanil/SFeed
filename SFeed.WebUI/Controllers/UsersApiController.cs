@@ -8,7 +8,7 @@ namespace SFeed.WebUI.Controllers
     public class UsersApiController : ApiController
     {
         [Route("api/users/{username}")]
-        public UserViewModel Get(string username)
+        public UserModel Get(string username)
         {
             using (var service = new UserService())
             {

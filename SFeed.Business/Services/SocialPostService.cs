@@ -43,7 +43,7 @@ namespace SFeed.Business.Services
             this.cachedFeedRepo = new RedisFeedRepository();
         }
 
-        public long Create(SocialPostViewModel model, int targetUserId)
+        public SocialPostModel Create(SocialPostModel model, int targetUserId)
         {
             var dbEntry = new SocialPost { Body = model.Body, CreatedBy = model.CreatedBy, IsDeleted = false, CreatedDate = DateTime.Now };
             var userWallEntry = new UserWall { UserId = targetUserId };
@@ -68,6 +68,7 @@ namespace SFeed.Business.Services
                     var targetUserFollowers = cachedFollowersRepo.Retrieve(targetUserId);
                     followers = Enumerable.Union<int>(followers, targetUserFollowers);
                 }
+                followers = Enumerable.Union<int>(followers, new List<int> { model.CreatedBy });
                 cachedFeedRepo.AddToUserFeeds(followers, model.Id);
 
             }
@@ -76,12 +77,13 @@ namespace SFeed.Business.Services
                 userWallRepository.Delete(userWallEntry);
                 socialPostRepository.Delete(dbEntry);
             }
-            return dbEntry.Id;
+            return model;
         }
 
-        public IEnumerable<SocialPost> GetUserFeed(int userId)
+        public IEnumerable<SocialPostModel> GetUserFeed(int userId)
         {
-            return cachedFeedRepo.GetUserFeeds(userId);
+            var result =  cachedFeedRepo.GetUserFeeds(userId);
+            return Mapper.Map<List<SocialPostModel>>(result);
         }
   
         public void Dispose()

@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Model
 {
-    public class SocialPostViewModel
+    public class SocialPostModel
     {
         public long Id { get; set; }
 

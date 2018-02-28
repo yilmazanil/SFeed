@@ -8,8 +8,8 @@ namespace SFeed.Business.MapperConfig
     {
         public static void Register(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<User, UserViewModel>();
-            cfg.CreateMap<SocialPost, SocialPostViewModel>();
+            cfg.CreateMap<User, UserModel>();
+            cfg.CreateMap<SocialPost, SocialPostModel>();
         }
     }
 }
