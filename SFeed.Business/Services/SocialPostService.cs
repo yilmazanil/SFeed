@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SFeed.Business.Infrastructure;
 using SFeed.Data;
 using SFeed.Data.Infrastructure;
 using SFeed.Data.RedisRepositories;
@@ -12,84 +13,73 @@ namespace SFeed.Business.Services
 {
     public class SocialPostService : IDisposable
     {
-        private readonly ISqlRepository<SocialPost> socialPostRepository;
-        private readonly ISqlRepository<UserWall> userWallRepository;
-        private readonly IRedisTypedRepository<SocialPost> cachedPostRepo;
-        private readonly IRedisListRepository<int, int> cachedFollowersRepo;
-        private readonly IRedisUserFeedRepository cachedFeedRepo;
+        IUserWallService userWallService;
+        IRedisTypedRepository<SocialPostModel> redisSocialPostRepo;
+        IFollowerService followerService;
+        IUserFeedService userFeedService;
 
-
-
-        public SocialPostService(ISqlRepository<SocialPost> postRepository,
-            ISqlRepository<UserWall> userWallRepository,
-            IRedisTypedRepository<SocialPost> cachedPostRepo,
-            IRedisListRepository<int, int> cachedFollowersRepo,
-            IRedisUserFeedRepository cachedFeedRepo
-            )
-        {
-            this.socialPostRepository = postRepository;
-            this.userWallRepository = userWallRepository;
-            this.cachedPostRepo = cachedPostRepo;
-            this.cachedFollowersRepo = cachedFollowersRepo;
-            this.cachedFeedRepo = cachedFeedRepo;
-        }
 
         public SocialPostService()
         {
-            this.socialPostRepository = new SocialPostRepository();
-            this.userWallRepository = new UserWallRepository();
-            this.cachedPostRepo = new RedisSocialPostRepository();
-            this.cachedFollowersRepo = new RedisUserFollowerRepository();
-            this.cachedFeedRepo = new RedisFeedRepository();
+            this.userWallService = new UserWallService();
+            this.redisSocialPostRepo = new RedisSocialPostRepository();
+            this.followerService = new FollowerService();
+            this.userFeedService = new UserFeedService();
+        }
+
+        public SocialPostService(IUserWallService userWallService,
+            IRedisTypedRepository<SocialPostModel> redisSocialPostRepo, 
+            IFollowerService followerService
+            , IUserFeedService userFeedService
+            )
+        {
+            this.userWallService = userWallService;
+            this.redisSocialPostRepo = redisSocialPostRepo;
+            this.followerService = followerService;
+            this.userFeedService = userFeedService;
         }
 
         public SocialPostModel Create(SocialPostModel model, int targetUserId)
         {
             var dbEntry = new SocialPost { Body = model.Body, CreatedBy = model.CreatedBy, IsDeleted = false, CreatedDate = DateTime.Now };
             var userWallEntry = new UserWall { UserId = targetUserId };
+            long postId = 0;
 
             try
             {
-                socialPostRepository.Add(dbEntry);
-                socialPostRepository.Commit();
+                postId = userWallService.PublishToUserWall(targetUserId, model);
+                if (postId > 0)
+                {
+                    model.Id = postId;
+                    redisSocialPostRepo.Add(model);
+                }
 
-                model.Id = dbEntry.Id;
-                userWallEntry.SocialPostId = dbEntry.Id;
-                userWallRepository.Add(userWallEntry);
-                userWallRepository.Commit();
-
-
-                cachedPostRepo.Add(dbEntry);
-
-
-                var followers = cachedFollowersRepo.Retrieve(model.CreatedBy);
+                var followers = followerService.GetFollowers(model.CreatedBy);
                 if (model.CreatedBy != targetUserId)
                 {
-                    var targetUserFollowers = cachedFollowersRepo.Retrieve(targetUserId);
+                    var targetUserFollowers = followerService.GetFollowers(model.CreatedBy);
                     followers = Enumerable.Union<int>(followers, targetUserFollowers);
                 }
                 followers = Enumerable.Union<int>(followers, new List<int> { model.CreatedBy });
-                cachedFeedRepo.AddToUserFeeds(followers, model.Id);
+                userFeedService.AddToUserFeeds(postId, followers);
 
             }
             catch (Exception)
             {
-                userWallRepository.Delete(userWallEntry);
-                socialPostRepository.Delete(dbEntry);
+                userWallService.Delete(postId);
+                userFeedService.DeleteFromFeeds(postId);
             }
             return model;
         }
 
         public IEnumerable<SocialPostModel> GetUserFeed(int userId)
         {
-            var result =  cachedFeedRepo.GetUserFeeds(userId);
-            return Mapper.Map<List<SocialPostModel>>(result);
+            return userFeedService.GetUserFeed(userId);
         }
-  
+
         public void Dispose()
         {
-            socialPostRepository.Dispose();
-            userWallRepository.Dispose();
+            
         }
     }
 }

@@ -1,14 +1,12 @@
-﻿using System;
+﻿using SFeed.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFeed.Data.Infrastructure
 {
-    public interface IRedisUserFeedRepository : IRedisListRepository<int, long>
-    {
+    public interface IRedisUserFeedRepository
+    { 
         void AddToUserFeeds(IEnumerable<int> userIds, long postId);
-        IEnumerable<SocialPost> GetUserFeeds(int userId);
+        IEnumerable<SocialPostModel> GetUserFeeds(int userId);
+        void DeleteFromUserFeeds(long postId, IEnumerable<int> userIds);
     }
 }

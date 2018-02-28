@@ -135,6 +135,11 @@
       <LastGenOutput>SFeedEntities.cs</LastGenOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SFeed.Model\SFeed.Model.csproj">
+      <Project>{E1E45824-EBAC-4386-951E-9B7B053B7995}</Project>
+      <Name>SFeed.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

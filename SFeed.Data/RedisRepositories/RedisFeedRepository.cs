@@ -1,5 +1,7 @@
 ﻿using SFeed.Data.Infrastructure;
+using SFeed.Model;
 using System.Collections.Generic;
+using System;
 
 namespace SFeed.Data.RedisRepositories
 {
@@ -7,10 +9,9 @@ namespace SFeed.Data.RedisRepositories
     {
         protected override string ListPrefix => "userFeed";
 
-
         public void AddToUserFeeds(IEnumerable<int> userIds, long postId)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var feedlist = redis.As<long>();
 
@@ -21,15 +22,33 @@ namespace SFeed.Data.RedisRepositories
             }
         }
 
-        public IEnumerable<SocialPost> GetUserFeeds(int userId)
+        public void DeleteFromUserFeeds(long postId, IEnumerable<int> userIds)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
+            {
+                var feedlist = redis.As<long>();
+
+                foreach (var userId in userIds)
+                {
+                    var associatedRedisEntry = feedlist.Lists[ListPrefix + userId];
+                    if (associatedRedisEntry != null)
+                    {
+                        associatedRedisEntry.Remove(postId);
+                    }
+                }
+
+            }
+        }
+
+        public IEnumerable<SocialPostModel> GetUserFeeds(int userId)
+        {
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var feedlist = redis.As<long>();
 
                 var postIds = feedlist.Lists[ListPrefix + userId].GetAll();
 
-                var posts = redis.As<SocialPost>();
+                var posts = redis.As<SocialPostModel>();
 
                 return posts.GetByIds(postIds);
             }

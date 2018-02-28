@@ -61,10 +61,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\IFollowerService.cs" />
+    <Compile Include="Infrastructure\IUserFeedService.cs" />
+    <Compile Include="Infrastructure\IUserWallService.cs" />
     <Compile Include="MapperConfig\RegisterEntityToViewModelMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FollowerService.cs" />
+    <Compile Include="Services\UserFeedService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\SocialPostService.cs" />
+    <Compile Include="Services\UserWallService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFeed.Data\SFeed.Data.csproj">

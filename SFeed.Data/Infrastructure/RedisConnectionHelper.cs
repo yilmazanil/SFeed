@@ -2,7 +2,7 @@
 
 namespace SFeed.Data.Infrastructure
 {
-    public class RedisConnectionHelper
+    public class RedisHelper
     {
         public static PooledRedisClientManager ClientManager = new PooledRedisClientManager("localhost");
     }

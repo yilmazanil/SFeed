@@ -6,8 +6,10 @@ namespace SFeed.Data.Infrastructure
     {
         void Add(T key, K item);
         IEnumerable<K> Retrieve(T key);
-        void Refresh(T key, IEnumerable<K> itemCollection);
+        void Recreate(T key, IEnumerable<K> itemCollection);
         void Remove(T key, K item);
-        void Clear(T key);
+        //Must be used with caution
+        //void Clear(T key);
+        bool Exists(T key, K value);
     }
 }

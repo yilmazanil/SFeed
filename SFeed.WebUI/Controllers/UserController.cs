@@ -1,22 +1,13 @@
 ﻿using SFeed.Business.Services;
 using SFeed.WebUI.UserProfile;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SFeed.WebUI.Controllers
 {
-    public class UsersController : Controller
+    public class UserController : Controller
     {
-        // GET: Users
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        [Route("user/Feed/")]
         public ActionResult Feed()
         {
             using (var service = new SocialPostService())
@@ -24,7 +15,8 @@ namespace SFeed.WebUI.Controllers
                 return Json(service.GetUserFeed(ActiveUser.Id), JsonRequestBehavior.AllowGet);
             }
         }
-        [Route("users/follow/{userId}")]
+
+        [Route("user/follow/{userId}")]
         public ActionResult Follow(int userId)
         {
             using (var service = new UserService())
@@ -34,7 +26,7 @@ namespace SFeed.WebUI.Controllers
             }
         }
 
-        [Route("users/unfollow/{userId}")]
+        [Route("user/unfollow/{userId}")]
         public ActionResult UnFollow(int userId)
         {
             using (var service = new UserService())
@@ -43,7 +35,7 @@ namespace SFeed.WebUI.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
         }
-
+        [Route("user/followers/")]
         public ActionResult Followers()
         {
             using (var service = new UserService())

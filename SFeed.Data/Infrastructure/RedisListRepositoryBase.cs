@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFeed.Data.Infrastructure
 {
@@ -8,7 +9,7 @@ namespace SFeed.Data.Infrastructure
 
         public void Add(T key, K item)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var followers = redis.As<K>();
                 followers.Lists[ListPrefix + key].Add(item);
@@ -18,16 +19,26 @@ namespace SFeed.Data.Infrastructure
 
         public void Clear(T key)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var followers = redis.As<K>();
                 followers.Lists[ListPrefix + key].Clear();
             }
         }
 
-        public void Refresh(T key, IEnumerable<K> itemCollection)
+        public bool Exists(T key, K value)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
+            {
+                var followerList = redis.As<K>();
+                var redisList = followerList.Lists[ListPrefix + key];
+                return redisList.Contains(value);
+            }
+        }
+
+        public void Recreate(T key, IEnumerable<K> itemCollection)
+        {
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var followerList = redis.As<K>();
                 var redisList = followerList.Lists[ListPrefix + key];
@@ -43,7 +54,7 @@ namespace SFeed.Data.Infrastructure
 
         public void Remove(T key, K item)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var followerList = redis.As<K>();
                 var listName = ListPrefix + key;
@@ -53,7 +64,7 @@ namespace SFeed.Data.Infrastructure
 
         public IEnumerable<K> Retrieve(T key)
         {
-            using (var redis = RedisConnectionHelper.ClientManager.GetClient())
+            using (var redis = RedisHelper.ClientManager.GetClient())
             {
                 var followerList = redis.As<K>();
                 return followerList.Lists[ListPrefix + key].GetAll();
