@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructue.Services
 {
-    public interface IUserWallEntryService : IDisposable
+    public interface IUserWallService : IDisposable
     {
         Guid PublishEntryToUserWall(WallEntryModel entry, string wallOwnerUserId);
         IEnumerable<WallEntryModel> GetUserWall(string userId);

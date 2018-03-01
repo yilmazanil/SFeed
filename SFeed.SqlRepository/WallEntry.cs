@@ -17,7 +17,7 @@ namespace SFeed.SqlRepository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public WallEntry()
         {
-            this.UserWallEntry = new HashSet<UserWallEntry>();
+            this.UserWall = new HashSet<UserWall>();
         }
     
         public System.Guid Id { get; set; }
@@ -28,8 +28,8 @@ namespace SFeed.SqlRepository
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserWallEntry> UserWallEntry { get; set; }
         public virtual WallEntryType WallEntryType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserWall> UserWall { get; set; }
     }
 }

@@ -10,31 +10,31 @@ using SFeed.RedisRepository;
 
 namespace SFeed.Business.Services
 {
-    public class UserWallEntryService : IUserWallEntryService, IDisposable
+    public class UserWallService : IUserWallService, IDisposable
     {
         IRepository<WallEntry> wallEntryRepo;
-        IRepository<UserWallEntry> userWallEntryRepo;
+        IRepository<UserWall> userWallRepo;
         ITypedCacheRepository<WallEntryModel> wallEntryCacheRepo;
 
-        public UserWallEntryService(IRepository<WallEntry> wallEntryRepo,
-            IRepository<UserWallEntry> userWallEntryRepo,
+        public UserWallService(IRepository<WallEntry> wallEntryRepo,
+            IRepository<UserWall> userWallRepo,
             ITypedCacheRepository<WallEntryModel> wallEntryCacheRepo)
         {
             this.wallEntryRepo = wallEntryRepo;
-            this.userWallEntryRepo = userWallEntryRepo;
+            this.userWallRepo = userWallRepo;
             this.wallEntryCacheRepo = wallEntryCacheRepo;
         }
 
-        public UserWallEntryService()
+        public UserWallService()
         {
             this.wallEntryRepo = new WallEntryRepository();
-            this.userWallEntryRepo = new UserWallEntryRepository();
+            this.userWallRepo = new UserWallRepository();
             this.wallEntryCacheRepo = new RedisWallEntryRepository();
         }
         public void Delete(Guid postId)
         {
-            userWallEntryRepo.Delete(p => p.WallEntryId == postId);
-            userWallEntryRepo.CommitChanges();
+            userWallRepo.Delete(p => p.WallEntryId == postId);
+            userWallRepo.CommitChanges();
             wallEntryRepo.Delete(p => p.Id == postId);
             wallEntryRepo.CommitChanges();
         }
@@ -42,7 +42,7 @@ namespace SFeed.Business.Services
         public IEnumerable<WallEntryModel> GetUserWall(string userId)
         {
             //TODO:Use SP & Introduce new interface
-            var postIds = userWallEntryRepo.GetMany(p => p.UserId == userId).Select(p=>p.WallEntryId);
+            var postIds = userWallRepo.GetMany(p => p.UserId == userId).Select(p=>p.WallEntryId);
             var results=  wallEntryRepo.GetMany(p => postIds.Contains(p.Id));
             return Mapper.Map<IEnumerable<WallEntryModel>>(results);
         }
@@ -50,7 +50,7 @@ namespace SFeed.Business.Services
         public Guid PublishEntryToUserWall(WallEntryModel entry, string wallOwnerUserId)
         {
             var dbEntry = new WallEntry { Body = entry.Body, CreatedBy = entry.CreatedBy, IsDeleted = false, CreatedDate = DateTime.Now };
-            var userWallEntry = new UserWallEntry { UserId = wallOwnerUserId };
+            var userWallEntry = new UserWall { UserId = wallOwnerUserId };
             Guid postId = Guid.Empty;
 
             try
@@ -60,8 +60,8 @@ namespace SFeed.Business.Services
 
                 if (dbEntry.Id != Guid.Empty)
                 {
-                    userWallEntryRepo.Add(userWallEntry);
-                    userWallEntryRepo.CommitChanges();
+                    userWallRepo.Add(userWallEntry);
+                    userWallRepo.CommitChanges();
 
                     postId = dbEntry.Id;
                     entry.Id = postId;
@@ -74,7 +74,7 @@ namespace SFeed.Business.Services
             {
                 if (postId != Guid.Empty)
                 {
-                    userWallEntryRepo.Delete(p => p.WallEntryId == postId);
+                    userWallRepo.Delete(p => p.WallEntryId == postId);
                     wallEntryRepo.Delete(p => p.Id == postId);
                     wallEntryCacheRepo.RemoveItem(postId);
 
@@ -90,9 +90,9 @@ namespace SFeed.Business.Services
                 wallEntryRepo.Dispose();
             }
 
-            if (userWallEntryRepo != null)
+            if (userWallRepo != null)
             {
-                userWallEntryRepo.Dispose();
+                userWallRepo.Dispose();
             }
 
             if (wallEntryCacheRepo != null)

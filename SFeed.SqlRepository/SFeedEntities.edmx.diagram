@@ -6,11 +6,11 @@
     <edmx:Diagrams>
       <Diagram DiagramId="a721cb522af0423db19894428b07a477" Name="Diagram1">
         <EntityTypeShape EntityType="SocialFeedDataModel.UserFollower" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserWallEntry" Width="1.5" PointX="5.25" PointY="1.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SocialFeedDataModel.WallEntry" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="SocialFeedDataModel.WallEntryType" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
-        <AssociationConnector Association="SocialFeedDataModel.FK_UserWallEntry_WallEntry" ManuallyRouted="false" />
         <AssociationConnector Association="SocialFeedDataModel.FK_WallEntry_EntryType" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.UserWall" Width="1.5" PointX="5.25" PointY="1.625" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_UserWallEntry_WallEntry" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

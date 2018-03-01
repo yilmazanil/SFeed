@@ -72,7 +72,7 @@
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="UserFollowerRepository.cs" />
-    <Compile Include="UserWallEntry.cs">
+    <Compile Include="UserWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="UserWallEntryRepository.cs" />

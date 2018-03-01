@@ -12,7 +12,7 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class UserWallEntry
+    public partial class UserWall
     {
         public string UserId { get; set; }
         public System.Guid WallEntryId { get; set; }
