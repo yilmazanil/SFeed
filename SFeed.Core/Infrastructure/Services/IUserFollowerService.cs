@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructue.Services
 {
-    public interface IUserFollowerService
+    public interface IUserFollowerService : IDisposable
     {
         void FollowUser(string userIdToFollow);
         void UnFollowUser(string userIdToUnFollow);

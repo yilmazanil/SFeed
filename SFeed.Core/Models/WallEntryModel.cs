@@ -11,5 +11,7 @@ namespace SFeed.Core.Models
         public string CreatedBy { get; set; }
 
         public short EntryType { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

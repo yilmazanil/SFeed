@@ -2,7 +2,7 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisFeedRepository : RedisListRepositoryBase<FeedItemModel>
+    public class RedisUserFeedRepository : RedisListRepositoryBase<FeedItemModel>
     {
         protected override string ListPrefix => "userfeed";
 

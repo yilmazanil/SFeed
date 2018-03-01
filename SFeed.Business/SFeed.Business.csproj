@@ -66,6 +66,7 @@
     <Compile Include="Services\FollowerService.cs" />
     <Compile Include="Services\UserFeedService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\UserWallEntryService.cs" />
     <Compile Include="Services\WallEntryService.cs" />
   </ItemGroup>
   <ItemGroup>

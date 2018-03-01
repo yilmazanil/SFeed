@@ -11,11 +11,13 @@ namespace SFeed.Business.Services
     {
         ICacheListRepository<FeedItemModel> redisFeedRepo;
         ITypedCacheRepository<WallEntryModel> redisWallEntryRepo;
+        //ICacheListRepository<FeedItemModel> redisGlobalFeedRepo;
 
         public UserFeedService()
         {
-            this.redisFeedRepo = new RedisFeedRepository();
+            this.redisFeedRepo = new RedisUserFeedRepository();
             this.redisWallEntryRepo = new RedisWallEntryRepository();
+            //this.redisGlobalFeedRepo = new RedisGlobalFeedRepository();
         }
 
         public void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds)
@@ -38,17 +40,9 @@ namespace SFeed.Business.Services
             }
         }
 
-        public IEnumerable<WallEntryModel> GetUserFeed(string userId)
+        public IEnumerable<FeedItemModel> GetUserFeed(string userId)
         {
-            var feedRef = redisFeedRepo.GetList(userId);
-
-            foreach (var item in feedRef)
-            {
-                if (item.EntryType == (short)FeedEntryTypeEnum.WallEntry)
-                {
-                    yield return redisWallEntryRepo.GetItem(item.ReferenceId);
-                }
-            }
+           return redisFeedRepo.GetList(userId);
         }
     }
 }

@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructue.Services
+namespace SFeed.Core.Infrastructure.Services
 {
-    public interface IWallEntryService
+    public interface IWallEntryService : IDisposable
     {
-        Guid PublishEntryToUserWall(WallEntryModel entry, string wallOwnerUserId);
-        IEnumerable<WallEntryModel> GetUserWall(string userId);
-        void Delete(Guid postId);
+        IEnumerable<WallEntryModel> GetEntries(IEnumerable<string> ids);
     }
 }
