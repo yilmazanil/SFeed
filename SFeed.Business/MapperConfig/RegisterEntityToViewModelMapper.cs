@@ -8,7 +8,6 @@ namespace SFeed.Business.MapperConfig
     {
         public static void Register(IMapperConfigurationExpression cfg)
         {
-            //cfg.CreateMap<User, UserModel>();
             cfg.CreateMap<WallEntry, WallEntryModel>();
         }
     }

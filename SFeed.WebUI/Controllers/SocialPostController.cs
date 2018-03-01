@@ -1,6 +1,7 @@
 ﻿using SFeed.Business.Services;
 using SFeed.Core.Models;
 using SFeed.WebUI.UserProfile;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 
@@ -21,16 +22,41 @@ namespace SFeed.WebUI.Controllers
 
             var wallOwner = !string.IsNullOrWhiteSpace(targetUserId) ? targetUserId : ActiveUser.Username;
 
-            using (var userWallService = new UserWallService())
+            var entryId = string.Empty;
+
+            using (var wallEntryService = new WallEntryService())
             {
-                var createdPostId = userWallService.PublishEntryToUserWall(blRequest, wallOwner);
-                return Json(createdPostId);
-            } 
+                entryId = wallEntryService.CreateEntry(blRequest);
+
+                using (var userWallService = new UserWallService())
+                {
+                    userWallService.AddEntryToUserWall(entryId, wallOwner);
+
+                    using (var followerService = new FollowerService())
+                    {
+                        var followers = followerService.GetFollowers(ActiveUser.Username);
+                        if (!string.Equals(ActiveUser.Username, wallOwner))
+                        {
+                            var wallOwnerFollowers = followerService.GetFollowers(ActiveUser.Username);
+                            followers = Enumerable.Union(followers, wallOwnerFollowers);
+                        }
+                        using (var feedService = new UserFeedService())
+                        {
+                            feedService.AddToUserFeeds(new FeedItemModel { EntryType = blRequest.EntryType, ReferenceId = entryId }, followers);
+                        }
+
+                    }
+                }
+            }
+
+            return Json(entryId);
+
+
         }
 
         public ActionResult DeleteEntry(string postId)
         {
-            using (var wallEntryService = new WallEntryService() )
+            using (var wallEntryService = new WallEntryService())
             {
                 wallEntryService.Delete(postId);
             }

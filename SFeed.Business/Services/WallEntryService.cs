@@ -48,5 +48,12 @@ namespace SFeed.Business.Services
             wallEntryRepo.CommitChanges();
             wallEntryCacheRepo.RemoveItem(postId);
         }
+
+        public string CreateEntry(WallEntryModel model)
+        {
+            var dbEntry = new WallEntry { Body = model.Body, CreatedBy = model.CreatedBy, IsDeleted = false, CreatedDate = DateTime.Now, Id = Guid.NewGuid() };
+            wallEntryCacheRepo.AddItem(model);
+            return dbEntry.Id.ToString();
+        }
     }
 }
