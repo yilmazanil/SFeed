@@ -8,6 +8,5 @@ namespace SFeed.Core.Infrastructue.Services
     {
         Guid PublishEntryToUserWall(WallEntryModel entry, string wallOwnerUserId);
         IEnumerable<WallEntryModel> GetUserWall(string userId);
-        void Delete(Guid postId);
     }
 }

@@ -7,5 +7,6 @@ namespace SFeed.Core.Infrastructure.Services
     public interface IWallEntryService : IDisposable
     {
         IEnumerable<WallEntryModel> GetEntries(IEnumerable<string> ids);
+        void Delete(string postId);
     }
 }

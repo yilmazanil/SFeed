@@ -31,19 +31,12 @@ namespace SFeed.Business.Services
             this.userWallRepo = new UserWallRepository();
             this.wallEntryCacheRepo = new RedisWallEntryRepository();
         }
-        public void Delete(Guid postId)
-        {
-            userWallRepo.Delete(p => p.WallEntryId == postId);
-            userWallRepo.CommitChanges();
-            wallEntryRepo.Delete(p => p.Id == postId);
-            wallEntryRepo.CommitChanges();
-        }
 
         public IEnumerable<WallEntryModel> GetUserWall(string userId)
         {
             //TODO:Use SP & Introduce new interface
             var postIds = userWallRepo.GetMany(p => p.UserId == userId).Select(p=>p.WallEntryId);
-            var results=  wallEntryRepo.GetMany(p => postIds.Contains(p.Id));
+            var results = wallEntryRepo.GetMany(p => postIds.Contains(p.Id));
             return Mapper.Map<IEnumerable<WallEntryModel>>(results);
         }
 
