@@ -13,47 +13,39 @@ namespace SFeed.Business.Services
         private readonly IRepository<UserFollower> followerRepo;
         private readonly ICacheListRepository<string> followerCacheRepo;
 
-        public string ActiveUserId { get; private set; }
+        public FollowerService() :
+            this(new UserFollowerRepository(),
+            new RedisUserFollowerRepository())
+        { }
 
-        public FollowerService(string activeUserId) : 
-            this(activeUserId, new UserFollowerRepository(),
-            new RedisUserFollowerRepository()){}
-
-        public FollowerService(string activeUserId,
+        public FollowerService(
             IRepository<UserFollower> followersRepo,
             ICacheListRepository<string> followersCacheRepo)
         {
-            ActiveUserId = activeUserId;
             followerRepo = followersRepo;
             followerCacheRepo = followersCacheRepo;
         }
 
-        public void FollowUser(string userIdToFollow)
+        public void FollowUser(string activeUserId, string userIdToFollow)
         {
-            //Check if user is already following
-            bool alreadyFollowing = followerRepo.Any(p => p.FollowerId == ActiveUserId && p.UserId == userIdToFollow);
+            bool alreadyFollowing = followerRepo.Any(p => p.FollowerId == activeUserId && p.UserId == userIdToFollow);
             if (!alreadyFollowing)
             {
-                followerRepo.Add(new UserFollower { FollowerId = ActiveUserId, UserId = userIdToFollow });
+                followerRepo.Add(new UserFollower { FollowerId = activeUserId, UserId = userIdToFollow });
                 followerRepo.CommitChanges();
             }
-            bool alreadyInCache = followerCacheRepo.ExistsInList(userIdToFollow, ActiveUserId);
+            bool alreadyInCache = followerCacheRepo.ExistsInList(userIdToFollow, activeUserId);
             if (!alreadyInCache)
             {
-                followerCacheRepo.AddToList(userIdToFollow, ActiveUserId);
+                followerCacheRepo.AddToList(userIdToFollow, activeUserId);
             }
 
         }
-        public void UnFollowUser(string userIdToUnFollow)
+        public void UnFollowUser(string activeUserId, string userIdToUnFollow)
         {
-            followerRepo.Delete(f => f.FollowerId == ActiveUserId && f.UserId == userIdToUnFollow);
+            followerRepo.Delete(f => f.FollowerId == activeUserId && f.UserId == userIdToUnFollow);
             followerRepo.CommitChanges();
-            followerCacheRepo.RemoveFromList(userIdToUnFollow, ActiveUserId);
-        }
-
-        public IEnumerable<string> GetFollowers()
-        {
-            return GetFollowers(ActiveUserId);
+            followerCacheRepo.RemoveFromList(userIdToUnFollow, activeUserId);
         }
 
         public void Dispose()
@@ -64,7 +56,7 @@ namespace SFeed.Business.Services
             }
             if (followerCacheRepo != null)
             {
-                followerCacheRepo.Dispose(); 
+                followerCacheRepo.Dispose();
             }
         }
 
