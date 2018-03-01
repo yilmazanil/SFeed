@@ -2,7 +2,8 @@
 
 namespace SFeed.Data.SqlRepositories
 {
-    public class SocialPostRepository : SqlRepositoryBase<SocialPost>
+    public class UserWallEntryRepository : SqlRepositoryBase<UserWallEntry>
     {
+
     }
 }

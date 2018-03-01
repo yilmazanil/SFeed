@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SFeed.Data.Infrastructure
 {
-    public interface ISqlRepository<T>: IDisposable where T :class
+    public interface IRepository<T>: IDisposable where T :class
     {
         void Add(T entity);
         void Update(T entity);
@@ -14,6 +14,6 @@ namespace SFeed.Data.Infrastructure
         T Get(Expression<Func<T, bool>> where);
         IEnumerable<T> GetAll();
         IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
-        void Commit();
+        void CommitChanges();
     }
 }

@@ -16,17 +16,17 @@ namespace SFeed.Business.Services
 
     public class UserWallService : IUserWallService
     {
-        private readonly ISqlRepository<SocialPost> socialPostRepo;
-        private readonly ISqlRepository<UserWall> userWallRepo;
+        private readonly IRepository<SocialPost> socialPostRepo;
+        private readonly IRepository<UserWall> userWallRepo;
 
         public UserWallService()
         {
-            this.socialPostRepo = new SocialPostRepository();
-            this.userWallRepo = new UserWallRepository();
+            this.socialPostRepo = new WallEntryRepository();
+            this.userWallRepo = new UserWallEntryRepository();
         }
 
-        public UserWallService(ISqlRepository<SocialPost> socialPostRepo,
-             ISqlRepository<UserWall> userWallRepo)
+        public UserWallService(IRepository<SocialPost> socialPostRepo,
+             IRepository<UserWall> userWallRepo)
         {
             this.socialPostRepo = socialPostRepo;
             this.userWallRepo = userWallRepo;

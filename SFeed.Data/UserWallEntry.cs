@@ -12,9 +12,11 @@ namespace SFeed.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class UserWall
+    public partial class UserWallEntry
     {
-        public int UserId { get; set; }
-        public long SocialPostId { get; set; }
+        public string UserId { get; set; }
+        public long WallEntryId { get; set; }
+    
+        public virtual WallEntry WallEntry { get; set; }
     }
 }

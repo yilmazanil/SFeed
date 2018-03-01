@@ -11,7 +11,7 @@ namespace SFeed.Business.Services
 {
     public class FollowerService : IFollowerService
     {
-        private readonly ISqlRepository<UserFollower> sqlFollowerRepo;
+        private readonly IRepository<UserFollower> sqlFollowerRepo;
         private readonly IRedisListRepository<int, int> redisFollowerRepo;
 
         public FollowerService()
@@ -20,7 +20,7 @@ namespace SFeed.Business.Services
             redisFollowerRepo = new RedisUserFollowerRepository();
         }
 
-        public FollowerService(ISqlRepository<UserFollower> userFollowerRepository, 
+        public FollowerService(IRepository<UserFollower> userFollowerRepository, 
             IRedisListRepository<int, int> cachedFollowersRepo)
         {
             sqlFollowerRepo = userFollowerRepository;

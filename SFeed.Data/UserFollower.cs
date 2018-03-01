@@ -14,7 +14,7 @@ namespace SFeed.Data
     
     public partial class UserFollower
     {
-        public int UserId { get; set; }
-        public int FollowerId { get; set; }
+        public string UserId { get; set; }
+        public string FollowerId { get; set; }
     }
 }

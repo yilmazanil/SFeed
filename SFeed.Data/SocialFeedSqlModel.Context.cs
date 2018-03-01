@@ -13,10 +13,10 @@ namespace SFeed.Data
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SFeedEntities : DbContext
+    public partial class SocialFeedEntities : DbContext
     {
-        public SFeedEntities()
-            : base("name=SFeedEntities")
+        public SocialFeedEntities()
+            : base("name=SocialFeedEntities")
         {
         }
     
@@ -25,9 +25,9 @@ namespace SFeed.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<SocialPost> SocialPost { get; set; }
-        public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserFollower> UserFollower { get; set; }
-        public virtual DbSet<UserWall> UserWall { get; set; }
+        public virtual DbSet<WallEntry> WallEntry { get; set; }
+        public virtual DbSet<UserWallEntry> UserWallEntry { get; set; }
+        public virtual DbSet<WallEntryType> WallEntryType { get; set; }
     }
 }

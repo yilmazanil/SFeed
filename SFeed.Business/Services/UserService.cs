@@ -12,14 +12,14 @@ namespace SFeed.Business.Services
 {
     public class UserService : IDisposable
     {
-        private readonly ISqlRepository<User> userRepository;
-        private readonly ISqlRepository<UserFollower> userFollowerRepository;
+        private readonly IRepository<User> userRepository;
+        private readonly IRepository<UserFollower> userFollowerRepository;
         private readonly IRedisListRepository<int, int> cachedFollowersRepo;
 
 
         public UserService(
-            ISqlRepository<User> userRepo,
-            ISqlRepository<UserFollower> followerRepo,
+            IRepository<User> userRepo,
+            IRepository<UserFollower> followerRepo,
             IRedisListRepository<int, int> cachedFollowersRepo)
         {
             this.userRepository = userRepo;

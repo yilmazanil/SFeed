@@ -2,8 +2,7 @@
 
 namespace SFeed.Data.SqlRepositories
 {
-    public class UserWallRepository : SqlRepositoryBase<UserWall>
+    public class WallEntryRepository : SqlRepositoryBase<WallEntry>
     {
-
     }
 }

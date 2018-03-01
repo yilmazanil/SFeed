@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -65,75 +66,61 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\IRedisFeedRepository.cs" />
-    <Compile Include="Infrastructure\IRedisListRepository.cs" />
-    <Compile Include="Infrastructure\IRedisTypedRepository.cs" />
-    <Compile Include="Infrastructure\ISqlRepository.cs" />
-    <Compile Include="Infrastructure\RedisConnectionHelper.cs" />
-    <Compile Include="Infrastructure\RedisListRepositoryBase.cs" />
-    <Compile Include="Infrastructure\RedisRepositoryBase.cs" />
-    <Compile Include="Infrastructure\SqlRepositoryBase.cs" />
+    <Compile Include="Infrastructure\ICacheListRepository.cs" />
+    <Compile Include="Infrastructure\ITypedCacheRepository.cs" />
+    <Compile Include="Infrastructure\IRepository.cs" />
+    <Compile Include="Infrastructure\RedisRepository\RedisListRepositoryBase.cs" />
+    <Compile Include="Infrastructure\RedisRepository\RedisTypedRepositoryBase.cs" />
+    <Compile Include="Infrastructure\RedisRepository\RedisConnectionProvider.cs" />
+    <Compile Include="Infrastructure\SqlRepository\SqlRepositoryBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisRepositories\RedisFeedRepository.cs" />
     <Compile Include="RedisRepositories\RedisSocialPostRepository.cs" />
     <Compile Include="RedisRepositories\RedisUserFollowerRepository.cs" />
-    <Compile Include="SqlRepositories\SocialPostRepository.cs" />
+    <Compile Include="SocialFeedSqlModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SocialFeedSqlModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SocialFeedSqlModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SocialFeedSqlModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="SqlRepositories\WallEntryRepository.cs" />
     <Compile Include="SqlRepositories\UserFollowerRepository.cs" />
-    <Compile Include="SqlRepositories\UserRepository.cs" />
-    <Compile Include="SqlRepositories\UserWallRepository.cs" />
-    <Compile Include="SFeedEntities.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SFeedEntities.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SFeedEntities.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SFeedEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SFeedEntities.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SFeedEntities.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="SocialPost.cs">
-      <DependentUpon>SFeedEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="User.cs">
-      <DependentUpon>SFeedEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="SqlRepositories\UserWallEntryRepository.cs" />
     <Compile Include="UserFollower.cs">
-      <DependentUpon>SFeedEntities.tt</DependentUpon>
+      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserWall.cs">
-      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    <Compile Include="UserWallEntry.cs">
+      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WallEntry.cs">
+      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WallEntryType.cs">
+      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EntityDeploy Include="SFeedEntities.edmx">
+    <EntityDeploy Include="SocialFeedSqlModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SFeedEntities.Designer.cs</LastGenOutput>
+      <LastGenOutput>SocialFeedSqlModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="SFeedEntities.edmx.diagram">
-      <DependentUpon>SFeedEntities.edmx</DependentUpon>
+    <None Include="SocialFeedSqlModel.edmx.diagram">
+      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SFeedEntities.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SFeedEntities.edmx</DependentUpon>
-      <LastGenOutput>SFeedEntities.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="SFeedEntities.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SFeedEntities.edmx</DependentUpon>
-      <LastGenOutput>SFeedEntities.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFeed.Model\SFeed.Model.csproj">
@@ -141,5 +128,18 @@
       <Name>SFeed.Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SocialFeedSqlModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
+      <LastGenOutput>SocialFeedSqlModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SocialFeedSqlModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
+      <LastGenOutput>SocialFeedSqlModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

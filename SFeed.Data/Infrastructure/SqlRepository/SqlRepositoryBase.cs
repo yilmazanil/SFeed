@@ -6,14 +6,14 @@ using System.Linq.Expressions;
 
 namespace SFeed.Data.Infrastructure
 {
-    public abstract class SqlRepositoryBase<T>: ISqlRepository<T> where T : class
+    public abstract class SqlRepositoryBase<T>: IRepository<T> where T : class
     {
-        private SFeedEntities dataContext;
+        private SocialFeedEntities dataContext;
         private readonly IDbSet<T> dbSet;
 
-        protected SFeedEntities DbContext
+        protected SocialFeedEntities DbContext
         {
-            get { return dataContext ?? (dataContext = new SFeedEntities()); }
+            get { return dataContext ?? (dataContext = new SocialFeedEntities()); }
         }
 
         protected SqlRepositoryBase()
@@ -64,7 +64,7 @@ namespace SFeed.Data.Infrastructure
             return dbSet.Where(where).FirstOrDefault<T>();
         }
 
-        public void Commit()
+        public void CommitChanges()
         {
             DbContext.SaveChanges();
         }

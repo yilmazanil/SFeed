@@ -13,7 +13,7 @@ namespace SFeed.Business.Services
     public class UserFeedService : IUserFeedService
     {
         IRedisUserFeedRepository redisFeedRepo;
-        ISqlRepository<User> userSqlRepo;
+        IRepository<User> userSqlRepo;
 
         public UserFeedService()
         {
@@ -22,7 +22,7 @@ namespace SFeed.Business.Services
         }
 
         public UserFeedService(IRedisUserFeedRepository redisFeedRepo,
-             ISqlRepository<User> userSqlRepo)
+             IRepository<User> userSqlRepo)
         {
             this.redisFeedRepo = redisFeedRepo;
             this.userSqlRepo = userSqlRepo;
