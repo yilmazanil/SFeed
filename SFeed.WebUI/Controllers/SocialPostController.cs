@@ -16,7 +16,7 @@ namespace SFeed.WebUI.Controllers
             {
                 Body = request.Body,
                 CreatedBy = ActiveUser.Username,
-                EntryType = (short)WallEntryTypeEnum.plaintext
+                EntryType = request.EntryType > 0 ? request.EntryType : (short)WallEntryTypeEnum.plaintext
             };
 
             var wallOwner = !string.IsNullOrWhiteSpace(targetUserId) ? targetUserId : ActiveUser.Username;
