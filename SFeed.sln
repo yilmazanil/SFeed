@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Model", "SFeed.Model\SFeed.Model.csproj", "{E1E45824-EBAC-4386-951E-9B7B053B7995}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Data", "SFeed.Data\SFeed.Data.csproj", "{E5011688-6975-4DD8-8867-597BA1E3F5F3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Business", "SFeed.Business\SFeed.Business.csproj", "{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15CC9588-DFDB-4C00-B4D2-EC32A63E853E}"
@@ -17,20 +13,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.WebUI", "SFeed.WebUI\SFeed.WebUI.csproj", "{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Core", "SFeed.Core\SFeed.Core.csproj", "{47C50499-B005-4FE7-AC9D-3006AF07918C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.SqlRepository", "SFeed.SqlRepository\SFeed.SqlRepository.csproj", "{D9F98903-856A-4E44-B214-6B59D71EBCAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.RedisRepository", "SFeed.RedisRepository\SFeed.RedisRepository.csproj", "{88668387-E14E-4453-AE2B-AFB659D26730}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E1E45824-EBAC-4386-951E-9B7B053B7995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1E45824-EBAC-4386-951E-9B7B053B7995}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1E45824-EBAC-4386-951E-9B7B053B7995}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1E45824-EBAC-4386-951E-9B7B053B7995}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5011688-6975-4DD8-8867-597BA1E3F5F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5011688-6975-4DD8-8867-597BA1E3F5F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5011688-6975-4DD8-8867-597BA1E3F5F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5011688-6975-4DD8-8867-597BA1E3F5F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{771A444D-E2F3-4ECD-8208-ABDF5A9C6376}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +33,18 @@ Global
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A78E12D3-23A4-4FF0-9054-77B5AC33DC90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C50499-B005-4FE7-AC9D-3006AF07918C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C50499-B005-4FE7-AC9D-3006AF07918C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C50499-B005-4FE7-AC9D-3006AF07918C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C50499-B005-4FE7-AC9D-3006AF07918C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9F98903-856A-4E44-B214-6B59D71EBCAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F98903-856A-4E44-B214-6B59D71EBCAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F98903-856A-4E44-B214-6B59D71EBCAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F98903-856A-4E44-B214-6B59D71EBCAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88668387-E14E-4453-AE2B-AFB659D26730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88668387-E14E-4453-AE2B-AFB659D26730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88668387-E14E-4453-AE2B-AFB659D26730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88668387-E14E-4453-AE2B-AFB659D26730}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

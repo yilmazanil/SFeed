@@ -1,47 +1,54 @@
-﻿using SFeed.Business.Infrastructure;
+﻿using SFeed.Core.Infrastructue.Repository;
+using SFeed.Core.Infrastructue.Services;
+using SFeed.Core.Models;
+using SFeed.RedisRepository;
 using System.Collections.Generic;
-using SFeed.Model;
-using SFeed.Data.Infrastructure;
-using SFeed.Data.RedisRepositories;
 using System;
-using SFeed.Data;
-using System.Linq;
-using SFeed.Data.SqlRepositories;
 
 namespace SFeed.Business.Services
 {
-    public class UserFeedService : IUserFeedService
+    public class UserFeedService : IUserNewsfeedService, IDisposable
     {
-        IRedisUserFeedRepository redisFeedRepo;
-        IRepository<User> userSqlRepo;
+        ICacheListRepository<FeedItemModel> redisFeedRepo;
+        ITypedCacheRepository<WallEntryModel> redisWallEntryRepo;
 
         public UserFeedService()
         {
             this.redisFeedRepo = new RedisFeedRepository();
-            this.userSqlRepo = new UserRepository();
+            this.redisWallEntryRepo = new RedisWallEntryRepository();
         }
 
-        public UserFeedService(IRedisUserFeedRepository redisFeedRepo,
-             IRepository<User> userSqlRepo)
+        public void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds)
         {
-            this.redisFeedRepo = redisFeedRepo;
-            this.userSqlRepo = userSqlRepo;
-        }
-        public void AddToUserFeeds(long postId, IEnumerable<int> users)
-        {
-            redisFeedRepo.AddToUserFeeds(users, postId);
+            foreach (var userId in userIds)
+            {
+                redisFeedRepo.AddToList(userId, feedItem);
+            }
         }
 
-        public void DeleteFromFeeds(long postId)
+        public void Dispose()
         {
-            //TODO: Refactor according to datastructure update
-            var users = userSqlRepo.GetAll().Select(u => u.Id);
-            redisFeedRepo.DeleteFromUserFeeds(postId, users);
+            if (redisFeedRepo != null)
+            {
+                redisFeedRepo.Dispose();
+            }
+            if (redisWallEntryRepo != null)
+            {
+                redisWallEntryRepo.Dispose();
+            }
         }
 
-        public IEnumerable<SocialPostModel> GetUserFeed(int userId)
+        public IEnumerable<WallEntryModel> GetUserFeed(string userId)
         {
-            return redisFeedRepo.GetUserFeeds(userId);
+            var feedRef = redisFeedRepo.GetList(userId);
+
+            foreach (var item in feedRef)
+            {
+                if (item.EntryType == (short)FeedEntryTypeEnum.WallEntry)
+                {
+                    yield return redisWallEntryRepo.GetItem(item.ReferenceId);
+                }
+            }
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E1E45824-EBAC-4386-951E-9B7B053B7995}</ProjectGuid>
+    <ProjectGuid>{47C50499-B005-4FE7-AC9D-3006AF07918C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFeed.Model</RootNamespace>
-    <AssemblyName>SFeed.Model</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>SFeed.Core</RootNamespace>
+    <AssemblyName>SFeed.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,8 +40,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\IRepository.cs" />
+    <Compile Include="Infrastructure\Repository\ITypedCacheRepository.cs" />
+    <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
+    <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
+    <Compile Include="Infrastructure\Services\IWallEntryService.cs" />
+    <Compile Include="Models\FeedEntryTypeEnum.cs" />
+    <Compile Include="Models\FeedItemModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\WallEntryModel.cs" />
+    <Compile Include="Models\WallEntryTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Presentation\SocialPostRequestModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ServiceInfrastructure\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

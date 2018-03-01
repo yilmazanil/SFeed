@@ -1,63 +1,84 @@
 ﻿using System;
-using SFeed.Business.Infrastructure;
-using SFeed.Data;
-using SFeed.Data.Infrastructure;
-using SFeed.Data.RedisRepositories;
-using SFeed.Data.SqlRepositories;
 using System.Linq;
 using System.Collections.Generic;
+using SFeed.Core.Infrastructue.Services;
+using SFeed.Core.Infrastructue.Repository;
+using SFeed.SqlRepository;
+using SFeed.RedisRepository;
 
 namespace SFeed.Business.Services
 {
-    public class FollowerService : IFollowerService
+    public class FollowerService : IUserFollowerService, IDisposable
     {
-        private readonly IRepository<UserFollower> sqlFollowerRepo;
-        private readonly IRedisListRepository<int, int> redisFollowerRepo;
+        private readonly IRepository<UserFollower> followerRepo;
+        private readonly ICacheListRepository<string> followerCacheRepo;
 
-        public FollowerService()
+        public string ActiveUserId { get; private set; }
+
+        public FollowerService(string activeUserId) : 
+            this(activeUserId, new UserFollowerRepository(),
+            new RedisUserFollowerRepository()){}
+
+        public FollowerService(string activeUserId,
+            IRepository<UserFollower> followersRepo,
+            ICacheListRepository<string> followersCacheRepo)
         {
-            sqlFollowerRepo = new UserFollowerRepository();
-            redisFollowerRepo = new RedisUserFollowerRepository();
+            ActiveUserId = activeUserId;
+            followerRepo = followersRepo;
+            followerCacheRepo = followersCacheRepo;
         }
 
-        public FollowerService(IRepository<UserFollower> userFollowerRepository, 
-            IRedisListRepository<int, int> cachedFollowersRepo)
-        {
-            sqlFollowerRepo = userFollowerRepository;
-            redisFollowerRepo = cachedFollowersRepo;
-        }
-   
-        public void FollowUser(int activeUserId, int userToFollow)
+        public void FollowUser(string userIdToFollow)
         {
             //Check if user is already following
-            var user = sqlFollowerRepo.Get(f => f.FollowerId == userToFollow && f.UserId == activeUserId);
-            if (user == null)
+            bool alreadyFollowing = followerRepo.Any(p => p.FollowerId == ActiveUserId && p.UserId == userIdToFollow);
+            if (!alreadyFollowing)
             {
-                sqlFollowerRepo.Add(new UserFollower { UserId = userToFollow, FollowerId = activeUserId });
+                followerRepo.Add(new UserFollower { FollowerId = ActiveUserId, UserId = userIdToFollow });
+                followerRepo.CommitChanges();
             }
-            if (!redisFollowerRepo.Exists(userToFollow, activeUserId))
+            bool alreadyInCache = followerCacheRepo.ExistsInList(userIdToFollow, ActiveUserId);
+            if (!alreadyInCache)
             {
-                redisFollowerRepo.Add(userToFollow, activeUserId);
+                followerCacheRepo.AddToList(userIdToFollow, ActiveUserId);
             }
+
         }
-        public void UnFollowUser(int activeUserId, int userToUnFollow)
+        public void UnFollowUser(string userIdToUnFollow)
         {
-            sqlFollowerRepo.Delete(f => f.FollowerId == activeUserId && f.UserId == userToUnFollow);
-            redisFollowerRepo.Remove(userToUnFollow, activeUserId);
+            followerRepo.Delete(f => f.FollowerId == ActiveUserId && f.UserId == userIdToUnFollow);
+            followerRepo.CommitChanges();
+            followerCacheRepo.RemoveFromList(userIdToUnFollow, ActiveUserId);
         }
 
-        public IEnumerable<int> GetFollowers(int userId)
+        public IEnumerable<string> GetFollowers()
         {
-            //check redis
-            var result = redisFollowerRepo.Retrieve(userId);
+            return GetFollowers(ActiveUserId);
+        }
+
+        public void Dispose()
+        {
+            if (followerRepo != null)
+            {
+                followerRepo.Dispose();
+            }
+            if (followerCacheRepo != null)
+            {
+                followerCacheRepo.Dispose(); 
+            }
+        }
+
+        public IEnumerable<string> GetFollowers(string userId)
+        {
+            var result = followerCacheRepo.GetList(userId);
             if (!result.Any())
             {
-                //check sql
-                result = sqlFollowerRepo.GetMany(p => p.UserId == userId).Select(u => u.FollowerId);
+                //There are no followers in cache
+                result = followerRepo.GetMany(p => p.UserId == userId).Select(u => u.FollowerId);
                 if (result.Any())
                 {
-                    //update redis if missing
-                    redisFollowerRepo.Recreate(userId, result);
+                    //There are records in db, refresh cache
+                    followerCacheRepo.RecreateList(userId, result);
                 }
             }
 

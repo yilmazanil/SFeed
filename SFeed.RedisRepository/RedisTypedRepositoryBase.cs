@@ -1,10 +1,10 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
-using SFeed.Data.Infrastructure.RedisRepository;
+using SFeed.Core.Infrastructue.Repository;
 using System;
 using System.Collections.Generic;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.RedisRepository
 {
     public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T :class
     {

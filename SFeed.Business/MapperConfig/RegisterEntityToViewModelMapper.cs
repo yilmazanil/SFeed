@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SFeed.Data;
-using SFeed.Model;
+using SFeed.Core.Models;
+using SFeed.SqlRepository;
 
 namespace SFeed.Business.MapperConfig
 {
@@ -8,8 +8,8 @@ namespace SFeed.Business.MapperConfig
     {
         public static void Register(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<User, UserModel>();
-            cfg.CreateMap<SocialPost, SocialPostModel>();
+            //cfg.CreateMap<User, UserModel>();
+            cfg.CreateMap<WallEntry, WallEntryModel>();
         }
     }
 }

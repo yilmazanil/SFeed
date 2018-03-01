@@ -1,9 +1,6 @@
-﻿using SFeed.Data.Infrastructure;
-using SFeed.Model;
-using System.Collections.Generic;
-using System;
+﻿using SFeed.Core.Models;
 
-namespace SFeed.Data.RedisRepositories
+namespace SFeed.RedisRepository
 {
     public class RedisFeedRepository : RedisListRepositoryBase<FeedItemModel>
     {

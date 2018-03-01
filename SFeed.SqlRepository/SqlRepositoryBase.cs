@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SFeed.Core.Infrastructue.Repository;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.SqlRepository
 {
     public abstract class SqlRepositoryBase<T>: IRepository<T> where T : class
     {

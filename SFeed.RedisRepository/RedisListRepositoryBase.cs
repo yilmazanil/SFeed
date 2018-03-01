@@ -1,10 +1,9 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
-using SFeed.Data.Infrastructure.RedisRepository;
-using System;
+using SFeed.Core.Infrastructue.Repository;
 using System.Collections.Generic;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.RedisRepository
 {
     public abstract class RedisListRepositoryBase<T> : ICacheListRepository<T>
     {

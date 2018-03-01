@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.Core.Infrastructue.Repository
 {
     public interface ITypedCacheRepository<T> : IDisposable where T : class
     {

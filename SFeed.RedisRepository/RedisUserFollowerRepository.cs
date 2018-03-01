@@ -1,6 +1,4 @@
-﻿using SFeed.Data.Infrastructure;
-
-namespace SFeed.Data.RedisRepositories
+﻿namespace SFeed.RedisRepository
 {
     public class RedisUserFollowerRepository : RedisListRepositoryBase<string>
     {

@@ -75,70 +75,18 @@
     <Compile Include="Infrastructure\SqlRepository\SqlRepositoryBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisRepositories\RedisFeedRepository.cs" />
-    <Compile Include="RedisRepositories\RedisSocialPostRepository.cs" />
+    <Compile Include="RedisRepositories\RedisWallEntryRepository.cs" />
     <Compile Include="RedisRepositories\RedisUserFollowerRepository.cs" />
-    <Compile Include="SocialFeedSqlModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialFeedSqlModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SocialFeedSqlModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SocialFeedSqlModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="SqlRepositories\WallEntryRepository.cs" />
     <Compile Include="SqlRepositories\UserFollowerRepository.cs" />
     <Compile Include="SqlRepositories\UserWallEntryRepository.cs" />
-    <Compile Include="UserFollower.cs">
-      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="UserWallEntry.cs">
-      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WallEntry.cs">
-      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="WallEntryType.cs">
-      <DependentUpon>SocialFeedSqlModel.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EntityDeploy Include="SocialFeedSqlModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SocialFeedSqlModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="SocialFeedSqlModel.edmx.diagram">
-      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SFeed.Model\SFeed.Model.csproj">
-      <Project>{E1E45824-EBAC-4386-951E-9B7B053B7995}</Project>
-      <Name>SFeed.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SocialFeedSqlModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
-      <LastGenOutput>SocialFeedSqlModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="SocialFeedSqlModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SocialFeedSqlModel.edmx</DependentUpon>
-      <LastGenOutput>SocialFeedSqlModel.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

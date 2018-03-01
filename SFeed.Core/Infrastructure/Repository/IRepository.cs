@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.Core.Infrastructue.Repository
 {
     public interface IRepository<T>: IDisposable where T :class
     {

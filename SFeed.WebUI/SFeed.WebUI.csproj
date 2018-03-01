@@ -196,10 +196,6 @@
       <Project>{771a444d-e2f3-4ecd-8208-abdf5a9c6376}</Project>
       <Name>SFeed.Business</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFeed.Model\SFeed.Model.csproj">
-      <Project>{e1e45824-ebac-4386-951e-9b7b053b7995}</Project>
-      <Name>SFeed.Model</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

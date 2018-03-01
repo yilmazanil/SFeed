@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SocialFeedDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="UserFollower">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="UserId" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="FollowerId" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserWallEntry">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="WallEntryId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="WallEntryId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallEntry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EntryType" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallEntryType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="tinyint" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_UserWallEntry_WallEntry">
+          <End Role="WallEntry" Type="Self.WallEntry" Multiplicity="1" />
+          <End Role="UserWallEntry" Type="Self.UserWallEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallEntry">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserWallEntry">
+              <PropertyRef Name="WallEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallEntry_EntryType">
+          <End Role="WallEntryType" Type="Self.WallEntryType" Multiplicity="1" />
+          <End Role="WallEntry" Type="Self.WallEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallEntryType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallEntry">
+              <PropertyRef Name="EntryType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SocialFeedDataModelStoreContainer">
+          <EntitySet Name="UserFollower" EntityType="Self.UserFollower" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserWallEntry" EntityType="Self.UserWallEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WallEntry" EntityType="Self.WallEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WallEntryType" EntityType="Self.WallEntryType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UserWallEntry_WallEntry" Association="Self.FK_UserWallEntry_WallEntry">
+            <End Role="WallEntry" EntitySet="WallEntry" />
+            <End Role="UserWallEntry" EntitySet="UserWallEntry" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallEntry_EntryType" Association="Self.FK_WallEntry_EntryType">
+            <End Role="WallEntryType" EntitySet="WallEntryType" />
+            <End Role="WallEntry" EntitySet="WallEntry" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SocialFeedDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="UserFollower">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FollowerId" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserWallEntry">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="WallEntryId" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WallEntryId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="WallEntry" Relationship="Self.FK_UserWallEntry_WallEntry" FromRole="UserWallEntry" ToRole="WallEntry" />
+        </EntityType>
+        <EntityType Name="WallEntry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EntryType" Type="Byte" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="UserWallEntry" Relationship="Self.FK_UserWallEntry_WallEntry" FromRole="WallEntry" ToRole="UserWallEntry" />
+          <NavigationProperty Name="WallEntryType" Relationship="Self.FK_WallEntry_EntryType" FromRole="WallEntry" ToRole="WallEntryType" />
+        </EntityType>
+        <EntityType Name="WallEntryType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Byte" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="WallEntry" Relationship="Self.FK_WallEntry_EntryType" FromRole="WallEntryType" ToRole="WallEntry" />
+        </EntityType>
+        <Association Name="FK_UserWallEntry_WallEntry">
+          <End Role="WallEntry" Type="Self.WallEntry" Multiplicity="1" />
+          <End Role="UserWallEntry" Type="Self.UserWallEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallEntry">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserWallEntry">
+              <PropertyRef Name="WallEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallEntry_EntryType">
+          <End Role="WallEntryType" Type="Self.WallEntryType" Multiplicity="1" />
+          <End Role="WallEntry" Type="Self.WallEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallEntryType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallEntry">
+              <PropertyRef Name="EntryType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SocialFeedEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UserFollower" EntityType="Self.UserFollower" />
+          <EntitySet Name="UserWallEntry" EntityType="Self.UserWallEntry" />
+          <EntitySet Name="WallEntry" EntityType="Self.WallEntry" />
+          <EntitySet Name="WallEntryType" EntityType="Self.WallEntryType" />
+          <AssociationSet Name="FK_UserWallEntry_WallEntry" Association="Self.FK_UserWallEntry_WallEntry">
+            <End Role="WallEntry" EntitySet="WallEntry" />
+            <End Role="UserWallEntry" EntitySet="UserWallEntry" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallEntry_EntryType" Association="Self.FK_WallEntry_EntryType">
+            <End Role="WallEntryType" EntitySet="WallEntryType" />
+            <End Role="WallEntry" EntitySet="WallEntry" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SocialFeedDataModelStoreContainer" CdmEntityContainer="SocialFeedEntities">
+          <EntitySetMapping Name="UserFollower">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserFollower">
+              <MappingFragment StoreEntitySet="UserFollower">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserWallEntry">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserWallEntry">
+              <MappingFragment StoreEntitySet="UserWallEntry">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WallEntryId" ColumnName="WallEntryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallEntry">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallEntry">
+              <MappingFragment StoreEntitySet="WallEntry">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallEntryType">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallEntryType">
+              <MappingFragment StoreEntitySet="WallEntryType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

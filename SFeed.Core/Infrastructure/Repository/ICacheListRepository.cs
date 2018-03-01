@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFeed.Data.Infrastructure
+namespace SFeed.Core.Infrastructue.Repository
 {
     public interface ICacheListRepository<T> : IDisposable
     {
