@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -195,6 +196,10 @@
     <ProjectReference Include="..\SFeed.Business\SFeed.Business.csproj">
       <Project>{771a444d-e2f3-4ecd-8208-abdf5a9c6376}</Project>
       <Name>SFeed.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFeed.Core\SFeed.Core.csproj">
+      <Project>{47C50499-B005-4FE7-AC9D-3006AF07918C}</Project>
+      <Name>SFeed.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

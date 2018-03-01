@@ -1,42 +1,39 @@
 ﻿using SFeed.Business.Services;
-using SFeed.Model;
-using SFeed.Model.Presentation;
+using SFeed.Core.Models;
 using SFeed.WebUI.UserProfile;
 using System.Net;
 using System.Web.Mvc;
 
 namespace SFeed.WebUI.Controllers
 {
-    public class SocialPostController : Controller
+    public class WallEntryController : Controller
     {
-        public ActionResult Create(SocialPostRequestModel request)
+        public ActionResult CreateEntry(WallEntryModel request, string targetUserId)
         {
-            //If target user is not specified, user is posting his/her own wall
-            if (request.TargetUserId == 0)
-            {
-                request.TargetUserId = ActiveUser.Id;
-            }
+            //If target user is not specified, user is posting his/her own wall}
 
-            var blRequest = new SocialPostModel()
+            var blRequest = new WallEntryModel()
             {
                 Body = request.Body,
-                CreatedBy = ActiveUser.Id
+                CreatedBy = ActiveUser.Username,
+                EntryType = (short)WallEntryTypeEnum.plaintext
             };
 
-            using (var postService = new SocialPostService())
-            { 
-                var createdPost = postService.Create(blRequest, request.TargetUserId);
-                return Json(createdPost);
+            var wallOwner = !string.IsNullOrWhiteSpace(targetUserId) ? targetUserId : ActiveUser.Username;
+
+            using (var userWallService = new UserWallService())
+            {
+                var createdPostId = userWallService.PublishEntryToUserWall(blRequest, wallOwner);
+                return Json(createdPostId);
             } 
         }
 
-        public ActionResult Delete(long postId)
+        public ActionResult DeleteEntry(string postId)
         {
-            var wallService = new UserWallService();
-            wallService.Delete(postId);
-
-            var feedService = new UserFeedService();
-            feedService.DeleteFromFeeds(postId);
+            using (var wallEntryService = new WallEntryService() )
+            {
+                wallEntryService.Delete(postId);
+            }
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 

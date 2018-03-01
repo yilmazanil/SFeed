@@ -10,37 +10,37 @@ namespace SFeed.WebUI.Controllers
         [Route("user/Feed/")]
         public ActionResult Feed()
         {
-            using (var service = new SocialPostService())
+            using (var service = new UserFeedService())
             {
-                return Json(service.GetUserFeed(ActiveUser.Id), JsonRequestBehavior.AllowGet);
+                return Json(service.GetUserFeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
             }
         }
 
         [Route("user/follow/{userId}")]
-        public ActionResult Follow(int userId)
+        public ActionResult Follow(string userIdToFollow)
         {
-            using (var service = new UserService())
+            using (var service = new FollowerService())
             {
-                service.FollowUser(ActiveUser.Id, userId);
+                service.FollowUser(ActiveUser.Username, userIdToFollow);
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
         }
 
         [Route("user/unfollow/{userId}")]
-        public ActionResult UnFollow(int userId)
+        public ActionResult UnFollow(string userIdToUnfollow)
         {
-            using (var service = new UserService())
+            using (var service = new FollowerService())
             {
-                service.UnFollowUser(ActiveUser.Id, userId);
+                service.UnFollowUser(ActiveUser.Username, userIdToUnfollow);
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
         }
         [Route("user/followers/")]
         public ActionResult Followers()
         {
-            using (var service = new UserService())
+            using (var service = new FollowerService())
             {
-                return Json(service.GetFollowers(ActiveUser.Id), JsonRequestBehavior.AllowGet);
+                return Json(service.GetFollowers(ActiveUser.Username), JsonRequestBehavior.AllowGet);
             }
         }
     }
