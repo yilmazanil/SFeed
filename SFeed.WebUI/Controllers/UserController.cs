@@ -2,6 +2,7 @@
 using SFeed.Core.Infrastructue.Services;
 using SFeed.WebUI.UserProfile;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SFeed.WebUI.Controllers
@@ -28,16 +29,11 @@ namespace SFeed.WebUI.Controllers
             userFollowerService.UnFollowUser(ActiveUser.Username, userIdToUnfollow);
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
-        [Route("user/followers/")]
-        public ActionResult Followers()
-        {
-             return Json(userFollowerService.GetFollowers(ActiveUser.Username), JsonRequestBehavior.AllowGet);
-        }
-
         [Route("user/followers/{userId}")]
         public ActionResult Followers(string userId)
         {
-            return Json(userFollowerService.GetFollowers(userId), JsonRequestBehavior.AllowGet);
+           userId = !string.IsNullOrWhiteSpace(userId) ? userId : ActiveUser.Username;
+           return Json(userFollowerService.GetFollowers(userId), JsonRequestBehavior.AllowGet);
         }
 
         [Route("user/newsfeed/")]
@@ -48,9 +44,6 @@ namespace SFeed.WebUI.Controllers
                 return Json(service.GetUserFeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
       
     }
 }
