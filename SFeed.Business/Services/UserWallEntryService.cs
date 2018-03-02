@@ -8,19 +8,19 @@ namespace SFeed.Business.Services
 {
     public class UserWallEntryService : IUserWallEntryService
     {
-        IUserWallEntryProvider wallEntryProvider;
+        IUserWallPostProvider wallEntryProvider;
         IUserNewsfeedProvider newsFeedProvider;
         IUserFollowerProvider followerProvider;
 
         public UserWallEntryService(): this(
-            new UserWallEntryProvider(),
+            new UserWallPostProvider(),
             new UserNewsfeedProvider(),
             new UserFollowerProvider())
         {
 
         }
         public UserWallEntryService(
-            IUserWallEntryProvider wallEntryProvider,
+            IUserWallPostProvider wallEntryProvider,
             IUserNewsfeedProvider newsFeedProvider,
             IUserFollowerProvider followerProvider)
         {

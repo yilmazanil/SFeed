@@ -12,11 +12,17 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class UserWall
+    public partial class WallPost
     {
-        public string WallPostId { get; set; }
-        public string UserId { get; set; }
+        public string Id { get; set; }
+        public string Body { get; set; }
+        public byte PostType { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public bool IsDeleted { get; set; }
     
-        public virtual WallPost WallPost { get; set; }
+        public virtual UserWall UserWall { get; set; }
+        public virtual WallPostType WallPostType { get; set; }
     }
 }

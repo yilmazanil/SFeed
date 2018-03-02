@@ -4,7 +4,7 @@ namespace SFeed.Core.Models
 {
     public class WallEntryModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Body { get; set; }
 

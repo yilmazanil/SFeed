@@ -12,24 +12,18 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class WallEntry
+    public partial class WallPostType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public WallEntry()
+        public WallPostType()
         {
-            this.UserWall = new HashSet<UserWall>();
+            this.WallPost = new HashSet<WallPost>();
         }
     
-        public System.Guid Id { get; set; }
-        public string Body { get; set; }
-        public byte EntryType { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public bool IsDeleted { get; set; }
+        public byte Id { get; set; }
+        public string Type { get; set; }
     
-        public virtual WallEntryType WallEntryType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserWall> UserWall { get; set; }
+        public virtual ICollection<WallPost> WallPost { get; set; }
     }
 }

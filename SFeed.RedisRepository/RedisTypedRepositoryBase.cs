@@ -36,7 +36,7 @@ namespace SFeed.RedisRepository
         public void RemoveItem(object id)
         {
             var itemId = Convert.ToString(id);
-            clientApi.RemoveEntry(itemId);
+            clientApi.DeleteById(itemId);
         }
 
         public IEnumerable<T> GetByIds(IEnumerable<object> ids)

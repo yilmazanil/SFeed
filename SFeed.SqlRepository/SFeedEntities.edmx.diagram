@@ -5,12 +5,12 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="a721cb522af0423db19894428b07a477" Name="Diagram1">
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserFollower" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.WallEntry" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.WallEntryType" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
-        <AssociationConnector Association="SocialFeedDataModel.FK_WallEntry_EntryType" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserWall" Width="1.5" PointX="5.25" PointY="1.625" />
-        <AssociationConnector Association="SocialFeedDataModel.FK_UserWallEntry_WallEntry" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.UserFollower" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.UserWall" Width="1.5" PointX="5.25" PointY="1.5" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.WallPost" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.WallPostType" Width="1.5" PointX="0.75" PointY="1.5" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_UserWall_WallPost" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_WallPost_WallPostType" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

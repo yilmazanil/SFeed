@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface IUserWallEntryProvider : IDisposable
+    public interface IUserWallPostProvider : IDisposable
     {
         string AddEntry(WallEntryModel model, string wallOwnerId);
         void UpdateEntry(WallEntryModel model);

@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 
 namespace SFeed.SqlRepository
 {
-    public class WallEntryRepository : SqlRepositoryBase<WallEntry>
+    public class WallPostRepository : SqlRepositoryBase<WallPost>
     {
-        public override void Delete(Expression<Func<WallEntry, bool>> where)
+        public override void Delete(Expression<Func<WallPost, bool>> where)
         {
             var items = base.GetMany(where);
 
@@ -15,9 +15,15 @@ namespace SFeed.SqlRepository
             }
         }
 
-        public override void Delete(WallEntry entity)
+        public override void Delete(WallPost entity)
         {
             Delete(u => u.Id == entity.Id);
         }
+
+        public override void Add(WallPost entity)
+        {
+            base.Add(entity);
+        }
+
     }
 }

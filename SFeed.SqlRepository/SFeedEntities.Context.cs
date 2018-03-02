@@ -26,8 +26,8 @@ namespace SFeed.SqlRepository
         }
     
         public virtual DbSet<UserFollower> UserFollower { get; set; }
-        public virtual DbSet<WallEntry> WallEntry { get; set; }
-        public virtual DbSet<WallEntryType> WallEntryType { get; set; }
         public virtual DbSet<UserWall> UserWall { get; set; }
+        public virtual DbSet<WallPost> WallPost { get; set; }
+        public virtual DbSet<WallPostType> WallPostType { get; set; }
     }
 }

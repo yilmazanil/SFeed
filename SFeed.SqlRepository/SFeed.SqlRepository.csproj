@@ -75,12 +75,11 @@
     <Compile Include="UserWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserWallEntryRepository.cs" />
-    <Compile Include="WallEntry.cs">
+    <Compile Include="WallPostRepository.cs" />
+    <Compile Include="WallPost.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="WallEntryRepository.cs" />
-    <Compile Include="WallEntryType.cs">
+    <Compile Include="WallPostType.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
   </ItemGroup>
