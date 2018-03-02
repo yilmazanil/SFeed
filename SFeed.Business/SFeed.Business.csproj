@@ -68,10 +68,7 @@
     <Compile Include="Providers\UserWallEntryProvider.cs" />
     <Compile Include="Services\UserFollowerService.cs" />
     <Compile Include="Services\UserFeedService.cs" />
-    <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\UserWallEntryService.cs" />
-    <Compile Include="Services\UserWallService.cs" />
-    <Compile Include="Services\WallEntryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFeed.Core\SFeed.Core.csproj">

@@ -14,5 +14,10 @@ namespace SFeed.SqlRepository
                 item.IsDeleted = true;
             }
         }
+
+        public override void Delete(WallEntry entity)
+        {
+            Delete(u => u.Id == entity.Id);
+        }
     }
 }

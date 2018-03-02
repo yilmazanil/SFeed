@@ -18,16 +18,6 @@ namespace SFeed.Business.Services
             this.newsFeedProvider = new UserNewsfeedProvider();
         }
 
-        public void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds)
-        {
-            newsFeedProvider.AddToUserFeeds(feedItem, userIds);
-        }
-
-        public void DeleteFromFeed(string userId, FeedItemModel feedItem)
-        {
-            newsFeedProvider.DeleteFromFeed(userId, feedItem);
-        }
-
         public void Dispose()
         {
             if (newsFeedProvider != null)

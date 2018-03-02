@@ -47,10 +47,8 @@
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
     <Compile Include="Infrastructure\Repository\ITypedCacheRepository.cs" />
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
-    <Compile Include="Infrastructure\Services\IGlobalNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallEntryService.cs" />
-    <Compile Include="Infrastructure\Services\IWallEntryService.cs" />
     <Compile Include="Models\FeedEntryTypeEnum.cs" />
     <Compile Include="Models\FeedItemModel.cs" />
     <Compile Include="Models\UserModel.cs" />

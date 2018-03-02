@@ -6,8 +6,6 @@ namespace SFeed.Core.Infrastructue.Services
 {
     public interface IUserNewsfeedService : IDisposable
     {
-        void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds);
         IEnumerable<FeedItemModel> GetUserFeed(string userId);
-        void DeleteFromFeed(string userId, FeedItemModel feedItem);
     }
 }

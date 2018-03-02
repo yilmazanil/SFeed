@@ -10,7 +10,7 @@ namespace SFeed.SqlRepository
     public abstract class SqlRepositoryBase<T>: IRepository<T> where T : class
     {
         private SocialFeedEntities dataContext;
-        private readonly IDbSet<T> dbSet;
+        protected readonly IDbSet<T> dbSet;
 
         protected SocialFeedEntities DbContext
         {
