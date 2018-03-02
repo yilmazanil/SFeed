@@ -13,61 +13,71 @@ namespace SFeed.Tests.RepositoryTests
     public class UserWallPostProviderTest
     {
         IUserWallPostProvider provider;
-        private string existingTestPostId = "c34bbb53-3609-423a-bc3b-c6a17c2160ff";
-        private string existingTestPostId2 = "b5712424-6335-489c-9ac7-ee461ed6e7c4";
         private string wallOwnerId = "UnitTestUserWallOwner1";
-
+        private WallEntryModel testModel = new WallEntryModel { Body = "Test", CreatedBy = "UnitTestUser1", EntryType = (short)WallEntryTypeEnum.plaintext };
 
         [TestInitialize]
         public void Initialize()
         {
             this.provider = new UserWallPostProvider();
 
+            Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
                 RegisterEntityToViewModelMapper.Register(cfg);
             });
         }
+
         [TestMethod]
-        public void Should_Create_Post_And_Attach_With_UserWall()
+        public void Should_Create_Post()
         {
-            var model = new WallEntryModel { Body = "Test", CreatedBy = "UnitTestUser1", EntryType = (short)WallEntryTypeEnum.plaintext };
-            provider.AddEntry(model, wallOwnerId);
+            var id = provider.AddEntry(testModel, wallOwnerId);
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+
+
         }
 
         [TestMethod]
-        public void Should_Get_Post()
+        public void Should_Create_And_Get_Post()
         {
-          
-            var model =  provider.GetEntry(existingTestPostId);
-            Assert.AreEqual(model.Id, existingTestPostId);
+            var id = provider.AddEntry(testModel, wallOwnerId);
+
+            var model = provider.GetEntry(id);
+            Assert.AreEqual(model.Id, id);
         }
 
         [TestMethod]
-        public void Should_Update_Entry()
+        public void Should_Create_And_Update_Post()
         {
             var updatedBody = "Test_Updated";
-            var model = provider.GetEntry(existingTestPostId);
+            var id = provider.AddEntry(testModel, wallOwnerId);
+
+            var model = provider.GetEntry(id);
             model.Body = updatedBody;
             provider.UpdateEntry(model);
-            model = provider.GetEntry(existingTestPostId);
+            model = provider.GetEntry(id);
             Assert.AreEqual(model.Body, updatedBody);
         }
 
         [TestMethod]
         public void Should_Delete_Entry()
         {
-            provider.DeleteEntry(existingTestPostId2);
-            var deletedPost = provider.GetEntry(existingTestPostId2);
+            var id = provider.AddEntry(testModel, wallOwnerId);
+            provider.DeleteEntry(id);
+            var deletedPost = provider.GetEntry(id);
             Assert.IsNull(deletedPost);
         }
         [TestMethod]
         public void Should_Get_User_Wall()
         {
-            var posts =  provider.GetUserWall(wallOwnerId);
+            var existing = provider.AddEntry(testModel, wallOwnerId);
+            var deleted = provider.AddEntry(testModel, wallOwnerId);
+            provider.DeleteEntry(deleted);
 
-            bool shouldExist = posts.Any(p => p.Id == existingTestPostId);
-            bool shouldNotExist = posts.Any(p => p.Id == existingTestPostId2);
+            var posts = provider.GetUserWall(wallOwnerId);
+
+            bool shouldExist = posts.Any(p => p.Id == existing);
+            bool shouldNotExist = posts.Any(p => p.Id == deleted);
 
             Assert.IsTrue(shouldExist && !shouldNotExist);
 
