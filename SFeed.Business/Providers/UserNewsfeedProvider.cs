@@ -26,9 +26,9 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void DeleteFromFeed(string userId, FeedItemModel feedItem)
+        public IEnumerable<FeedItemModel> GetUserFeed(string userId)
         {
-            redisFeedRepo.RemoveFromList(userId, feedItem);
+            return redisFeedRepo.GetList(userId);
         }
 
         public void Dispose()
@@ -37,11 +37,6 @@ namespace SFeed.Business.Providers
             {
                 redisFeedRepo.Dispose();
             }
-        }
-
-        public IEnumerable<FeedItemModel> GetUserFeed(string userId)
-        {
-            return redisFeedRepo.GetList(userId);
         }
     }
 }

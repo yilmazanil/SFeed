@@ -12,6 +12,5 @@ namespace SFeed.Core.Infrastructure.Providers
         WallEntryModel GetEntry(string postId);
         IEnumerable<WallEntryModel> GetUserWall(string wallOwnerId);
         IEnumerable<WallEntryModel> GetEntries(IEnumerable<string> postIds);
-        IEnumerable<WallEntryModel> GetEntries(string userId);
     }
 }

@@ -2,7 +2,6 @@
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.RedisRepository;
 using SFeed.SqlRepository;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,29 +12,20 @@ namespace SFeed.Business.Providers
         private readonly IRepository<UserFollower> followerRepo;
         private readonly ICacheListRepository<string> followerCacheRepo;
 
-        public UserFollowerProvider(): this(new UserFollowerRepository(), new RedisUserFollowerRepository())
+        public UserFollowerProvider(): this(
+            new UserFollowerRepository(),
+            new RedisUserFollowerRepository())
         {
 
         }
 
-        public UserFollowerProvider(IRepository<UserFollower> followerRepo, ICacheListRepository<string> followerCacheRepo)
+        public UserFollowerProvider(
+            IRepository<UserFollower> followerRepo,
+            ICacheListRepository<string> followerCacheRepo)
         {
             this.followerRepo = followerRepo;
             this.followerCacheRepo = followerCacheRepo;
         }
-
-        public void Dispose()
-        {
-            if (followerRepo != null)
-            {
-                followerRepo.Dispose();
-            }
-            if (followerCacheRepo != null)
-            {
-                followerCacheRepo.Dispose();
-            }
-        }
-
         public void FollowUser(string followerId, string userId)
         {
             bool alreadyFollowing = followerRepo.Any(p => p.FollowerId == followerId && p.UserId == userId);
@@ -43,10 +33,6 @@ namespace SFeed.Business.Providers
             {
                 followerRepo.Add(new UserFollower { FollowerId = followerId, UserId = userId });
                 followerRepo.CommitChanges();
-            }
-            bool alreadyInCache = followerCacheRepo.ExistsInList(userId, followerId);
-            if (!alreadyInCache)
-            {
                 followerCacheRepo.AddToList(userId, followerId);
             }
         }
@@ -75,7 +61,7 @@ namespace SFeed.Business.Providers
                 }
             }
 
-            return result;
+            return result.Distinct();
         }
 
         public void UnfollowUser(string followerId, string userId)
@@ -84,5 +70,18 @@ namespace SFeed.Business.Providers
             followerRepo.CommitChanges();
             followerCacheRepo.RemoveFromList(userId, followerId);
         }
+
+        public void Dispose()
+        {
+            if (followerRepo != null)
+            {
+                followerRepo.Dispose();
+            }
+            if (followerCacheRepo != null)
+            {
+                followerCacheRepo.Dispose();
+            }
+        }
+
     }
 }

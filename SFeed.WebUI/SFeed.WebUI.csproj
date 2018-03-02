@@ -160,7 +160,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\SocialPostController.cs" />
+    <Compile Include="Controllers\NewsfeedController.cs" />
+    <Compile Include="Controllers\UserWallController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -189,6 +190,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Follower\" />
+    <Folder Include="Views\Newsfeed\" />
     <Folder Include="Views\SocialPost\" />
     <Folder Include="Views\Users\" />
   </ItemGroup>

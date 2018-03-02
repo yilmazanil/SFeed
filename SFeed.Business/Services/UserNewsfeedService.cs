@@ -9,11 +9,11 @@ using SFeed.Business.Providers;
 
 namespace SFeed.Business.Services
 {
-    public class UserFeedService : IUserNewsfeedService, IDisposable
+    public class UserNewsfeedService : IUserNewsfeedService, IDisposable
     {
         IUserNewsfeedProvider newsFeedProvider;
 
-        public UserFeedService()
+        public UserNewsfeedService()
         {
             this.newsFeedProvider = new UserNewsfeedProvider();
         }

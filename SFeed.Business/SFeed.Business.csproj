@@ -67,7 +67,7 @@
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
     <Compile Include="Providers\UserWallEntryProvider.cs" />
     <Compile Include="Services\UserFollowerService.cs" />
-    <Compile Include="Services\UserFeedService.cs" />
+    <Compile Include="Services\UserNewsfeedService.cs" />
     <Compile Include="Services\UserWallEntryService.cs" />
   </ItemGroup>
   <ItemGroup>

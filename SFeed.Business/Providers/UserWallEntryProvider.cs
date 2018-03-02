@@ -12,8 +12,8 @@ namespace SFeed.Business.Providers
 {
     public class UserWallEntryProvider : IUserWallEntryProvider
     {
-        private IRepository<UserWall> userWallRepository;
-        private IRepository<WallEntry> wallEntryRepository;
+        private IRepository<UserWall> userWallRepo;
+        private IRepository<WallEntry> wallEntryRepo;
         private ITypedCacheRepository<WallEntryModel> wallEntryCacheRepo;
 
         public UserWallEntryProvider() : this(
@@ -21,60 +21,85 @@ namespace SFeed.Business.Providers
             new UserWallRepository(),
             new WallEntryRepository())
         {
+
         }
 
         public UserWallEntryProvider(
             ITypedCacheRepository<WallEntryModel> wallEntryCacheRepo,
-            IRepository<UserWall> wallEntryRepo,
-            IRepository<WallEntry> wallEntryRepository)
+            IRepository<UserWall> userWallRepo,
+            IRepository<WallEntry> wallEntryRepo)
         {
             this.wallEntryCacheRepo = wallEntryCacheRepo;
-            this.userWallRepository = wallEntryRepo;
-            this.wallEntryRepository = wallEntryRepository;
+            this.userWallRepo = userWallRepo;
+            this.wallEntryRepo = wallEntryRepo;
 
         }
 
         public string AddEntry(WallEntryModel model, string wallOwnerId)
         {
             var dbEntry = new WallEntry { Body = model.Body, CreatedBy = model.CreatedBy, IsDeleted = false, CreatedDate = DateTime.Now, Id = Guid.NewGuid() };
-            wallEntryRepository.Add(dbEntry);
-            wallEntryRepository.CommitChanges();
-            userWallRepository.Add(new UserWall { UserId = wallOwnerId, WallEntryId = dbEntry.Id });
-            model.Id = dbEntry.Id;
-            wallEntryCacheRepo.AddItem(model);
-            return dbEntry.Id.ToString();
+
+            //Save Post
+            wallEntryRepo.Add(dbEntry);
+            wallEntryRepo.CommitChanges();
+
+            var postId = dbEntry.Id;
+
+            if (postId != Guid.Empty)
+            {
+                //Update UserWall
+                userWallRepo.Add(new UserWall { UserId = wallOwnerId, WallEntryId = dbEntry.Id });
+                userWallRepo.CommitChanges();
+
+                //Update Cache
+                model.Id = postId;
+                wallEntryCacheRepo.AddItem(model);
+
+                return model.Id.ToString();
+            }
+            return string.Empty;
+        }
+
+        public void UpdateEntry(WallEntryModel model)
+        {
+            var dbEntry = new WallEntry
+            {
+                Body = model.Body,
+                ModifiedDate = DateTime.Now,
+                Id = model.Id
+            };
+            //Update DB
+            wallEntryRepo.Update(dbEntry);
+            wallEntryRepo.CommitChanges();
+            //Update Cache
+            wallEntryCacheRepo.UpdateItem(model.Id, model);
         }
 
         public void DeleteEntry(string postId)
         {
             var postGuid = Guid.Parse(postId);
-            wallEntryRepository.Delete(p => p.Id == postGuid);
-            wallEntryRepository.CommitChanges();
-            wallEntryCacheRepo.RemoveItem(postId);
+            if (postGuid != Guid.Empty)
+            {
+                //Mark as deleted
+                wallEntryRepo.Delete(p => p.Id == postGuid);
+                wallEntryRepo.CommitChanges();
+                //Remove from Cache
+                wallEntryCacheRepo.RemoveItem(postId);
+            }
         }
-
-        public void Dispose()
-        {
-            userWallRepository.Dispose();
-            wallEntryRepository.Dispose();
-            wallEntryCacheRepo.Dispose();
-        }
-
-        public IEnumerable<WallEntryModel> GetEntries(IEnumerable<string> postIds)
-        {
-            return wallEntryCacheRepo.GetByIds(postIds);
-        }
-
         public WallEntryModel GetEntry(string postId)
         {
+            //Check cache
             var entry = wallEntryCacheRepo.GetItem(postId);
             if (entry == null)
             {
+                //Check db
                 var postGuid = Guid.Parse(postId);
-                var dbEntry = wallEntryRepository.Get(e => e.Id == postGuid && e.IsDeleted == false);
+                var dbEntry = wallEntryRepo.Get(e => e.Id == postGuid && e.IsDeleted == false);
                 if (dbEntry != null)
                 {
                     entry = Mapper.Map<WallEntryModel>(dbEntry);
+                    //Update Cache
                     wallEntryCacheRepo.AddItem(entry);
                 }
             }
@@ -82,28 +107,35 @@ namespace SFeed.Business.Providers
         }
 
         public IEnumerable<WallEntryModel> GetUserWall(string wallOwnerId)
-        { 
+        {
             //TODO:Use SP & Introduce new interface
-            var postIds = userWallRepository.GetMany(p => p.UserId == wallOwnerId).Select(p => p.WallEntryId);
-            var results = wallEntryRepository.GetMany(p => p.IsDeleted == false &&  postIds.Contains(p.Id));
+            var postIds = userWallRepo.GetMany(p => p.UserId == wallOwnerId).Select(p => p.WallEntryId);
+            var results = wallEntryRepo.GetMany(p => p.IsDeleted == false && postIds.Contains(p.Id));
             return Mapper.Map<IEnumerable<WallEntryModel>>(results);
         }
 
-        public void UpdateEntry(WallEntryModel model)
+        public IEnumerable<WallEntryModel> GetEntries(IEnumerable<string> postIds)
         {
-            var dbEntry = new WallEntry {
-                Body = model.Body, ModifiedDate = DateTime.Now,
-                Id = model.Id
-            };
-            wallEntryRepository.Update(dbEntry);
-            wallEntryRepository.CommitChanges();
-            wallEntryCacheRepo.UpdateItem(model.Id, model);
+            //Retrieve from cache
+            return wallEntryCacheRepo.GetByIds(postIds);
         }
 
-        public IEnumerable<WallEntryModel> GetEntries(string userId)
+        public void Dispose()
         {
-            var posts = wallEntryRepository.GetMany(p => p.CreatedBy == userId && p.IsDeleted == false);
-            return Mapper.Map <IEnumerable<WallEntryModel>>(posts);
+            if (userWallRepo != null)
+            {
+                userWallRepo.Dispose();
+            }
+            if (wallEntryRepo != null)
+            {
+                wallEntryRepo.Dispose();
+            }
+
+            if (wallEntryCacheRepo != null)
+            {
+                wallEntryCacheRepo.Dispose();
+            }
         }
+
     }
 }
