@@ -63,9 +63,13 @@
   <ItemGroup>
     <Compile Include="MapperConfig\RegisterEntityToViewModelMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\FollowerService.cs" />
+    <Compile Include="Providers\UserFollowerProvider.cs" />
+    <Compile Include="Providers\UserNewsfeedProvider.cs" />
+    <Compile Include="Providers\UserWallEntryProvider.cs" />
+    <Compile Include="Services\UserFollowerService.cs" />
     <Compile Include="Services\UserFeedService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\UserWallEntryService.cs" />
     <Compile Include="Services\UserWallService.cs" />
     <Compile Include="Services\WallEntryService.cs" />
   </ItemGroup>
@@ -86,5 +90,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

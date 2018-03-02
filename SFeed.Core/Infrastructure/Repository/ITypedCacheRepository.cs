@@ -9,5 +9,6 @@ namespace SFeed.Core.Infrastructue.Repository
         T GetItem(object id);
         IEnumerable<T> GetByIds(IEnumerable<object> ids);
         void RemoveItem(object id);
+        void UpdateItem(object id, T cacheItem);
     }
 }

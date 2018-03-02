@@ -43,5 +43,11 @@ namespace SFeed.RedisRepository
         {
             return clientApi.GetByIds(ids);
         }
+
+        public void UpdateItem(object id, T cacheItem)
+        {
+            RemoveItem(id);
+            AddItem(cacheItem);
+        }
     }
 }

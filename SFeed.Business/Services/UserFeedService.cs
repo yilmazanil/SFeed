@@ -4,45 +4,41 @@ using SFeed.Core.Models;
 using SFeed.RedisRepository;
 using System.Collections.Generic;
 using System;
+using SFeed.Core.Infrastructure.Providers;
+using SFeed.Business.Providers;
 
 namespace SFeed.Business.Services
 {
     public class UserFeedService : IUserNewsfeedService, IDisposable
     {
-        ICacheListRepository<FeedItemModel> redisFeedRepo;
-        ITypedCacheRepository<WallEntryModel> redisWallEntryRepo;
-        //ICacheListRepository<FeedItemModel> redisGlobalFeedRepo;
+        IUserNewsfeedProvider newsFeedProvider;
 
         public UserFeedService()
         {
-            this.redisFeedRepo = new RedisUserFeedRepository();
-            this.redisWallEntryRepo = new RedisWallEntryRepository();
-            //this.redisGlobalFeedRepo = new RedisGlobalFeedRepository();
+            this.newsFeedProvider = new UserNewsfeedProvider();
         }
 
         public void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds)
         {
-            foreach (var userId in userIds)
-            {
-                redisFeedRepo.AddToList(userId, feedItem);
-            }
+            newsFeedProvider.AddToUserFeeds(feedItem, userIds);
+        }
+
+        public void DeleteFromFeed(string userId, FeedItemModel feedItem)
+        {
+            newsFeedProvider.DeleteFromFeed(userId, feedItem);
         }
 
         public void Dispose()
         {
-            if (redisFeedRepo != null)
+            if (newsFeedProvider != null)
             {
-                redisFeedRepo.Dispose();
-            }
-            if (redisWallEntryRepo != null)
-            {
-                redisWallEntryRepo.Dispose();
+                newsFeedProvider.Dispose();
             }
         }
 
         public IEnumerable<FeedItemModel> GetUserFeed(string userId)
         {
-           return redisFeedRepo.GetList(userId);
+            return newsFeedProvider.GetUserFeed(userId);
         }
     }
 }

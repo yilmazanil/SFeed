@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructue.Services
+namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface IUserNewsfeedService : IDisposable
+    public interface IUserNewsfeedProvider : IDisposable
     {
         void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds);
         IEnumerable<FeedItemModel> GetUserFeed(string userId);

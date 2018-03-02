@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Providers\IUserFollowerProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IUserNewsfeedProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IUserWallEntryProvider.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
     <Compile Include="Infrastructure\Repository\ITypedCacheRepository.cs" />
