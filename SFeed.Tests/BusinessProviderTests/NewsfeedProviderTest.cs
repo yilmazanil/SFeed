@@ -43,20 +43,20 @@ namespace SFeed.Tests.BusinessProviderTests
 
         }
 
-        //[TestMethod]
-        //public void Should_Delete_WallPost_From_UserFeed()
-        //{
-        //    var sampleEntryId = Guid.NewGuid().ToString().ToLower();
+        [TestMethod]
+        public void Should_Delete_WallPost_From_UserFeed()
+        {
+            var sampleEntryId = Guid.NewGuid().ToString().ToLower();
 
-        //    var feedItem = new NewsfeedItemModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
+            var feedItem = new NewsfeedItemModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
 
-        //    userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.RemoveFromFeed(feedItem, new List<string> { testWallOwnerId });
 
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
+            var shouldNotExist = wallOwnerFeeds.Any(f => f.ReferenceEntryId == sampleEntryId && f.EntryType == (short)NewsfeedEntryTypeEnum.wallpost);
 
-        //    var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
-        //    var shouldExist = wallOwnerFeeds.Any(f => f.ReferenceEntryId == sampleEntryId && f.EntryType == (short)NewsfeedEntryTypeEnum.wallpost);
-
-        //    Assert.IsTrue(shouldExist);
-        //}
+            Assert.IsTrue(!shouldNotExist);
+        }
     }
 }

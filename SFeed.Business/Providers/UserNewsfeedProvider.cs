@@ -10,7 +10,7 @@ namespace SFeed.Business.Providers
     {
         ICacheListRepository<NewsfeedItemModel> redisFeedRepo;
 
-        public UserNewsfeedProvider(): this(new RedisUserFeedRepository())
+        public UserNewsfeedProvider() : this(new RedisUserFeedRepository())
         {
 
         }
@@ -22,7 +22,7 @@ namespace SFeed.Business.Providers
         {
             foreach (var userId in userIds)
             {
-                redisFeedRepo.AppendToList(userId, feedItem);
+                redisFeedRepo.PrependToList(userId, feedItem);
             }
         }
 
@@ -36,6 +36,14 @@ namespace SFeed.Business.Providers
             if (redisFeedRepo != null)
             {
                 redisFeedRepo.Dispose();
+            }
+        }
+
+        public void RemoveFromFeed(NewsfeedItemModel item, IEnumerable<string> userIds)
+        {
+            foreach (var userId in userIds)
+            {
+                redisFeedRepo.RemoveFromList(userId, item);
             }
         }
     }
