@@ -35,9 +35,10 @@ namespace SFeed.RedisRepository
             return clientApi.Lists[listName];
         }
 
-        public void AddToList(string listKey, T item)
+        public void AppendToList(string listKey, T item)
         {
             var listRef = GetAssociatedList(listKey);
+            listRef.RemoveValue(item);
             listRef.Add(item);
         }
 
@@ -71,15 +72,16 @@ namespace SFeed.RedisRepository
             listRef.Clear();
         }
 
-        public bool ExistsInList(string listKey, T item)
-        {
-            var listRef = GetAssociatedList(listKey);
-            return listRef.Contains(item);
-        }
-
         public void DeleteList(string listKey)
         {
             clientApi.DeleteById(GetListName(listKey));
+        }
+
+        public void PrependToList(string listKey, T item)
+        {
+            var listRef = GetAssociatedList(listKey);
+            listRef.RemoveValue(item);
+            listRef.Prepend(item);
         }
     }
 }

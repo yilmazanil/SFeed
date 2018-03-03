@@ -33,7 +33,7 @@ namespace SFeed.Business.Providers
             {
                 followerRepo.Add(new UserFollower { FollowerId = followerId, UserId = userId });
                 followerRepo.CommitChanges();
-                followerCacheRepo.AddToList(userId, followerId);
+                followerCacheRepo.AppendToList(userId, followerId);
             }
         }
 

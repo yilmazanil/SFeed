@@ -22,7 +22,7 @@ namespace SFeed.Business.Providers
         {
             foreach (var userId in userIds)
             {
-                redisFeedRepo.AddToList(userId, feedItem);
+                redisFeedRepo.AppendToList(userId, feedItem);
             }
         }
 

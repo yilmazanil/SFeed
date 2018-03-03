@@ -49,7 +49,7 @@
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedItemType.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedEntryTypeEnum.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />

@@ -1,72 +1,49 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.Providers;
-using SFeed.Core.Infrastructure.Providers;
 using AutoMapper;
 using SFeed.Business.MapperConfig;
 using System.Linq;
-using SFeed.Core.Models.WallPost;
+using SFeed.Core.Infrastructure.Providers;
 
-namespace SFeed.Tests.RepositoryTests
+namespace SFeed.Tests.BusinessProviderTests
 {
     [TestClass]
-    public class UserWallPostProviderTest
+    public class UserWallPostProviderTest : ProviderTestBase
     {
-        IUserWallPostProvider provider;
-        private string testWallOwnerId = "UnitTestUserWallOwner1";
-        private string userId = "UnitTestUser1";
-
-        private WallPostCreateRequest GetTestRequest()
-        {
-            var body = TestUtils.GenerateLoremIpsumText();
-
-            return new WallPostCreateRequest
-            {
-                Body = body,
-                PostedBy = userId,
-                PostType = WallPostTypeEnum.plaintext,
-                WallOwnerId = testWallOwnerId
-            };
-
-        }
+        private IUserWallPostProvider userWallPostProvider;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.provider = new UserWallPostProvider();
-
-            Mapper.Reset();
-            Mapper.Initialize(cfg =>
-            {
-                RegisterEntityToViewModelMapper.Register(cfg);
-            });
+            this.userWallPostProvider = new UserWallPostProvider();
         }
 
         [TestMethod]
         public void Should_Create_Post()
         {
-            var request = GetTestRequest();
-            var id = provider.AddEntry(request);
+            var request = GetSampleWallCreateRequest();
+            var id = userWallPostProvider.AddEntry(request);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
         }
 
         [TestMethod]
         public void Should_Create_And_Get_Post()
         {
-            var request = GetTestRequest();
-            var id = provider.AddEntry(request);
+            var request = GetSampleWallCreateRequest();
+            var id = userWallPostProvider.AddEntry(request);
 
-            var model = provider.GetEntry(id);
+            var model = userWallPostProvider.GetEntry(id);
             Assert.AreEqual(model.Id, id);
         }
 
         [TestMethod]
         public void Should_Create_And_Validate_Post()
         {
-            var request = GetTestRequest();
-            var id = provider.AddEntry(request);
+            var request = GetSampleWallCreateRequest();
+            var id = userWallPostProvider.AddEntry(request);
 
             //TODO:Update with comparer
-            var model = provider.GetEntry(id);
+            var model = userWallPostProvider.GetEntry(id);
             Assert.AreEqual(model.Id, id);
             Assert.AreEqual(model.Body, request.Body);
             Assert.AreEqual(model.PostedBy, request.PostedBy);
@@ -78,37 +55,37 @@ namespace SFeed.Tests.RepositoryTests
         {
             var updatedBodyText = "Test_Updated";
 
-            var request = GetTestRequest();
-            var id = provider.AddEntry(request);
+            var request = GetSampleWallCreateRequest();
+            var id = userWallPostProvider.AddEntry(request);
 
-            var model = provider.GetEntry(id);
+            var model = userWallPostProvider.GetEntry(id);
             model.Body = updatedBodyText;
-            provider.UpdateEntry(model);
+            userWallPostProvider.UpdateEntry(model);
 
-            model = provider.GetEntry(id);
+            model = userWallPostProvider.GetEntry(id);
             Assert.AreEqual(model.Body, updatedBodyText);
         }
 
         [TestMethod]
         public void Should_Delete_Post()
         {
-            var request = GetTestRequest();
-            var id = provider.AddEntry(request);
+            var request = GetSampleWallCreateRequest();
+            var id = userWallPostProvider.AddEntry(request);
 
-            provider.DeleteEntry(id);
-            var deletedPost = provider.GetEntry(id);
+            userWallPostProvider.DeleteEntry(id);
+            var deletedPost = userWallPostProvider.GetEntry(id);
             Assert.IsNull(deletedPost);
         }
         [TestMethod]
-        public void Should_Get_User_Wall()
+        public void Should_Get_UserWall()
         {
-            var request = GetTestRequest();
-            var request2 = GetTestRequest();
-            var existing = provider.AddEntry(request);
-            var deleted = provider.AddEntry(request2);
-            provider.DeleteEntry(deleted);
+            var request = GetSampleWallCreateRequest();
+            var request2 = GetSampleWallCreateRequest();
+            var existing = userWallPostProvider.AddEntry(request);
+            var deleted = userWallPostProvider.AddEntry(request2);
+            userWallPostProvider.DeleteEntry(deleted);
 
-            var posts = provider.GetUserWall(testWallOwnerId);
+            var posts = userWallPostProvider.GetUserWall(testWallOwnerId);
 
             bool shouldExist = posts.Any(p => p.Id == existing);
             bool shouldNotExist = posts.Any(p => p.Id == deleted);
