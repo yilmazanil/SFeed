@@ -23,7 +23,7 @@ namespace SFeed.Tests.BusinessProviderTests
         }
 
         [TestMethod]
-        public void Should_Insert_NewWallPost_To_UserFeed_And_Check_Duplicate()
+        public void Newsfeed_Should_Insert_NewWallPost_To_UserFeed_And_Check_Duplicate()
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
@@ -55,7 +55,7 @@ namespace SFeed.Tests.BusinessProviderTests
         }
 
         [TestMethod]
-        public void Should_Delete_WallPost_From_UserFeed()
+        public void Newsfeed_Should_Delete_WallPost_From_UserFeed()
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
@@ -77,6 +77,41 @@ namespace SFeed.Tests.BusinessProviderTests
             var shouldNotExist = wallOwnerFeeds.Any(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
 
             Assert.IsTrue(!shouldNotExist);
+        }
+
+
+        [TestMethod]
+        public void Newsfeed_Should_Update_WallPost_In_UserFeed()
+        {
+            var sampleEntryId = Guid.NewGuid().ToString().ToLower();
+            var request = GetSampleWallCreateRequest();
+            var newsfeedModel = new NewsfeedWallPostModel
+            {
+                Body = request.Body,
+                PostedBy = request.PostedBy,
+                WallOwnerId = request.WallOwnerId,
+                PostType = (short)WallPostTypeEnum.plaintext,
+                Id = sampleEntryId
+            };
+
+            //Add and get feed
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
+            var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            Assert.IsTrue(feedItem.ItemId == newsfeedModel.Id);
+
+            //Check if item is wallpost model
+            var model = feedItem.Item as NewsfeedWallPostModel;
+            Assert.IsNotNull(model);
+
+            //Update and refetch again
+            model.Body = "UpdatedBody";
+            userNewsfeedProvider.UpdateFeed(model);
+
+            wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
+            feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            Assert.IsTrue(string.Equals(model.Body, feedItem.Item.Body, StringComparison.OrdinalIgnoreCase));
+
         }
     }
 }

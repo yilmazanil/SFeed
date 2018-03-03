@@ -41,11 +41,7 @@ namespace SFeed.Business.Providers
             //Save Post
             wallPostRepo.Add(dbEntry);
             wallPostRepo.CommitChanges();
-            //Update Cache
 
-            var cacheModel = Mapper.Map<WallPostModel>(request);
-            cacheModel.Id = newPostId;
-            cacheModel.PostType = (short)request.PostType;
             return newPostId;
 
         }

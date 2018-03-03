@@ -71,5 +71,9 @@ namespace SFeed.Business.Providers
             }
         }
 
+        public void UpdateFeed(NewsfeedWallPostModel feedItem)
+        {
+            wallPostCacheRepo.UpdateItem(feedItem.Id, feedItem);
+        }
     }
 }
