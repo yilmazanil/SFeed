@@ -61,9 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessProviderTests\NewsfeedProviderTest.cs" />
-    <Compile Include="BusinessProviderTests\ProviderTestBase.cs" />
+    <Compile Include="ProviderTestBase.cs" />
     <Compile Include="BusinessProviderTests\FollowerProviderTest.cs" />
     <Compile Include="BusinessProviderTests\UserWallPostProviderTest.cs" />
+    <Compile Include="BusinessServiceTests\NewsfeedServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils.cs" />
   </ItemGroup>

@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.Providers;
-using AutoMapper;
-using SFeed.Business.MapperConfig;
 using System.Linq;
 using SFeed.Core.Infrastructure.Providers;
 

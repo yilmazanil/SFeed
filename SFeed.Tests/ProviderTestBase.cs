@@ -3,13 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.MapperConfig;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.WallPost;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SFeed.Tests.BusinessProviderTests
+namespace SFeed.Tests
 {
     public class ProviderTestBase
     {

@@ -8,17 +8,17 @@ namespace SFeed.Business.Providers
 {
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
-        ICacheListRepository<NewsfeedItemModel> redisFeedRepo;
+        ICacheListRepository<NewsfeedEntryModel> redisFeedRepo;
 
         public UserNewsfeedProvider() : this(new RedisUserFeedRepository())
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<NewsfeedItemModel> redisFeedRepo)
+        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntryModel> redisFeedRepo)
         {
             this.redisFeedRepo = redisFeedRepo;
         }
-        public void AddToUserFeeds(NewsfeedItemModel feedItem, IEnumerable<string> userIds)
+        public void AddToUserFeeds(NewsfeedEntryModel feedItem, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {
@@ -26,7 +26,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public IEnumerable<NewsfeedItemModel> GetUserFeed(string userId)
+        public IEnumerable<NewsfeedEntryModel> GetUserFeed(string userId)
         {
             return redisFeedRepo.GetList(userId);
         }
@@ -39,7 +39,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void RemoveFromFeed(NewsfeedItemModel item, IEnumerable<string> userIds)
+        public void RemoveFromFeed(NewsfeedEntryModel item, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {

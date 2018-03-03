@@ -6,8 +6,8 @@ namespace SFeed.Core.Infrastructure.Providers
 {
     public interface IUserNewsfeedProvider : IDisposable
     {
-        void AddToUserFeeds(NewsfeedItemModel feedItem, IEnumerable<string> userIds);
-        IEnumerable<NewsfeedItemModel> GetUserFeed(string userId);
-        void RemoveFromFeed(NewsfeedItemModel item, IEnumerable<string> userIds);
+        void AddToUserFeeds(NewsfeedEntryModel feedItem, IEnumerable<string> userIds);
+        IEnumerable<NewsfeedEntryModel> GetUserFeed(string userId);
+        void RemoveFromFeed(NewsfeedEntryModel item, IEnumerable<string> userIds);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models.Newsfeed
 {
-    public class NewsfeedItemModel
+    public class NewsfeedEntryModel
     {
         public short EntryType { get; set; }
 

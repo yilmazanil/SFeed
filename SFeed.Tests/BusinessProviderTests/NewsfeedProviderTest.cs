@@ -26,7 +26,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
 
-            var feedItem = new NewsfeedItemModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
+            var feedItem = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
 
             userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
             userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
@@ -48,7 +48,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
 
-            var feedItem = new NewsfeedItemModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
+            var feedItem = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
 
             userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
             userNewsfeedProvider.RemoveFromFeed(feedItem, new List<string> { testWallOwnerId });

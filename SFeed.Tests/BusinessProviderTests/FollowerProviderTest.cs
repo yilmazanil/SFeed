@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using System.Linq;
