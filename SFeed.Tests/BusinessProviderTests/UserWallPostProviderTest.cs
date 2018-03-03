@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.Providers;
-using SFeed.Core.Models;
 using SFeed.Core.Infrastructure.Providers;
 using AutoMapper;
 using SFeed.Business.MapperConfig;
@@ -62,6 +60,20 @@ namespace SFeed.Tests.RepositoryTests
         }
 
         [TestMethod]
+        public void Should_Create_And_Validate_Post()
+        {
+            var request = GetTestRequest();
+            var id = provider.AddEntry(request);
+
+            //TODO:Update with comparer
+            var model = provider.GetEntry(id);
+            Assert.AreEqual(model.Id, id);
+            Assert.AreEqual(model.Body, request.Body);
+            Assert.AreEqual(model.PostedBy, request.PostedBy);
+            Assert.AreEqual(model.PostType, (short)request.PostType);
+
+        }
+        [TestMethod]
         public void Should_Create_And_Update_Post()
         {
             var updatedBodyText = "Test_Updated";
@@ -78,7 +90,7 @@ namespace SFeed.Tests.RepositoryTests
         }
 
         [TestMethod]
-        public void Should_Delete_Entry()
+        public void Should_Delete_Post()
         {
             var request = GetTestRequest();
             var id = provider.AddEntry(request);
