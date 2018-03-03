@@ -52,6 +52,7 @@
     <Compile Include="Models\Newsfeed\NewsfeedEntryTypeEnum.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntryModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\WallPost\WallPostTypeEnum.cs" />

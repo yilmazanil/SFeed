@@ -9,7 +9,7 @@ namespace SFeed.Business.Services
 {
     public class UserWallEntryService : IUserWallPostService
     {
-        IUserWallPostProvider wallEntryProvider;
+        IUserWallPostProvider wallPostProvider;
         IUserNewsfeedProvider newsFeedProvider;
         IUserFollowerProvider followerProvider;
 
@@ -21,50 +21,59 @@ namespace SFeed.Business.Services
 
         }
         public UserWallEntryService(
-            IUserWallPostProvider wallEntryProvider,
+            IUserWallPostProvider wallPostProvider,
             IUserNewsfeedProvider newsFeedProvider,
             IUserFollowerProvider followerProvider)
         {
-            this.wallEntryProvider = wallEntryProvider;
+            this.wallPostProvider = wallPostProvider;
             this.newsFeedProvider = newsFeedProvider;
             this.followerProvider = followerProvider;
         }
 
         public string CreatePost(WallPostCreateRequest request)
         {
-            var entryId =  wallEntryProvider.AddEntry(request);
+            var entryId =  wallPostProvider.AddEntry(request);
             var users = new List<string> { request.WallOwnerId, request.PostedBy };
             var followers = followerProvider.GetFollowers(users);
             var feedItemModel = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = entryId };
-            newsFeedProvider.AddToUserFeeds(feedItemModel, followers);
+
+            var feedItem = new NewsfeedWallPostModel
+            {
+                Body = request.Body,
+                PostedBy = request.PostedBy,
+                PostType = (short)request.PostType,
+                WallOwnerId = request.WallOwnerId,
+                Id = entryId
+            };
+            newsFeedProvider.AddToUserFeeds(feedItem, followers);
             return entryId;
         }
 
         public void DeletePost(string postId)
         {
-            wallEntryProvider.DeleteEntry(postId);
+            wallPostProvider.DeleteEntry(postId);
         }
 
         public WallPostModel GetPost(string postId)
         {
-            return wallEntryProvider.GetEntry(postId);
+            return wallPostProvider.GetEntry(postId);
         }
 
         public IEnumerable<WallPostModel> GetUserWall(string wallOwnerId)
         {
-            return wallEntryProvider.GetUserWall(wallOwnerId);
+            return wallPostProvider.GetUserWall(wallOwnerId);
         }
 
         public void UpdatePost(WallPostModel model)
         {
-            wallEntryProvider.UpdateEntry(model);
+            wallPostProvider.UpdateEntry(model);
         }
 
         public void Dispose()
         {
-            if (wallEntryProvider != null)
+            if (wallPostProvider != null)
             {
-                wallEntryProvider.Dispose();
+                wallPostProvider.Dispose();
             }
             if (newsFeedProvider != null)
             {

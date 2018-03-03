@@ -24,6 +24,5 @@ namespace SFeed.SqlRepository
         {
             base.Add(entity);
         }
-
     }
 }

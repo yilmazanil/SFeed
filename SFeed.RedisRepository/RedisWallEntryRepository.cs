@@ -1,8 +1,8 @@
-﻿using SFeed.Core.Models.WallPost;
+﻿using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.RedisRepository
 {
-    public class RedisWallPostRepository : RedisTypedRepositoryBase<WallPostModel>
+    public class RedisWallPostRepository : RedisTypedRepositoryBase<NewsfeedWallPostModel>
     {
     }
 }

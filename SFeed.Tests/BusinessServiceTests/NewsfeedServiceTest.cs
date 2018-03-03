@@ -7,6 +7,7 @@ using SFeed.Core.Models.Newsfeed;
 using System.Collections.Generic;
 using System.Linq;
 using SFeed.Core.Models.WallPost;
+using System;
 
 namespace SFeed.Tests.BusinessServiceTests
 {
@@ -26,23 +27,29 @@ namespace SFeed.Tests.BusinessServiceTests
         }
 
         [TestMethod]
-        public void Should_Create_And_Get_Wall_Posts()
+        public void Newsfeed_Should_Create_And_Get_Wall_Posts()
         {
+            var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var newsfeedModel = new NewsfeedWallPostModel
+            {
+                Body = request.Body,
+                PostedBy = request.PostedBy,
+                WallOwnerId = request.WallOwnerId,
+                PostType = (short)WallPostTypeEnum.plaintext,
+                Id = sampleEntryId
+            };
 
-            var feedItem = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = id };
-
-            userNewsfeedProvider.AddToUserFeeds(feedItem, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
 
             var userFeed = userNewsfeedService.GetUserFeed(testWallOwnerId);
 
-            var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryTypeEnum.wallpost && p.ItemId == id);
+            var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryTypeEnum.wallpost && p.ItemId == sampleEntryId);
 
             Assert.IsNotNull(currentWallPost);
 
 
-            var canConvert = currentWallPost.Item as WallPostModel;
+            var canConvert = currentWallPost.Item as NewsfeedWallPostModel;
 
             Assert.IsNotNull(canConvert);
 

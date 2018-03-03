@@ -11,6 +11,5 @@ namespace SFeed.Core.Infrastructure.Providers
         void DeleteEntry(string postId);
         WallPostModel GetEntry(string postId);
         IEnumerable<WallPostModel> GetUserWall(string wallOwnerId);
-        IEnumerable<WallPostModel> GetEntries(IEnumerable<string> postIds);
     }
 }
