@@ -1,8 +1,8 @@
-﻿using SFeed.Core.Models;
+﻿using SFeed.Core.Models.WallPost;
 
 namespace SFeed.RedisRepository
 {
-    public class RedisWallEntryRepository : RedisTypedRepositoryBase<WallEntryModel>
+    public class RedisWallPostRepository : RedisTypedRepositoryBase<WallPostModel>
     {
     }
 }

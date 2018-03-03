@@ -1,12 +1,13 @@
 ﻿using SFeed.Core.Infrastructue.Services;
 using System.Collections.Generic;
-using SFeed.Core.Models;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
+using SFeed.Core.Models.WallPost;
+using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.Business.Services
 {
-    public class UserWallEntryService : IUserWallEntryService
+    public class UserWallEntryService : IUserWallPostService
     {
         IUserWallPostProvider wallEntryProvider;
         IUserNewsfeedProvider newsFeedProvider;
@@ -29,12 +30,12 @@ namespace SFeed.Business.Services
             this.followerProvider = followerProvider;
         }
 
-        public string CreatePost(WallEntryModel model, string wallOwnerId)
+        public string CreatePost(WallPostCreateRequest request)
         {
-            var entryId =  wallEntryProvider.AddEntry(model, wallOwnerId);
-            var users = new List<string> { wallOwnerId, model.CreatedBy };
+            var entryId =  wallEntryProvider.AddEntry(request);
+            var users = new List<string> { request.WallOwnerId, request.PostedBy };
             var followers = followerProvider.GetFollowers(users);
-            var feedItemModel = new FeedItemModel { EntryType = (short)FeedEntryTypeEnum.WallEntry, ReferenceId = entryId };
+            var feedItemModel = new NewsfeedItemModel { EntryType = (short)NewsfeedItemType.wallpost, ReferenceEntryId = entryId };
             newsFeedProvider.AddToUserFeeds(feedItemModel, followers);
             return entryId;
         }
@@ -44,17 +45,17 @@ namespace SFeed.Business.Services
             wallEntryProvider.DeleteEntry(postId);
         }
 
-        public WallEntryModel GetPost(string postId)
+        public WallPostModel GetPost(string postId)
         {
             return wallEntryProvider.GetEntry(postId);
         }
 
-        public IEnumerable<WallEntryModel> GetUserWall(string wallOwnerId)
+        public IEnumerable<WallPostModel> GetUserWall(string wallOwnerId)
         {
             return wallEntryProvider.GetUserWall(wallOwnerId);
         }
 
-        public void UpdatePost(WallEntryModel model)
+        public void UpdatePost(WallPostModel model)
         {
             wallEntryProvider.UpdateEntry(model);
         }

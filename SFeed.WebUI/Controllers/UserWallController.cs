@@ -1,6 +1,7 @@
 ﻿using SFeed.Business.Services;
 using SFeed.Core.Infrastructue.Services;
 using SFeed.Core.Models;
+using SFeed.Core.Models.WallPost;
 using SFeed.WebUI.UserProfile;
 using System.Linq;
 using System.Net;
@@ -10,7 +11,7 @@ namespace SFeed.WebUI.Controllers
 {
     public class WallEntryController : Controller
     {
-        IUserWallEntryService wallEntryService;
+        IUserWallPostService wallEntryService;
 
         public WallEntryController()
         {
@@ -18,17 +19,13 @@ namespace SFeed.WebUI.Controllers
         }
 
         [Route("user/posts/new")]
-        public ActionResult CreateEntry(WallEntryModel request, string targetUserId)
+        public ActionResult CreateEntry(WallPostCreateRequest request)
         {
-            var blRequest = new WallEntryModel()
-            {
-                Body = request.Body,
-                CreatedBy = ActiveUser.Username,
-                EntryType = request.EntryType > 0 ? request.EntryType : (short)WallEntryTypeEnum.plaintext
-            };
+            var activeUserId = ActiveUser.Username;
+            request.PostedBy = activeUserId;
             //If target user is not specified, user is posting his/her own wall}
-            var wallOwner = !string.IsNullOrWhiteSpace(targetUserId) ? targetUserId : ActiveUser.Username;
-            var entryId = wallEntryService.CreatePost(blRequest, wallOwner);
+            request.WallOwnerId = !string.IsNullOrWhiteSpace(request.WallOwnerId) ? request.WallOwnerId : activeUserId;
+            var entryId = wallEntryService.CreatePost(request);
             return Json(entryId);
         }
 
@@ -45,7 +42,7 @@ namespace SFeed.WebUI.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
         [Route("user/posts/update/")]
-        public ActionResult UpdateEntry(WallEntryModel request)
+        public ActionResult UpdateEntry(WallPostModel request)
         {
             wallEntryService.UpdatePost(request);
             return new HttpStatusCodeResult(HttpStatusCode.OK);

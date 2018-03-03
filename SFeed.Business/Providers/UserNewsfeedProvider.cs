@@ -1,24 +1,24 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
 using System.Collections.Generic;
-using SFeed.Core.Models;
 using SFeed.Core.Infrastructue.Repository;
 using SFeed.RedisRepository;
+using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.Business.Providers
 {
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
-        ICacheListRepository<FeedItemModel> redisFeedRepo;
+        ICacheListRepository<NewsfeedItemModel> redisFeedRepo;
 
         public UserNewsfeedProvider(): this(new RedisUserFeedRepository())
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<FeedItemModel> redisFeedRepo)
+        public UserNewsfeedProvider(ICacheListRepository<NewsfeedItemModel> redisFeedRepo)
         {
             this.redisFeedRepo = redisFeedRepo;
         }
-        public void AddToUserFeeds(FeedItemModel feedItem, IEnumerable<string> userIds)
+        public void AddToUserFeeds(NewsfeedItemModel feedItem, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {
@@ -26,7 +26,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public IEnumerable<FeedItemModel> GetUserFeed(string userId)
+        public IEnumerable<NewsfeedItemModel> GetUserFeed(string userId)
         {
             return redisFeedRepo.GetList(userId);
         }

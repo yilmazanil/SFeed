@@ -42,18 +42,18 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Providers\IUserFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserNewsfeedProvider.cs" />
-    <Compile Include="Infrastructure\Providers\IUserWallEntryProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
     <Compile Include="Infrastructure\Repository\ITypedCacheRepository.cs" />
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
-    <Compile Include="Infrastructure\Services\IUserWallEntryService.cs" />
-    <Compile Include="Models\FeedEntryTypeEnum.cs" />
-    <Compile Include="Models\FeedItemModel.cs" />
-    <Compile Include="Models\UserModel.cs" />
-    <Compile Include="Models\WallEntryModel.cs" />
-    <Compile Include="Models\WallEntryTypeEnum.cs" />
+    <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedItemType.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedModel.cs" />
+    <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
+    <Compile Include="Models\WallPost\WallPostModel.cs" />
+    <Compile Include="Models\WallPost\WallPostTypeEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

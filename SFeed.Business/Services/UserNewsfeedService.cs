@@ -1,11 +1,9 @@
-﻿using SFeed.Core.Infrastructue.Repository;
-using SFeed.Core.Infrastructue.Services;
-using SFeed.Core.Models;
-using SFeed.RedisRepository;
+﻿using SFeed.Core.Infrastructue.Services;
 using System.Collections.Generic;
 using System;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
+using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.Business.Services
 {
@@ -26,7 +24,7 @@ namespace SFeed.Business.Services
             }
         }
 
-        public IEnumerable<FeedItemModel> GetUserFeed(string userId)
+        public IEnumerable<NewsfeedItemModel> GetUserFeed(string userId)
         {
             return newsFeedProvider.GetUserFeed(userId);
         }

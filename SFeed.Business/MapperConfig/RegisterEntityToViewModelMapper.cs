@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SFeed.Core.Models;
+using SFeed.Core.Models.WallPost;
 using SFeed.SqlRepository;
 
 namespace SFeed.Business.MapperConfig
@@ -8,7 +8,8 @@ namespace SFeed.Business.MapperConfig
     {
         public static void Register(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<WallPost, WallEntryModel>();
+            cfg.CreateMap<WallPost, WallPostModel>();
+            cfg.CreateMap<WallPostCreateRequest, WallPostModel>();
         }
     }
 }
