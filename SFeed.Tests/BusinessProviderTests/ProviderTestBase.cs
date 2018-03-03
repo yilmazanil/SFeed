@@ -15,7 +15,7 @@ namespace SFeed.Tests.BusinessProviderTests
     {
         protected IUserWallPostProvider provider;
         protected string testWallOwnerId = "UnitTestUserWallOwner1";
-        protected string userId = "UnitTestUser1";
+        protected string testUserId = "UnitTestUser1";
 
         [TestInitialize]
         public void InitializeCommon()
@@ -34,7 +34,7 @@ namespace SFeed.Tests.BusinessProviderTests
             return new WallPostCreateRequest
             {
                 Body = body,
-                PostedBy = userId,
+                PostedBy = testUserId,
                 PostType = WallPostTypeEnum.plaintext,
                 WallOwnerId = testWallOwnerId
             };
