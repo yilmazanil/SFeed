@@ -2,7 +2,7 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisWallPostRepository : RedisTypedRepositoryBase<NewsfeedWallPostModel>
+    public class RedisWallPostRepository : RedisTypedRepositoryBase<WallPostNewsfeedModel>
     {
     }
 }

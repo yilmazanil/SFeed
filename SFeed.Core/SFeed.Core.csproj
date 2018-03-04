@@ -53,7 +53,7 @@
     <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
+    <Compile Include="Models\Newsfeed\WallPostNewsfeedModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\WallPost\WallPostType.cs" />

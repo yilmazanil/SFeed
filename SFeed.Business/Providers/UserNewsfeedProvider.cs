@@ -10,14 +10,14 @@ namespace SFeed.Business.Providers
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
         ICacheListRepository<NewsfeedEntry> feedCacheRepo;
-        ITypedCacheRepository<NewsfeedWallPostModel> wallPostCacheRepo;
+        ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo;
 
         public UserNewsfeedProvider() : this(new RedisUserFeedRepository(), new RedisWallPostRepository())
         {
 
         }
         public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
-            ITypedCacheRepository<NewsfeedWallPostModel> wallPostCacheRepo)
+            ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
@@ -67,7 +67,7 @@ namespace SFeed.Business.Providers
             switch (entryType)
             {
                 case NewsfeedEntryType.wallpost:
-                    wallPostCacheRepo.AddItem(feedItem as NewsfeedWallPostModel);
+                    wallPostCacheRepo.AddItem(feedItem as WallPostNewsfeedModel);
                     break;
                 default:
                     break;
@@ -84,7 +84,7 @@ namespace SFeed.Business.Providers
             switch (entryType)
             {
                 case NewsfeedEntryType.wallpost:
-                    wallPostCacheRepo.UpdateItem(feedItem.Id, feedItem as NewsfeedWallPostModel);
+                    wallPostCacheRepo.UpdateItem(feedItem.Id, feedItem as WallPostNewsfeedModel);
                     break;
                 default:
                     break;

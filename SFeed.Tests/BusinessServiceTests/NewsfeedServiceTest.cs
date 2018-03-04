@@ -31,7 +31,7 @@ namespace SFeed.Tests.BusinessServiceTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
-            var newsfeedModel = new NewsfeedWallPostModel
+            var newsfeedModel = new WallPostNewsfeedModel
             {
                 Body = request.Body,
                 PostedBy = request.PostedBy,
@@ -49,7 +49,7 @@ namespace SFeed.Tests.BusinessServiceTests
             Assert.IsNotNull(currentWallPost);
 
 
-            var canConvert = currentWallPost.Item as NewsfeedWallPostModel;
+            var canConvert = currentWallPost.Item as WallPostNewsfeedModel;
 
             Assert.IsNotNull(canConvert);
 

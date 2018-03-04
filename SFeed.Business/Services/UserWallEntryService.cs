@@ -4,6 +4,7 @@ using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models.Newsfeed;
+using SFeed.Core.Models.Caching;
 
 namespace SFeed.Business.Services
 {
@@ -37,7 +38,7 @@ namespace SFeed.Business.Services
             var followers = followerProvider.GetFollowers(users);
             var feedItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = entryId };
 
-            var feedItem = new NewsfeedWallPostModel
+            var feedItem = new WallPostNewsfeedModel
             {
                 Body = request.Body,
                 PostedBy = request.PostedBy,

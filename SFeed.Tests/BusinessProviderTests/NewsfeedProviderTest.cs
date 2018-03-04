@@ -27,7 +27,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
-            var newsfeedModel = new NewsfeedWallPostModel
+            var newsfeedModel = new WallPostNewsfeedModel
             {
                 Body = request.Body,
                 PostedBy = request.PostedBy,
@@ -59,7 +59,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
-            var newsfeedModel = new NewsfeedWallPostModel
+            var newsfeedModel = new WallPostNewsfeedModel
             {
                 Body = request.Body,
                 PostedBy = request.PostedBy,
@@ -85,7 +85,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleEntryId = Guid.NewGuid().ToString().ToLower();
             var request = GetSampleWallCreateRequest();
-            var newsfeedModel = new NewsfeedWallPostModel
+            var newsfeedModel = new WallPostNewsfeedModel
             {
                 Body = request.Body,
                 PostedBy = request.PostedBy,
@@ -101,7 +101,7 @@ namespace SFeed.Tests.BusinessProviderTests
             Assert.IsTrue(feedItem.ItemId == newsfeedModel.Id);
 
             //Check if item is wallpost model
-            var model = feedItem.Item as NewsfeedWallPostModel;
+            var model = feedItem.Item as WallPostNewsfeedModel;
             Assert.IsNotNull(model);
 
             //Update and refetch again
