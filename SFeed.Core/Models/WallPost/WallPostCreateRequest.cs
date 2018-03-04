@@ -6,7 +6,7 @@
 
         public string PostedBy { get; set; }
 
-        public WallPostType PostType { get; set; }
+        public short PostType { get; set; }
 
         public string WallOwnerId { get; set; }
     }

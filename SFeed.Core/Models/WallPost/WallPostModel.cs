@@ -8,6 +8,6 @@
 
         public string PostedBy { get; set; }
 
-        public short PostTypeId { get; set; }
+        public short PostType { get; set; }
     }
 }
