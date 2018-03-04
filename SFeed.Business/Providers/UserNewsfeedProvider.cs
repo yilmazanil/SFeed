@@ -4,6 +4,7 @@ using SFeed.Core.Infrastructue.Repository;
 using SFeed.RedisRepository;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Models.Caching;
+using System;
 
 namespace SFeed.Business.Providers
 {
@@ -52,7 +53,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void RemoveFromFeed(NewsfeedEntry item, IEnumerable<string> userIds)
+        public void RemoveFromUsers(NewsfeedEntry item, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {
@@ -85,6 +86,19 @@ namespace SFeed.Business.Providers
             {
                 case NewsfeedEntryType.wallpost:
                     wallPostCacheRepo.UpdateItem(feedItem.Id, feedItem as WallPostNewsfeedModel);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void Delete(NewsfeedEntry item)
+        {
+            var itemType = (NewsfeedEntryType)item.TypeId;
+            switch (itemType)
+            {
+                case NewsfeedEntryType.wallpost:
+                    wallPostCacheRepo.RemoveItem(item.ReferenceEntryId);
                     break;
                 default:
                     break;

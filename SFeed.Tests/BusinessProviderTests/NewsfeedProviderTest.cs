@@ -71,7 +71,7 @@ namespace SFeed.Tests.BusinessProviderTests
             var removeItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = sampleEntryId };
 
             userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List <string> { testWallOwnerId });
-            userNewsfeedProvider.RemoveFromFeed(removeItemModel, new List <string> { testWallOwnerId });
+            userNewsfeedProvider.RemoveFromUsers(removeItemModel, new List <string> { testWallOwnerId });
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
             var shouldNotExist = wallOwnerFeeds.Any(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
