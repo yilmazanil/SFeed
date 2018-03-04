@@ -10,10 +10,30 @@ namespace SFeed.RedisRepository
     public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T : TypedCacheItemBaseModel
     {
         private IRedisClient client;
+        private IRedisTypedClient<T> clientApi;
 
-        protected IRedisTypedClient<T> clientApi;
+        protected IRedisTypedClient<T> ClientApi {
+
+           get {
+                if (clientApi != null)
+                {
+                    return clientApi;
+                }
+                else
+                {
+                    InitializeClient();
+                    return clientApi;
+                }
+
+            }
+        }
 
         public RedisTypedRepositoryBase()
+        {
+            
+        }
+
+        protected virtual void InitializeClient()
         {
             client = RedisConnectionProvider.GetClient();
             clientApi = client.As<T>();
@@ -26,33 +46,28 @@ namespace SFeed.RedisRepository
 
         public virtual T AddItem(T cacheItem)
         {
-            return clientApi.Store(cacheItem);
+            return ClientApi.Store(cacheItem);
         }
 
         public T GetItem(string id)
         {
-            return clientApi.GetById(id);
+            return ClientApi.GetById(id);
         }
 
         public void RemoveItem(string id)
         {
-            clientApi.DeleteById(id);
+            ClientApi.DeleteById(id);
         }
 
-        public IEnumerable<T> GetByIds(IEnumerable<object> ids)
+        public IEnumerable<T> GetByIds(IEnumerable<string> ids)
         {
-            return clientApi.GetByIds(ids);
+            return ClientApi.GetByIds(ids);
         }
 
         public T UpdateItem(string id, T cacheItem)
         {
             RemoveItem(id);
             return AddItem(cacheItem);
-        }
-
-        public IEnumerable<T> GetByIds(IEnumerable<string> ids)
-        {
-            throw new NotImplementedException();
         }
 
     }

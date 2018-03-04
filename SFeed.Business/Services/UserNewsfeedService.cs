@@ -12,9 +12,13 @@ namespace SFeed.Business.Services
     {
         IUserNewsfeedProvider newsFeedProvider;
 
-        public UserNewsfeedService()
+        public UserNewsfeedService() : this(new UserNewsfeedProvider())
         {
-            this.newsFeedProvider = new UserNewsfeedProvider();
+
+        }
+        public UserNewsfeedService(IUserNewsfeedProvider newsfeedProvider)
+        {
+            this.newsFeedProvider = newsfeedProvider;
         }
 
         public void Dispose()
