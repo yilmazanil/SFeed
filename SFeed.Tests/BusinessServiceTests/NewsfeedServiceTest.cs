@@ -40,7 +40,7 @@ namespace SFeed.Tests.BusinessServiceTests
                 Id = sampleEntryId
             };
 
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
 
             var userFeed = userNewsfeedService.GetUserFeed(testWallOwnerId);
 

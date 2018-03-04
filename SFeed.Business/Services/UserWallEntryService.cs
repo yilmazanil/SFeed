@@ -45,7 +45,7 @@ namespace SFeed.Business.Services
                 WallOwnerId = request.WallOwnerId,
                 Id = entryId
             };
-            newsFeedProvider.AddToUserFeeds(feedItem, followers);
+            newsFeedProvider.AddToUserFeeds(feedItem,  NewsfeedEntryType.wallpost, followers);
             return entryId;
         }
 

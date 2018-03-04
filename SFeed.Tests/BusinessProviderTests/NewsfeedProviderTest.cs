@@ -39,8 +39,8 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var feedItem = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = sampleEntryId };
 
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost,  new List<string> { testWallOwnerId });
 
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
@@ -70,8 +70,8 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var removeItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = sampleEntryId };
 
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
-            userNewsfeedProvider.RemoveFromFeed(removeItemModel, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List <string> { testWallOwnerId });
+            userNewsfeedProvider.RemoveFromFeed(removeItemModel, new List <string> { testWallOwnerId });
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
             var shouldNotExist = wallOwnerFeeds.Any(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
@@ -95,7 +95,7 @@ namespace SFeed.Tests.BusinessProviderTests
             };
 
             //Add and get feed
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
             var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
             Assert.IsTrue(feedItem.ItemId == newsfeedModel.Id);
@@ -106,7 +106,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             //Update and refetch again
             model.Body = "UpdatedBody";
-            userNewsfeedProvider.UpdateFeed(model);
+            userNewsfeedProvider.UpdateFeed(model, NewsfeedEntryType.wallpost);
 
             wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
             feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
