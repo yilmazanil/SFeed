@@ -40,9 +40,9 @@ namespace SFeed.Tests.BusinessServiceTests
                 Id = sampleEntryId
             };
 
-            userNewsfeedProvider.AddToUserFeeds(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddEntry(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
 
-            var userFeed = userNewsfeedService.GetUserFeed(testWallOwnerId);
+            var userFeed = userNewsfeedService.GetUserNewsfeed(testWallOwnerId);
 
             var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryType.wallpost && p.ItemId == sampleEntryId);
 

@@ -20,7 +20,7 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Should_Create_Post()
         {
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var id = userWallPostProvider.AddPost(request);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
         }
 
@@ -28,9 +28,9 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Should_Create_And_Get_Post()
         {
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var id = userWallPostProvider.AddPost(request);
 
-            var model = userWallPostProvider.GetEntry(id);
+            var model = userWallPostProvider.GetPost(id);
             Assert.AreEqual(model.Id, id);
         }
 
@@ -38,10 +38,10 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Should_Create_And_Validate_Post()
         {
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var id = userWallPostProvider.AddPost(request);
 
             //TODO:Update with comparer
-            var model = userWallPostProvider.GetEntry(id);
+            var model = userWallPostProvider.GetPost(id);
             Assert.AreEqual(model.Id, id);
             Assert.AreEqual(model.Body, request.Body);
             Assert.AreEqual(model.PostedBy, request.PostedBy);
@@ -54,13 +54,13 @@ namespace SFeed.Tests.BusinessProviderTests
             var updatedBodyText = "Test_Updated";
 
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var id = userWallPostProvider.AddPost(request);
 
-            var model = userWallPostProvider.GetEntry(id);
+            var model = userWallPostProvider.GetPost(id);
             model.Body = updatedBodyText;
-            userWallPostProvider.UpdateEntry(model);
+            userWallPostProvider.UpdatePost(model);
 
-            model = userWallPostProvider.GetEntry(id);
+            model = userWallPostProvider.GetPost(id);
             Assert.AreEqual(model.Body, updatedBodyText);
         }
 
@@ -68,10 +68,10 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Should_Delete_Post()
         {
             var request = GetSampleWallCreateRequest();
-            var id = userWallPostProvider.AddEntry(request);
+            var id = userWallPostProvider.AddPost(request);
 
-            userWallPostProvider.DeleteEntry(id);
-            var deletedPost = userWallPostProvider.GetEntry(id);
+            userWallPostProvider.DeletePost(id);
+            var deletedPost = userWallPostProvider.GetPost(id);
             Assert.IsNull(deletedPost);
         }
         [TestMethod]
@@ -79,9 +79,9 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var request = GetSampleWallCreateRequest();
             var request2 = GetSampleWallCreateRequest();
-            var existing = userWallPostProvider.AddEntry(request);
-            var deleted = userWallPostProvider.AddEntry(request2);
-            userWallPostProvider.DeleteEntry(deleted);
+            var existing = userWallPostProvider.AddPost(request);
+            var deleted = userWallPostProvider.AddPost(request2);
+            userWallPostProvider.DeletePost(deleted);
 
             var posts = userWallPostProvider.GetUserWall(testWallOwnerId);
 

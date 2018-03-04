@@ -17,7 +17,7 @@ namespace SFeed.WebUI.Controllers
         [Route("user/newsfeed/")]
         public ActionResult GetFeed()
         {
-            return Json(newsFeedService.GetUserFeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
+            return Json(newsFeedService.GetUserNewsfeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace SFeed.Business.Providers
             this.wallPostRepo = wallPostRepo;
         }
 
-        public string AddEntry(WallPostCreateRequest request)
+        public string AddPost(WallPostCreateRequest request)
         {
             var newPostId = Guid.NewGuid().ToString();
             var dbEntry = new WallPost
@@ -46,7 +46,7 @@ namespace SFeed.Business.Providers
 
         }
 
-        public void UpdateEntry(WallPostModel model)
+        public void UpdatePost(WallPostModel model)
         {
             var existingEntry = wallPostRepo.Get(p => p.Id == model.Id);
             existingEntry.Body = model.Body;
@@ -58,14 +58,14 @@ namespace SFeed.Business.Providers
             wallPostRepo.CommitChanges();
         }
 
-        public void DeleteEntry(string postId)
+        public void DeletePost(string postId)
         {
             //Mark as deleted
             wallPostRepo.Delete(p => p.Id == postId);
             wallPostRepo.CommitChanges();
 
         }
-        public WallPostModel GetEntry(string postId)
+        public WallPostModel GetPost(string postId)
         {
             var dbEntry =  wallPostRepo.Get(e => e.Id == postId && e.IsDeleted == false);
             if (dbEntry != null)

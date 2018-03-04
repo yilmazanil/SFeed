@@ -41,7 +41,7 @@ namespace SFeed.WebUI.Controllers
         {
             using (var service = new UserNewsfeedService())
             {
-                return Json(service.GetUserFeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
+                return Json(service.GetUserNewsfeed(ActiveUser.Username), JsonRequestBehavior.AllowGet);
             }
         }
       

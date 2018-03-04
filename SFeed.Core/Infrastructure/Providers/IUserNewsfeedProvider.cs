@@ -7,10 +7,10 @@ namespace SFeed.Core.Infrastructure.Providers
 {
     public interface IUserNewsfeedProvider : IDisposable
     {
-        void AddToUserFeeds<T>(T feedItem, NewsfeedEntryType entryType, IEnumerable<string> userIds) where T: TypedCacheItemBaseModel;
-        void UpdateFeed<T>(T feedItem, NewsfeedEntryType entryType) where T: TypedCacheItemBaseModel;
-        IEnumerable<NewsfeedResponseItem> GetUserFeed(string userId);
-        void RemoveFromUsers(NewsfeedEntry item, IEnumerable<string> userIds);
+        void AddEntry<T>(T feedItem, NewsfeedEntryType entryType, IEnumerable<string> userIds) where T: TypedCacheItemBaseModel;
+        void UpdateEntry<T>(T feedItem, NewsfeedEntryType entryType) where T: TypedCacheItemBaseModel;
+        IEnumerable<NewsfeedResponseItem> GetNewsfeedByUser(string userId);
+        void RemoveFeedFromUsers(NewsfeedEntry item, IEnumerable<string> userIds);
         void Delete(NewsfeedEntry item);
     }
 }

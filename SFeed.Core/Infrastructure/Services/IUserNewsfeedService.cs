@@ -6,6 +6,6 @@ namespace SFeed.Core.Infrastructue.Services
 {
     public interface IUserNewsfeedService : IDisposable
     {
-        IEnumerable<NewsfeedResponseItem> GetUserFeed(string userId);
+        IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId);
     }
 }

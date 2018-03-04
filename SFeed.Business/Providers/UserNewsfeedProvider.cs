@@ -25,7 +25,7 @@ namespace SFeed.Business.Providers
 
         }
 
-        public IEnumerable<NewsfeedResponseItem> GetUserFeed(string userId)
+        public IEnumerable<NewsfeedResponseItem> GetNewsfeedByUser(string userId)
         {
             var feeds =  feedCacheRepo.GetList(userId);
 
@@ -53,7 +53,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void RemoveFromUsers(NewsfeedEntry item, IEnumerable<string> userIds)
+        public void RemoveFeedFromUsers(NewsfeedEntry item, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {
@@ -61,7 +61,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void AddToUserFeeds<T>(T feedItem, NewsfeedEntryType entryType, IEnumerable<string> userIds) where T : TypedCacheItemBaseModel
+        public void AddEntry<T>(T feedItem, NewsfeedEntryType entryType, IEnumerable<string> userIds) where T : TypedCacheItemBaseModel
         {
             var entryModel = new NewsfeedEntry { TypeId = (short)entryType, ReferenceEntryId = feedItem.Id };
 
@@ -80,7 +80,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void UpdateFeed<T>(T feedItem, NewsfeedEntryType entryType) where T : TypedCacheItemBaseModel
+        public void UpdateEntry<T>(T feedItem, NewsfeedEntryType entryType) where T : TypedCacheItemBaseModel
         {
             switch (entryType)
             {

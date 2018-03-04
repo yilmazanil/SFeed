@@ -33,7 +33,7 @@ namespace SFeed.Business.Services
 
         public string CreatePost(WallPostCreateRequest request)
         {
-            var entryId =  wallPostProvider.AddEntry(request);
+            var entryId =  wallPostProvider.AddPost(request);
             var users = new List<string> { request.WallOwnerId, request.PostedBy };
             var followers = followerProvider.GetFollowers(users);
             var feedItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = entryId };
@@ -46,18 +46,18 @@ namespace SFeed.Business.Services
                 WallOwnerId = request.WallOwnerId,
                 Id = entryId
             };
-            newsFeedProvider.AddToUserFeeds(feedItem,  NewsfeedEntryType.wallpost, followers);
+            newsFeedProvider.AddEntry(feedItem,  NewsfeedEntryType.wallpost, followers);
             return entryId;
         }
 
         public void DeletePost(string postId)
         {
-            wallPostProvider.DeleteEntry(postId);
+            wallPostProvider.DeletePost(postId);
         }
 
         public WallPostModel GetPost(string postId)
         {
-            return wallPostProvider.GetEntry(postId);
+            return wallPostProvider.GetPost(postId);
         }
 
         public IEnumerable<WallPostModel> GetUserWall(string wallOwnerId)
@@ -67,7 +67,7 @@ namespace SFeed.Business.Services
 
         public void UpdatePost(WallPostModel model)
         {
-            wallPostProvider.UpdateEntry(model);
+            wallPostProvider.UpdatePost(model);
         }
 
         public void Dispose()
