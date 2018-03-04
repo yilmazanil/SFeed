@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models.WallPost
 {
-    public enum WallPostTypeEnum
+    public enum WallPostType
     {
         plaintext = 1
     }

@@ -6,6 +6,6 @@
 
         public string ItemId { get; set; }
 
-        public NewsfeedEntryTypeEnum ItemType;
+        public NewsfeedEntryType ItemType;
     }
 }

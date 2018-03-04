@@ -8,14 +8,14 @@ namespace SFeed.Business.Providers
 {
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
-        ICacheListRepository<NewsfeedEntryModel> feedCacheRepo;
+        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
         ITypedCacheRepository<NewsfeedWallPostModel> wallPostCacheRepo;
 
         public UserNewsfeedProvider() : this(new RedisUserFeedRepository(), new RedisWallPostRepository())
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntryModel> feedCacheRepo,
+        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
             ITypedCacheRepository<NewsfeedWallPostModel> wallPostCacheRepo)
         {
             this.feedCacheRepo = feedCacheRepo;
@@ -25,7 +25,7 @@ namespace SFeed.Business.Providers
         public void AddToUserFeeds(NewsfeedWallPostModel feedItem, IEnumerable<string> userIds)
         {
 
-            var entryModel = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = feedItem.Id };
+            var entryModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = feedItem.Id };
 
             wallPostCacheRepo.AddItem(feedItem);
 
@@ -41,14 +41,14 @@ namespace SFeed.Business.Providers
 
             foreach (var feed in feeds)
             {
-                if (feed.EntryType == (short)NewsfeedEntryTypeEnum.wallpost)
+                if (feed.TypeId == (short)NewsfeedEntryType.wallpost)
                 {
                     yield return new NewsfeedResponseItem
                     {
 
                         Item = wallPostCacheRepo.GetItem(feed.ReferenceEntryId),
                         ItemId = feed.ReferenceEntryId,
-                        ItemType = NewsfeedEntryTypeEnum.wallpost
+                        ItemType = NewsfeedEntryType.wallpost
 
                     };
                 }
@@ -63,7 +63,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void RemoveFromFeed(NewsfeedEntryModel item, IEnumerable<string> userIds)
+        public void RemoveFromFeed(NewsfeedEntry item, IEnumerable<string> userIds)
         {
             foreach (var userId in userIds)
             {

@@ -32,12 +32,12 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostTypeEnum.plaintext,
+                PostType = (short)WallPostType.plaintext,
                 Id = sampleEntryId
             };
 
 
-            var feedItem = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
+            var feedItem = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = sampleEntryId };
 
             userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
             userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
@@ -45,7 +45,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
 
-            var feedItemFeeds = wallOwnerFeeds.Where(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            var feedItemFeeds = wallOwnerFeeds.Where(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
 
             var shouldExist = feedItemFeeds.Any();
             var shouldNotContainMultiple = feedItemFeeds.Count() == 1;
@@ -64,17 +64,17 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostTypeEnum.plaintext,
+                PostType = (short)WallPostType.plaintext,
                 Id = sampleEntryId
             };
 
-            var removeItemModel = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = sampleEntryId };
+            var removeItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = sampleEntryId };
 
             userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
             userNewsfeedProvider.RemoveFromFeed(removeItemModel, new List<string> { testWallOwnerId });
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
-            var shouldNotExist = wallOwnerFeeds.Any(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            var shouldNotExist = wallOwnerFeeds.Any(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
 
             Assert.IsTrue(!shouldNotExist);
         }
@@ -90,14 +90,14 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostTypeEnum.plaintext,
+                PostType = (short)WallPostType.plaintext,
                 Id = sampleEntryId
             };
 
             //Add and get feed
             userNewsfeedProvider.AddToUserFeeds(newsfeedModel, new List<string> { testWallOwnerId });
             var wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
-            var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
             Assert.IsTrue(feedItem.ItemId == newsfeedModel.Id);
 
             //Check if item is wallpost model
@@ -109,7 +109,7 @@ namespace SFeed.Tests.BusinessProviderTests
             userNewsfeedProvider.UpdateFeed(model);
 
             wallOwnerFeeds = userNewsfeedProvider.GetUserFeed(testWallOwnerId);
-            feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryTypeEnum.wallpost);
+            feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ItemId == sampleEntryId && f.ItemType == NewsfeedEntryType.wallpost);
             Assert.IsTrue(string.Equals(model.Body, feedItem.Item.Body, StringComparison.OrdinalIgnoreCase));
 
         }

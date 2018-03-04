@@ -45,7 +45,7 @@ namespace SFeed.Tests.BusinessProviderTests
             Assert.AreEqual(model.Id, id);
             Assert.AreEqual(model.Body, request.Body);
             Assert.AreEqual(model.PostedBy, request.PostedBy);
-            Assert.AreEqual(model.PostType, (short)request.PostType);
+            Assert.AreEqual(model.PostTypeId, (short)request.PostType);
 
         }
         [TestMethod]

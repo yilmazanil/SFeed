@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models.Newsfeed
 {
-    public enum NewsfeedEntryTypeEnum
+    public enum NewsfeedEntryType
     {
         wallpost = 1
     }

@@ -1,12 +1,13 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
+using SFeed.Core.Models.Caching;
 using System;
 using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T :class
+    public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T : TypedCacheItemBaseModel
     {
         private IRedisClient client;
 
@@ -28,15 +29,14 @@ namespace SFeed.RedisRepository
             return clientApi.Store(cacheItem);
         }
 
-        public T GetItem(object id)
+        public T GetItem(string id)
         {
             return clientApi.GetById(id);
         }
 
-        public void RemoveItem(object id)
+        public void RemoveItem(string id)
         {
-            var itemId = Convert.ToString(id);
-            clientApi.DeleteById(itemId);
+            clientApi.DeleteById(id);
         }
 
         public IEnumerable<T> GetByIds(IEnumerable<object> ids)
@@ -44,10 +44,16 @@ namespace SFeed.RedisRepository
             return clientApi.GetByIds(ids);
         }
 
-        public void UpdateItem(object id, T cacheItem)
+        public T UpdateItem(string id, T cacheItem)
         {
             RemoveItem(id);
-            AddItem(cacheItem);
+            return AddItem(cacheItem);
         }
+
+        public IEnumerable<T> GetByIds(IEnumerable<string> ids)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

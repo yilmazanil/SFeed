@@ -51,7 +51,7 @@ namespace SFeed.Business.Providers
             var existingEntry = wallPostRepo.Get(p => p.Id == model.Id);
             existingEntry.Body = model.Body;
             existingEntry.ModifiedDate = DateTime.Now;
-            existingEntry.PostType = Convert.ToByte(model.PostType);
+            existingEntry.PostType = Convert.ToByte(model.PostTypeId);
 
             //Update DB
             wallPostRepo.Update(existingEntry);
@@ -83,7 +83,7 @@ namespace SFeed.Business.Providers
             {
                 Body = p.Body,
                 PostedBy = p.CreatedBy,
-                PostType = p.WallPostType.Id,
+                PostTypeId = p.WallPostType.Id,
                 Id = p.Id.ToString()
             });
         }

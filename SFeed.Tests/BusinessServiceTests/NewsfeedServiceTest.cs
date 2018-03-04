@@ -36,7 +36,7 @@ namespace SFeed.Tests.BusinessServiceTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostTypeEnum.plaintext,
+                PostType = (short)WallPostType.plaintext,
                 Id = sampleEntryId
             };
 
@@ -44,7 +44,7 @@ namespace SFeed.Tests.BusinessServiceTests
 
             var userFeed = userNewsfeedService.GetUserFeed(testWallOwnerId);
 
-            var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryTypeEnum.wallpost && p.ItemId == sampleEntryId);
+            var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryType.wallpost && p.ItemId == sampleEntryId);
 
             Assert.IsNotNull(currentWallPost);
 

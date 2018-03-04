@@ -49,13 +49,14 @@
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntryTypeEnum.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntryModel.cs" />
+    <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
-    <Compile Include="Models\WallPost\WallPostTypeEnum.cs" />
+    <Compile Include="Models\WallPost\WallPostType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -35,7 +35,7 @@ namespace SFeed.Business.Services
             var entryId =  wallPostProvider.AddEntry(request);
             var users = new List<string> { request.WallOwnerId, request.PostedBy };
             var followers = followerProvider.GetFollowers(users);
-            var feedItemModel = new NewsfeedEntryModel { EntryType = (short)NewsfeedEntryTypeEnum.wallpost, ReferenceEntryId = entryId };
+            var feedItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = entryId };
 
             var feedItem = new NewsfeedWallPostModel
             {
