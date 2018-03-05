@@ -2,6 +2,9 @@
 {
     public enum WallPostType
     {
-        text = 1
+        text = 1,
+        video = 2,
+        link = 3,
+        reshare = 4
     }
 }

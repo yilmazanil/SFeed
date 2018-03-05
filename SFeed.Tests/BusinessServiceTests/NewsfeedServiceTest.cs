@@ -50,7 +50,7 @@ namespace SFeed.Tests.BusinessServiceTests
 
             var userFeed = userNewsfeedService.GetUserNewsfeed(testWallOwnerId);
 
-            var currentWallPost = userFeed.FirstOrDefault(p => p.ActionTypeId == (short)NewsfeedActionType.wallpost && p.ReferencePostId == sampleEntryId);
+            var currentWallPost = userFeed.FirstOrDefault(p => p.TypeId == (short)NewsfeedEntryType.wallpost && p.ReferencePostId == sampleEntryId);
 
             Assert.IsNotNull(currentWallPost);
 

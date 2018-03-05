@@ -2,6 +2,7 @@
 {
     public enum ActorType
     {
-        user = 1
+        user = 1,
+        group = 2
     }
 }

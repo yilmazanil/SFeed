@@ -36,7 +36,7 @@ namespace SFeed.Business.Providers
         {
             var newsFeedEntry = new NewsfeedEntry
             {
-                ActionTypeId = (short)NewsfeedActionType.wallpost,
+                TypeId = (short)NewsfeedEntryType.wallpost,
                 From = wallPost.PostedBy,
                 To = wallPost.WallOwner,
                 ReferencePostId = wallPost.Id
@@ -121,7 +121,7 @@ namespace SFeed.Business.Providers
                 if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
                 {
                     var referencePost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
-                    if (item.ActionTypeId == (short)  NewsfeedActionType.wallpost && referencePost == null)
+                    if (item.TypeId == (short)  NewsfeedEntryType.wallpost && referencePost == null)
                     {
                         continue;
                     }
