@@ -20,14 +20,12 @@ namespace SFeed.Tests.BusinessServiceTests
         public void Initialize()
         {
             this.userNewsfeedService = new UserNewsfeedService();
-            this.userWallPostProvider = new UserWallPostProvider();
             this.userNewsfeedProvider = new UserNewsfeedProvider();
         }
         [TestCleanup]
         public void Cleanup()
         {
             this.userNewsfeedService.Dispose();
-            this.userWallPostProvider.Dispose();
             this.userNewsfeedProvider.Dispose();
         }
         [TestMethod]
@@ -45,7 +43,7 @@ namespace SFeed.Tests.BusinessServiceTests
                 To = new Actor { Id = newPost.WallOwner.Id, ActorTypeId = (short)ActorType.user }
             };
 
-            userNewsfeedProvider.Add(newsFeedEntry);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
 
             var userFeed = userNewsfeedService.GetUserNewsfeed(testWallOwnerId);
 

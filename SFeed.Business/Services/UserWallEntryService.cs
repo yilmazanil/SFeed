@@ -4,7 +4,6 @@ using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models.Newsfeed;
-using SFeed.Core.Models.Caching;
 using SFeed.Core.Models;
 
 namespace SFeed.Business.Services
@@ -42,7 +41,7 @@ namespace SFeed.Business.Services
                 TypeId = (short)NewsfeedEntryType.wallpost,
                 ReferencePostId = entryId
             };
-            newsFeedProvider.Add(newsFeedEntry);
+            newsFeedProvider.AddNewsfeedItem(newsFeedEntry);
             return entryId;
         }
 

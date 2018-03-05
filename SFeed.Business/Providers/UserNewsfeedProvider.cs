@@ -29,7 +29,7 @@ namespace SFeed.Business.Providers
          
 
 
-        public void Add(NewsfeedEntry entry)
+        public void AddNewsfeedItem(NewsfeedEntry entry)
         {
             var followers = GetFollowers(entry);
 
@@ -40,7 +40,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void Delete(NewsfeedEntry entry)
+        public void DeleteNewsfeedItem(NewsfeedEntry entry)
         {
             var followers = GetFollowers(entry);
 
@@ -50,7 +50,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public IEnumerable<NewsfeedResponseItem> GetNewsfeed(string userId)
+        public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
         {
             var feeds = feedCacheRepo.GetList(userId);
 

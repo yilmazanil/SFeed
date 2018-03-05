@@ -15,7 +15,7 @@ namespace SFeed.Tests.BusinessProviderTests
     {
         IUserWallPostProvider userWallPostProvider;
         IUserNewsfeedProvider userNewsfeedProvider;
-        IWallPostCacheProvider wallPostCacheProvider;
+        IWallPostCacheManager wallPostCacheProvider;
 
         [TestInitialize]
         public void Initialize()
@@ -45,11 +45,11 @@ namespace SFeed.Tests.BusinessProviderTests
                 To = new Actor { Id = newPost.WallOwner.Id, ActorTypeId = (short)ActorType.user }
             };
 
-            userNewsfeedProvider.Add(newsFeedEntry);
-            userNewsfeedProvider.Add(newsFeedEntry);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
 
 
-            var wallOwnerFeeds = userNewsfeedProvider.GetNewsfeed(testWallOwnerId);
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
 
             var feedItemFeeds = wallOwnerFeeds.Where(
                 f => f.ReferencePostId == postId && f.TypeId == (short)NewsfeedEntryType.wallpost);
@@ -75,10 +75,10 @@ namespace SFeed.Tests.BusinessProviderTests
                 To = new Actor { Id = testWallOwnerId, ActorTypeId = (short)ActorType.user }
             };
 
-            userNewsfeedProvider.Add(newsFeedEntry);
-            userNewsfeedProvider.Delete(newsFeedEntry);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
+            userNewsfeedProvider.DeleteNewsfeedItem(newsFeedEntry);
 
-            var wallOwnerFeeds = userNewsfeedProvider.GetNewsfeed(testWallOwnerId);
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
             var shouldNotExist = wallOwnerFeeds.Any(f => f.ReferencedPost != null &&
             f.TypeId == (short)NewsfeedEntryType.wallpost && f.ReferencePostId == samplePost.Id);
 
@@ -102,8 +102,8 @@ namespace SFeed.Tests.BusinessProviderTests
             };
 
             //Add and get feed
-            userNewsfeedProvider.Add(newsFeedEntry);
-            var wallOwnerFeeds = userNewsfeedProvider.GetNewsfeed(testWallOwnerId);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
             var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ReferencePostId == postId && f.TypeId == (short)NewsfeedEntryType.wallpost);
             Assert.IsTrue(feedItem.ReferencePostId == postId);
 
@@ -117,7 +117,7 @@ namespace SFeed.Tests.BusinessProviderTests
             wallPost.Body = "UpdatedBody";
             wallPostProvider.UpdatePost(wallPost);
 
-            wallOwnerFeeds = userNewsfeedProvider.GetNewsfeed(testWallOwnerId);
+            wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
             feedItem = wallOwnerFeeds.FirstOrDefault(f => f.ReferencePostId == postId && f.TypeId == (short)NewsfeedEntryType.wallpost);
             Assert.IsTrue(string.Equals(wallPost.Body, feedItem.ReferencedPost.Body, StringComparison.OrdinalIgnoreCase));
 
@@ -133,8 +133,8 @@ namespace SFeed.Tests.BusinessProviderTests
                 From = new Actor { ActorTypeId = (short)ActorType.user, Id = testUserId },
                 ReferencePostId = Guid.NewGuid().ToString()
             };
-            userNewsfeedProvider.Add(newsFeedAction);
-            var wallOwnerFeeds = userNewsfeedProvider.GetNewsfeed(testWallOwnerId);
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedAction);
+            var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
 
             var feedItem = wallOwnerFeeds.FirstOrDefault(f => f.TypeId == (short)NewsfeedEntryType.like
             && f.From.Id == testUserId);

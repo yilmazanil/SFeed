@@ -5,7 +5,7 @@ using SFeed.RedisRepository;
 
 namespace SFeed.Business.Providers
 {
-    public class WallPostCacheProvider : IWallPostCacheProvider
+    public class WallPostCacheProvider : IWallPostCacheManager
     {
         ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo;
 
@@ -18,17 +18,25 @@ namespace SFeed.Business.Providers
             this.wallPostCacheRepo = wallPostCacheRepo;
         }
 
-        public void Add(WallPostCacheModel wallPost)
+        public void AddPost(WallPostCacheModel wallPost)
         {
             wallPostCacheRepo.AddItem(wallPost);
         }
 
-        public void Delete(string Id)
+        public void DeletePost(string Id)
         {
             wallPostCacheRepo.RemoveItem(Id);
         }
 
-        public void Update(WallPostCacheModel wallPost)
+        public void Dispose()
+        {
+            if (this.wallPostCacheRepo != null)
+            {
+                wallPostCacheRepo.Dispose();
+            }
+        }
+
+        public void UpdatePost(WallPostCacheModel wallPost)
         {
             wallPostCacheRepo.UpdateItem(wallPost.Id, wallPost);
         }

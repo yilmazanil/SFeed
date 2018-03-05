@@ -15,7 +15,7 @@ namespace SFeed.Business.Providers
     public class UserWallPostProvider : IUserWallPostProvider
     {
         private IRepository<WallPost> wallPostRepo;
-        private IWallPostCacheProvider wallPostCacheRepo;
+        private IWallPostCacheManager wallPostCacheRepo;
 
         public UserWallPostProvider() : this(
             new WallPostRepository(), new WallPostCacheProvider())
@@ -24,7 +24,7 @@ namespace SFeed.Business.Providers
         }
 
         public UserWallPostProvider(IRepository<WallPost> wallPostRepo,
-           IWallPostCacheProvider wallPostCacheRepo)
+           IWallPostCacheManager wallPostCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
@@ -52,7 +52,7 @@ namespace SFeed.Business.Providers
             //
             var cacheModel = MapDbEntry(dbEntry);
 
-            wallPostCacheRepo.Add(cacheModel);
+            wallPostCacheRepo.AddPost(cacheModel);
 
             return newPostId;
 
@@ -80,7 +80,7 @@ namespace SFeed.Business.Providers
             wallPostRepo.CommitChanges();
 
             var cacheModel = MapDbEntry(existingEntry);
-            wallPostCacheRepo.Update(cacheModel);
+            wallPostCacheRepo.UpdatePost(cacheModel);
         }
 
         public void DeletePost(string postId)
@@ -88,7 +88,7 @@ namespace SFeed.Business.Providers
             //Mark as deleted
             wallPostRepo.Delete(p => p.Id == postId);
             wallPostRepo.CommitChanges();
-            wallPostCacheRepo.Delete(postId);
+            wallPostCacheRepo.DeletePost(postId);
 
         }
         public WallPostModel GetPost(string postId)
