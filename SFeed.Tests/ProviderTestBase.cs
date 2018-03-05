@@ -10,7 +10,7 @@ namespace SFeed.Tests
 {
     public class ProviderTestBase
     {
-        protected IUserWallPostProvider provider;
+        protected IUserWallPostProvider wallPostProvider;
         protected string testWallOwnerId = "UnitTestUserWallOwner1";
         protected string testUserId = "UnitTestUser1";
 
@@ -23,6 +23,8 @@ namespace SFeed.Tests
                 followerProvider.FollowUser(testWallOwnerId, testUserId);
             }
 
+            wallPostProvider = new UserWallPostProvider();
+
             Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
@@ -30,9 +32,9 @@ namespace SFeed.Tests
             });
         }
         [TestCleanup]
-        public void Cleanup()
+        public void CleanupBase()
         {
-            this.provider.Dispose();
+            this.wallPostProvider.Dispose();
         }
         protected WallPostCreateRequest GetSampleWallCreateRequest()
         {

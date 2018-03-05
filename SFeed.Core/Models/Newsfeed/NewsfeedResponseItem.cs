@@ -2,6 +2,6 @@
 {
     public class NewsfeedResponseItem : NewsfeedEntry
     {
-        public WallPostNewsfeedModel ReferencedPost { get; set; }
+        public WallPostCacheModel ReferencedPost { get; set; }
     }
 }

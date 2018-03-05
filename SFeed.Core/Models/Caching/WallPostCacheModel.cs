@@ -2,7 +2,7 @@
 
 namespace SFeed.Core.Models.Newsfeed
 {
-    public class WallPostNewsfeedModel : TypedCacheItemBaseModel
+    public class WallPostCacheModel : TypedCacheItemBaseModel
     {
         public string Body { get; set; }
 
