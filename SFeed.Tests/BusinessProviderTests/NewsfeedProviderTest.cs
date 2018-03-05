@@ -22,7 +22,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             this.userWallPostProvider = new UserWallPostProvider();
             this.userNewsfeedProvider = new UserNewsfeedProvider();
-            this.wallPostCacheProvider = new WallPostCacheProvider();
+            this.wallPostCacheProvider = new WallPostCacheManager();
         }
         [TestCleanup]
         public void Cleanup()

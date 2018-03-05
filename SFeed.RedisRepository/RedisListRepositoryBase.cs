@@ -1,6 +1,7 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
+using System;
 using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
@@ -21,8 +22,22 @@ namespace SFeed.RedisRepository
 
         public void Dispose()
         {
-            client.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (client != null)
+                {
+                    client.Dispose();
+                }
+                
+            }
+        }
+
 
         protected virtual string GetListName(string key)
         {
