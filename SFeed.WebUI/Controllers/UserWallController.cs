@@ -22,9 +22,9 @@ namespace SFeed.WebUI.Controllers
         public ActionResult CreateEntry(WallPostCreateRequest request)
         {
             var activeUserId = ActiveUser.Username;
-            request.PostedBy = activeUserId;
+            request.PostedBy = new Actor { Id = activeUserId, ActorTypeId = (short)ActorType.user };
             //If target user is not specified, user is posting his/her own wall}
-            request.WallOwnerId = !string.IsNullOrWhiteSpace(request.WallOwnerId) ? request.WallOwnerId : activeUserId;
+            request.WallOwner = request.WallOwner != null   ? request.WallOwner : request.PostedBy;
             var entryId = wallEntryService.CreatePost(request);
             return Json(entryId);
         }

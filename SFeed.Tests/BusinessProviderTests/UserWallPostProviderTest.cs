@@ -50,7 +50,7 @@ namespace SFeed.Tests.BusinessProviderTests
             var model = userWallPostProvider.GetPost(id);
             Assert.AreEqual(model.Id, id);
             Assert.AreEqual(model.Body, request.Body);
-            Assert.AreEqual(model.PostedBy, request.PostedBy);
+            Assert.AreEqual(model.PostedBy.Id, request.PostedBy.Id);
             Assert.AreEqual(model.PostType, (short)request.PostType);
 
         }

@@ -13,7 +13,7 @@ namespace SFeed.Business.Providers
 {
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
-        ICacheListRepository<NewsfeedAction> feedCacheRepo;
+        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
         ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo;
         IUserFollowerProvider userFollowerProvider;
 
@@ -22,7 +22,7 @@ namespace SFeed.Business.Providers
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<NewsfeedAction> feedCacheRepo,
+        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
             ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo,
             IUserFollowerProvider userFollowerProvider)
         {
@@ -34,17 +34,17 @@ namespace SFeed.Business.Providers
          
         public void AddPost(WallPostNewsfeedModel wallPost)
         {
-            var newsFeedEntry = new NewsfeedAction
+            var newsFeedEntry = new NewsfeedEntry
             {
-                ActionId = (short)NewsfeedActionType.wallpost,
+                ActionTypeId = (short)NewsfeedActionType.wallpost,
                 From = wallPost.PostedBy,
-                To = new Actor { ActorTypeId = (short)ActorType.user, Id = wallPost.PostedBy },
+                To = wallPost.WallOwner,
                 ReferencePostId = wallPost.Id
             };
 
             wallPostCacheRepo.AddItem(wallPost);
 
-            var followers = userFollowerProvider.GetFollowers(new List<string> { wallPost.PostedBy, wallPost.WallOwnerId });
+            var followers = userFollowerProvider.GetFollowers(new List<string> { wallPost.PostedBy.Id, wallPost.WallOwner.Id });
 
             foreach (var userId in followers)
             {
@@ -64,9 +64,9 @@ namespace SFeed.Business.Providers
         }
 
 
-        public void AddAction(NewsfeedAction newsFeedAction)
+        public void AddAction(NewsfeedEntry newsFeedAction)
         {
-            var actors = new List<string> { newsFeedAction.From };
+            var actors = new List<string> { newsFeedAction.From.Id };
             if (newsFeedAction.To != null)
             {
                 actors.Add(newsFeedAction.To.Id);
@@ -80,9 +80,9 @@ namespace SFeed.Business.Providers
 
         }
 
-        public void RemoveAction(NewsfeedAction newsFeedAction)
+        public void RemoveAction(NewsfeedEntry newsFeedAction)
         {
-            var actors = new List<string> { newsFeedAction.From };
+            var actors = new List<string> { newsFeedAction.From.Id };
             if (newsFeedAction.To != null)
             {
                 actors.Add(newsFeedAction.To.Id);
@@ -95,9 +95,9 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void DeleteAction(NewsfeedAction newsFeedAction)
+        public void DeleteAction(NewsfeedEntry newsFeedAction)
         {
-            var actors = new List<string> { newsFeedAction.From };
+            var actors = new List<string> { newsFeedAction.From.Id };
             if (newsFeedAction.To != null)
             {
                 actors.Add(newsFeedAction.To.Id);
@@ -121,7 +121,7 @@ namespace SFeed.Business.Providers
                 if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
                 {
                     var referencePost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
-                    if (item.ActionId == (short)  NewsfeedActionType.wallpost && referencePost == null)
+                    if (item.ActionTypeId == (short)  NewsfeedActionType.wallpost && referencePost == null)
                     {
                         continue;
                     }

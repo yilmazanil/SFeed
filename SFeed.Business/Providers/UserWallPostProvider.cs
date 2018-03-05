@@ -6,6 +6,7 @@ using SFeed.Core.Infrastructue.Repository;
 using SFeed.SqlRepository;
 using AutoMapper;
 using SFeed.Core.Models.WallPost;
+using SFeed.Core.Models;
 
 namespace SFeed.Business.Providers
 {
@@ -30,12 +31,12 @@ namespace SFeed.Business.Providers
             var dbEntry = new WallPost
             {
                 Body = request.Body,
-                CreatedBy = request.PostedBy,
+                CreatedBy = request.PostedBy.Id,
                 IsDeleted = false,
                 CreatedDate = DateTime.Now,
                 Id = newPostId,
                 PostType = Convert.ToByte(request.PostType),
-                UserWall = new UserWall { UserId = request.WallOwnerId, WallPostId = newPostId }
+                UserWall = new UserWall { UserId = request.WallOwner.Id, WallPostId = newPostId }
             };
 
             //Save Post
@@ -71,7 +72,7 @@ namespace SFeed.Business.Providers
             if (dbEntry != null)
             {
                 var result = Mapper.Map<WallPostModel>(dbEntry);
-                result.PostedBy = dbEntry.CreatedBy;
+                result.PostedBy = new Actor { Id = dbEntry.CreatedBy, ActorTypeId = (short)ActorType.user };
                 return result;
             }
             return null;
@@ -82,7 +83,7 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetMany(p => p.UserWall.UserId == wallOwnerId && p.IsDeleted == false).Select(p => new WallPostModel
             {
                 Body = p.Body,
-                PostedBy = p.CreatedBy,
+                PostedBy = new Actor { Id = p.CreatedBy, ActorTypeId = (short)ActorType.user }, 
                 PostType = p.PostType,
                 Id = p.Id.ToString()
             });

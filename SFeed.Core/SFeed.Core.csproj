@@ -52,7 +52,7 @@
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedAction.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedActionType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Newsfeed\WallPostNewsfeedModel.cs" />

@@ -9,9 +9,9 @@ namespace SFeed.Core.Infrastructure.Providers
         void AddPost(WallPostNewsfeedModel wallPost);
         void UpdatePost(WallPostNewsfeedModel wallPost);
         void DeletePost(string Id);
-        void AddAction(NewsfeedAction newsFeedAction);
-        void RemoveAction(NewsfeedAction newsFeedAction);
-        void DeleteAction(NewsfeedAction item);
+        void AddAction(NewsfeedEntry newsFeedAction);
+        void RemoveAction(NewsfeedEntry newsFeedAction);
+        void DeleteAction(NewsfeedEntry item);
         IEnumerable<NewsfeedResponseItem> GetNewsfeed(string userId);
     }
 }

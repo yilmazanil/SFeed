@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.MapperConfig;
 using SFeed.Business.Providers;
 using SFeed.Core.Infrastructure.Providers;
+using SFeed.Core.Models;
 using SFeed.Core.Models.WallPost;
 
 namespace SFeed.Tests
@@ -40,9 +41,9 @@ namespace SFeed.Tests
             return new WallPostCreateRequest
             {
                 Body = body,
-                PostedBy = testUserId,
+                PostedBy = new Actor { ActorTypeId = (short)ActorType.user, Id = testUserId },
                 PostType = (short)WallPostType.text,
-                WallOwnerId = testWallOwnerId
+                WallOwner = new Actor { ActorTypeId = (short)ActorType.user, Id = testWallOwnerId },
             };
 
         }

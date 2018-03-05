@@ -5,6 +5,7 @@ using SFeed.Business.Providers;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Models.Caching;
+using SFeed.Core.Models;
 
 namespace SFeed.Business.Services
 {
@@ -37,9 +38,9 @@ namespace SFeed.Business.Services
             var feedItem = new WallPostNewsfeedModel
             {
                 Body = request.Body,
-                PostedBy = request.PostedBy,
-                PostType = (short)request.PostType,
-                WallOwnerId = request.WallOwnerId,
+                PostedBy =  request.PostedBy,
+                PostType = request.PostType,
+                WallOwner =  request.WallOwner,
                 Id = entryId
             };
             newsFeedProvider.AddPost(feedItem);
