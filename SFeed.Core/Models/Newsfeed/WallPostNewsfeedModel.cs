@@ -11,5 +11,11 @@ namespace SFeed.Core.Models.Newsfeed
         public short PostType { get; set; }
 
         public string WallOwnerId { get; set; }
+
+        public string[] LatestComments { get; set; }
+
+        public int CommentCount { get; set; }
+
+        public int LikeCount { get; set; }
     }
 }

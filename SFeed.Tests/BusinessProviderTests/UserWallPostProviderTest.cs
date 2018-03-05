@@ -16,6 +16,12 @@ namespace SFeed.Tests.BusinessProviderTests
             this.userWallPostProvider = new UserWallPostProvider();
         }
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.userWallPostProvider.Dispose();
+        }
+
         [TestMethod]
         public void Should_Create_Post()
         {

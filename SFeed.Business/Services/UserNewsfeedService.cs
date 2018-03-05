@@ -31,7 +31,7 @@ namespace SFeed.Business.Services
 
         public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
         {
-            return newsFeedProvider.GetNewsfeedByUser(userId);
+            return newsFeedProvider.GetNewsfeed(userId);
         }
 
     }

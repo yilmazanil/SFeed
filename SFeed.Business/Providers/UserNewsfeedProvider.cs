@@ -5,43 +5,132 @@ using SFeed.RedisRepository;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Models.Caching;
 using System;
+using SFeed.Core.Models;
+using SFeed.Core;
+using AutoMapper;
 
 namespace SFeed.Business.Providers
 {
     public class UserNewsfeedProvider : IUserNewsfeedProvider
     {
-        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
+        ICacheListRepository<NewsfeedAction> feedCacheRepo;
         ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo;
+        IUserFollowerProvider userFollowerProvider;
 
-        public UserNewsfeedProvider() : this(new RedisUserFeedRepository(), new RedisWallPostRepository())
+        public UserNewsfeedProvider() : this(new RedisUserFeedRepository(), new RedisWallPostRepository(),
+            new UserFollowerProvider())
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
-            ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo)
+        public UserNewsfeedProvider(ICacheListRepository<NewsfeedAction> feedCacheRepo,
+            ITypedCacheRepository<WallPostNewsfeedModel> wallPostCacheRepo,
+            IUserFollowerProvider userFollowerProvider)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
+            this.userFollowerProvider = userFollowerProvider;
+
+        }
+         
+        public void AddPost(WallPostNewsfeedModel wallPost)
+        {
+            var newsFeedEntry = new NewsfeedAction
+            {
+                ActionId = (short)NewsfeedActionType.wallpost,
+                From = wallPost.PostedBy,
+                To = new Actor { ActorTypeId = (short)ActorType.user, Id = wallPost.PostedBy },
+                ReferencePostId = wallPost.Id
+            };
+
+            wallPostCacheRepo.AddItem(wallPost);
+
+            var followers = userFollowerProvider.GetFollowers(new List<string> { wallPost.PostedBy, wallPost.WallOwnerId });
+
+            foreach (var userId in followers)
+            {
+                feedCacheRepo.PrependToList(userId, newsFeedEntry);
+            }
 
         }
 
-        public IEnumerable<NewsfeedResponseItem> GetNewsfeedByUser(string userId)
+        public void UpdatePost(WallPostNewsfeedModel wallPost)
         {
-            var feeds =  feedCacheRepo.GetList(userId);
+            wallPostCacheRepo.UpdateItem(wallPost.Id, wallPost);
+        }
+
+        public void DeletePost(string Id)
+        {
+            wallPostCacheRepo.RemoveItem(Id);
+        }
+
+
+        public void AddAction(NewsfeedAction newsFeedAction)
+        {
+            var actors = new List<string> { newsFeedAction.From };
+            if (newsFeedAction.To != null)
+            {
+                actors.Add(newsFeedAction.To.Id);
+            }
+            var followers = userFollowerProvider.GetFollowers(actors);
+
+            foreach (var userId in followers)
+            {
+                feedCacheRepo.PrependToList(userId, newsFeedAction);
+            }
+
+        }
+
+        public void RemoveAction(NewsfeedAction newsFeedAction)
+        {
+            var actors = new List<string> { newsFeedAction.From };
+            if (newsFeedAction.To != null)
+            {
+                actors.Add(newsFeedAction.To.Id);
+            }
+            var followers = userFollowerProvider.GetFollowers(actors);
+
+            foreach (var userId in followers)
+            {
+                feedCacheRepo.PrependToList(userId, newsFeedAction);
+            }
+        }
+
+        public void DeleteAction(NewsfeedAction newsFeedAction)
+        {
+            var actors = new List<string> { newsFeedAction.From };
+            if (newsFeedAction.To != null)
+            {
+                actors.Add(newsFeedAction.To.Id);
+            }
+            var followers = userFollowerProvider.GetFollowers(actors);
+
+            foreach (var userId in followers)
+            {
+                feedCacheRepo.RemoveFromList(userId, newsFeedAction);
+            }
+        }
+
+        public IEnumerable<NewsfeedResponseItem> GetNewsfeed(string userId)
+        {
+            var feeds = feedCacheRepo.GetList(userId);
 
             foreach (var feed in feeds)
             {
-                if (feed.TypeId == (short)NewsfeedEntryType.wallpost)
+
+                var item = Mapper.Map<NewsfeedResponseItem>(feed);
+                if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
                 {
-                    yield return new NewsfeedResponseItem
+                    var referencePost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
+                    if (item.ActionId == (short)  NewsfeedActionType.wallpost && referencePost == null)
                     {
-
-                        Item = wallPostCacheRepo.GetItem(feed.ReferenceEntryId),
-                        ItemId = feed.ReferenceEntryId,
-                        ItemType = NewsfeedEntryType.wallpost
-
-                    };
+                        continue;
+                    }
+                    else
+                    {
+                        item.ReferencedPost = referencePost;
+                    }
                 }
+                yield return item;
             }
         }
 
@@ -51,57 +140,13 @@ namespace SFeed.Business.Providers
             {
                 feedCacheRepo.Dispose();
             }
-        }
-
-        public void RemoveFeedFromUsers(NewsfeedEntry item, IEnumerable<string> userIds)
-        {
-            foreach (var userId in userIds)
+            if (wallPostCacheRepo != null)
             {
-                feedCacheRepo.RemoveFromList(userId, item);
+                wallPostCacheRepo.Dispose();
             }
-        }
-
-        public void AddEntry<T>(T feedItem, NewsfeedEntryType entryType, IEnumerable<string> userIds) where T : TypedCacheItemBaseModel
-        {
-            var entryModel = new NewsfeedEntry { TypeId = (short)entryType, ReferenceEntryId = feedItem.Id };
-
-            switch (entryType)
+            if (userFollowerProvider != null)
             {
-                case NewsfeedEntryType.wallpost:
-                    wallPostCacheRepo.AddItem(feedItem as WallPostNewsfeedModel);
-                    break;
-                default:
-                    break;
-            }
-
-            foreach (var userId in userIds)
-            {
-                feedCacheRepo.PrependToList(userId, entryModel);
-            }
-        }
-
-        public void UpdateEntry<T>(T feedItem, NewsfeedEntryType entryType) where T : TypedCacheItemBaseModel
-        {
-            switch (entryType)
-            {
-                case NewsfeedEntryType.wallpost:
-                    wallPostCacheRepo.UpdateItem(feedItem.Id, feedItem as WallPostNewsfeedModel);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public void Delete(NewsfeedEntry item)
-        {
-            var itemType = (NewsfeedEntryType)item.TypeId;
-            switch (itemType)
-            {
-                case NewsfeedEntryType.wallpost:
-                    wallPostCacheRepo.RemoveItem(item.ReferenceEntryId);
-                    break;
-                default:
-                    break;
+                userFollowerProvider.Dispose();
             }
         }
     }

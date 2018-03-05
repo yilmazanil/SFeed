@@ -15,6 +15,11 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             this.userFollowerProvider = new UserFollowerProvider();
         }
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.userFollowerProvider.Dispose();
+        }
         [TestMethod]
         public void Should_Follow_User_Once()
         {

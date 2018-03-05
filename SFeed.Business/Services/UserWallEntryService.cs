@@ -34,10 +34,6 @@ namespace SFeed.Business.Services
         public string CreatePost(WallPostCreateRequest request)
         {
             var entryId =  wallPostProvider.AddPost(request);
-            var users = new List<string> { request.WallOwnerId, request.PostedBy };
-            var followers = followerProvider.GetFollowers(users);
-            var feedItemModel = new NewsfeedEntry { TypeId = (short)NewsfeedEntryType.wallpost, ReferenceEntryId = entryId };
-
             var feedItem = new WallPostNewsfeedModel
             {
                 Body = request.Body,
@@ -46,7 +42,7 @@ namespace SFeed.Business.Services
                 WallOwnerId = request.WallOwnerId,
                 Id = entryId
             };
-            newsFeedProvider.AddEntry(feedItem,  NewsfeedEntryType.wallpost, followers);
+            newsFeedProvider.AddPost(feedItem);
             return entryId;
         }
 

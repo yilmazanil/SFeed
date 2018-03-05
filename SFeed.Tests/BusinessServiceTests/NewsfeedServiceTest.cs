@@ -25,7 +25,13 @@ namespace SFeed.Tests.BusinessServiceTests
             this.userWallPostProvider = new UserWallPostProvider();
             this.userNewsfeedProvider = new UserNewsfeedProvider();
         }
-
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.userNewsfeedService.Dispose();
+            this.userWallPostProvider.Dispose();
+            this.userNewsfeedProvider.Dispose();
+        }
         [TestMethod]
         public void Newsfeed_Should_Create_And_Get_Wall_Posts()
         {
@@ -40,16 +46,16 @@ namespace SFeed.Tests.BusinessServiceTests
                 Id = sampleEntryId
             };
 
-            userNewsfeedProvider.AddEntry(newsfeedModel, NewsfeedEntryType.wallpost, new List<string> { testWallOwnerId });
+            userNewsfeedProvider.AddPost(newsfeedModel);
 
             var userFeed = userNewsfeedService.GetUserNewsfeed(testWallOwnerId);
 
-            var currentWallPost = userFeed.FirstOrDefault(p => p.ItemType == NewsfeedEntryType.wallpost && p.ItemId == sampleEntryId);
+            var currentWallPost = userFeed.FirstOrDefault(p => p.ActionId == (short)NewsfeedActionType.wallpost && p.ReferencePostId == sampleEntryId);
 
             Assert.IsNotNull(currentWallPost);
 
 
-            var canConvert = currentWallPost.Item as WallPostNewsfeedModel;
+            var canConvert = currentWallPost.ReferencedPost as WallPostNewsfeedModel;
 
             Assert.IsNotNull(canConvert);
 

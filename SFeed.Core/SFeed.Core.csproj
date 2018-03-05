@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ActorType.cs" />
     <Compile Include="Infrastructure\Providers\IUserFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserNewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
@@ -49,9 +50,10 @@
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
+    <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedAction.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedActionType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Newsfeed\WallPostNewsfeedModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
