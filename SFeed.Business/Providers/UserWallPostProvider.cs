@@ -83,7 +83,7 @@ namespace SFeed.Business.Providers
             {
                 Body = p.Body,
                 PostedBy = p.CreatedBy,
-                PostType = p.WallPostType.Id,
+                PostType = p.PostType,
                 Id = p.Id.ToString()
             });
         }

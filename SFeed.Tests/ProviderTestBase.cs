@@ -30,7 +30,7 @@ namespace SFeed.Tests
             {
                 Body = body,
                 PostedBy = testUserId,
-                PostType = (short)WallPostType.plaintext,
+                PostType = (short)WallPostType.text,
                 WallOwnerId = testWallOwnerId
             };
 

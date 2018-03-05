@@ -32,7 +32,7 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostType.plaintext,
+                PostType = (short)WallPostType.text,
                 Id = sampleEntryId
             };
 
@@ -64,7 +64,7 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostType.plaintext,
+                PostType = (short)WallPostType.text,
                 Id = sampleEntryId
             };
 
@@ -90,7 +90,7 @@ namespace SFeed.Tests.BusinessProviderTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostType.plaintext,
+                PostType = (short)WallPostType.text,
                 Id = sampleEntryId
             };
 

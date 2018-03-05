@@ -2,6 +2,6 @@
 {
     public enum WallPostType
     {
-        plaintext = 1
+        text = 1
     }
 }

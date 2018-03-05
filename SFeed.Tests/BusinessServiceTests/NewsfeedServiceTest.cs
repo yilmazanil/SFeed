@@ -36,7 +36,7 @@ namespace SFeed.Tests.BusinessServiceTests
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 WallOwnerId = request.WallOwnerId,
-                PostType = (short)WallPostType.plaintext,
+                PostType = (short)WallPostType.text,
                 Id = sampleEntryId
             };
 
