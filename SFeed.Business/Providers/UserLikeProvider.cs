@@ -12,9 +12,10 @@ namespace SFeed.Business.Providers
         IRepository<WallPostLike> wallPostLikeRepo;
         IRepository<UserCommentLike> userCommentLikeRepo;
 
-        public UserLikeProvider()
+        public UserLikeProvider() : this(new WallPostLikeRepository(),
+            new UserCommentLikeRepository())
         {
-                
+
         }
         public UserLikeProvider(IRepository<WallPostLike> wallPostLikeRepo,
             IRepository<UserCommentLike> userCommentLikeRepo)
@@ -39,7 +40,7 @@ namespace SFeed.Business.Providers
             wallPostLikeRepo.CommitChanges();
         }
 
-      
+
         public void UnlikePost(string postId, string userId)
         {
             wallPostLikeRepo.Delete(u => u.CreatedBy == userId && u.WallPostId == postId);
@@ -47,7 +48,12 @@ namespace SFeed.Business.Providers
         }
         public IEnumerable<string> GetPostLikes(string postId)
         {
-            return wallPostLikeRepo.GetMany(w => w.WallPostId == postId).Select(w=>w.CreatedBy);
+            var likes = wallPostLikeRepo.GetMany(w => w.WallPostId == postId);
+            if (likes != null)
+            {
+                return likes.Select(w => w.CreatedBy);
+            }
+            return null;
         }
 
         public IEnumerable<string> GetCommentLikes(long commentId)
@@ -75,6 +81,6 @@ namespace SFeed.Business.Providers
             }
         }
 
-       
+
     }
 }

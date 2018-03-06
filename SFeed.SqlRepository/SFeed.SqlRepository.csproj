@@ -92,6 +92,8 @@
     <Compile Include="WallPostLike.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserCommentLikeRepository.cs" />
+    <Compile Include="WallPostLikeRepository.cs" />
     <Compile Include="WallPostRepository.cs" />
     <Compile Include="WallPost.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
