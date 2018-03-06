@@ -12,9 +12,11 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class WallPostType
+    public partial class GroupWall
     {
-        public byte Id { get; set; }
-        public string Type { get; set; }
+        public string WallPostId { get; set; }
+        public string GroupId { get; set; }
+    
+        public virtual WallPost WallPost { get; set; }
     }
 }

@@ -5,14 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="a721cb522af0423db19894428b07a477" Name="Diagram1">
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserComment" Width="1.5" PointX="5.25" PointY="1.125" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserFollower" Width="1.5" PointX="0.75" PointY="5.75" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.UserWall" Width="1.5" PointX="5.25" PointY="4.375" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.WallPost" Width="1.5" PointX="3" PointY="2" />
-        <EntityTypeShape EntityType="SocialFeedDataModel.WallPostType" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.Comment" Width="1.5" PointX="3" PointY="3.625" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.CommentLike" Width="1.5" PointX="5.25" PointY="4.125" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.GroupFollower" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.GroupWall" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.UserFollower" Width="1.5" PointX="5.75" PointY="6.75" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.UserWall" Width="1.5" PointX="3" PointY="7.125" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.WallPost" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.WallPostLike" Width="1.5" PointX="3" PointY="9.5" />
+        <EntityTypeShape EntityType="SocialFeedDataModel.WallPostType" Width="1.5" PointX="7.75" PointY="0.75" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_CommentLike_Comment" />
         <AssociationConnector Association="SocialFeedDataModel.FK_UserComment_WallPost" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_GroupWall_WallPost" />
         <AssociationConnector Association="SocialFeedDataModel.FK_UserWall_WallPost" />
-        <AssociationConnector Association="SocialFeedDataModel.FK_WallPost_WallPostType" />
+        <AssociationConnector Association="SocialFeedDataModel.FK_WallPostLike_WallPost" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -12,9 +12,17 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class WallPostType
+    public partial class Comment
     {
-        public byte Id { get; set; }
-        public string Type { get; set; }
+        public long Id { get; set; }
+        public string Body { get; set; }
+        public string CreatedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public string WallPostId { get; set; }
+        public bool IsDeleted { get; set; }
+    
+        public virtual CommentLike CommentLike { get; set; }
+        public virtual WallPost WallPost { get; set; }
     }
 }
