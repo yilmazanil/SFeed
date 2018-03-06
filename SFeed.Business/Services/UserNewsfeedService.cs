@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SFeed.Business.Services
 {
-    public class UserNewsfeedService : IUserNewsfeedService, IDisposable
+    public sealed class UserNewsfeedService : IUserNewsfeedService, IDisposable
     {
         IUserNewsfeedProvider newsFeedProvider;
 

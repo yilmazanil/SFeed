@@ -41,12 +41,21 @@ namespace SFeed.RedisRepository
 
         public void Dispose()
         {
-            if (client != null)
-            {
-                client.Dispose();
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (client != null)
+                {
+                    client.Dispose();
+                }
+
+            }
+        }
         public virtual T AddItem(T cacheItem)
         {
             return ClientApi.Store(cacheItem);

@@ -8,26 +8,26 @@ using AutoMapper;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models;
 using SFeed.Core.Models.Newsfeed;
-using SFeed.RedisRepository;
 
 namespace SFeed.Business.Providers
 {
     public class UserWallPostProvider : IUserWallPostProvider
     {
         private IRepository<WallPost> wallPostRepo;
-        private IWallPostCacheManager wallPostCacheRepo;
+        private IWallPostCacheManager wallPostCacheManager;
 
         public UserWallPostProvider() : this(
-            new WallPostRepository(), new WallPostCacheProvider())
+            new WallPostRepository(), new WallPostCacheManager())
         {
 
         }
 
-        public UserWallPostProvider(IRepository<WallPost> wallPostRepo,
-           IWallPostCacheManager wallPostCacheRepo)
+        public UserWallPostProvider(
+            IRepository<WallPost> wallPostRepo,
+            IWallPostCacheManager wallPostCacheManager)
         {
             this.wallPostRepo = wallPostRepo;
-            this.wallPostCacheRepo = wallPostCacheRepo;
+            this.wallPostCacheManager = wallPostCacheManager;
         }
 
         public string AddPost(WallPostCreateRequest request)
@@ -49,13 +49,11 @@ namespace SFeed.Business.Providers
             wallPostRepo.CommitChanges();
 
 
-            //
+            //Add to Cache
             var cacheModel = MapDbEntry(dbEntry);
-
-            wallPostCacheRepo.AddPost(cacheModel);
+            wallPostCacheManager.AddPost(cacheModel);
 
             return newPostId;
-
         }
 
         private WallPostCacheModel MapDbEntry(WallPost dbEntry)
@@ -75,12 +73,13 @@ namespace SFeed.Business.Providers
             existingEntry.ModifiedDate = DateTime.Now;
             existingEntry.PostType = Convert.ToByte(model.PostType);
 
-            //Update DB
+            //Save Post
             wallPostRepo.Update(existingEntry);
             wallPostRepo.CommitChanges();
 
+            //Update cache
             var cacheModel = MapDbEntry(existingEntry);
-            wallPostCacheRepo.UpdatePost(cacheModel);
+            wallPostCacheManager.UpdatePost(cacheModel);
         }
 
         public void DeletePost(string postId)
@@ -88,9 +87,11 @@ namespace SFeed.Business.Providers
             //Mark as deleted
             wallPostRepo.Delete(p => p.Id == postId);
             wallPostRepo.CommitChanges();
-            wallPostCacheRepo.DeletePost(postId);
+            //Remove from cache
+            wallPostCacheManager.DeletePost(postId);
 
         }
+
         public WallPostModel GetPost(string postId)
         {
             var dbEntry =  wallPostRepo.Get(e => e.Id == postId && e.IsDeleted == false);
@@ -117,11 +118,20 @@ namespace SFeed.Business.Providers
 
         public void Dispose()
         {
-            if (wallPostRepo != null)
-            {
-                wallPostRepo.Dispose();
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (wallPostRepo != null)
+                {
+                    wallPostRepo.Dispose();
+                }
+
+            }
+        }
     }
 }

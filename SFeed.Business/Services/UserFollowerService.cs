@@ -6,7 +6,7 @@ using SFeed.Business.Providers;
 
 namespace SFeed.Business.Services
 {
-    public class UserFollowerService : IUserFollowerService, IDisposable
+    public sealed class UserFollowerService : IUserFollowerService, IDisposable
     {
         private readonly IUserFollowerProvider userFollowerProvider;
 

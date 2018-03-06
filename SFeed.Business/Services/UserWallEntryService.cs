@@ -8,7 +8,7 @@ using SFeed.Core.Models;
 
 namespace SFeed.Business.Services
 {
-    public class UserWallEntryService : IUserWallPostService
+    public sealed class UserWallEntryService : IUserWallPostService
     {
         IUserWallPostProvider wallPostProvider;
         IUserNewsfeedProvider newsFeedProvider;

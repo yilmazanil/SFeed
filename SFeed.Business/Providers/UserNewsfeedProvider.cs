@@ -7,23 +7,25 @@ using AutoMapper;
 
 namespace SFeed.Business.Providers
 {
-    public class UserNewsfeedProvider : IUserNewsfeedProvider
+    public sealed class UserNewsfeedProvider : IUserNewsfeedProvider
     {
         ICacheListRepository<NewsfeedEntry> feedCacheRepo;
-        ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo;
+        IWallPostCacheManager wallPostCacheManager;
         IUserFollowerProvider userFollowerProvider;
 
-        public UserNewsfeedProvider() : this(new RedisUserFeedRepository(), new RedisWallPostRepository(),
+        public UserNewsfeedProvider() : this(
+            new RedisUserFeedRepository(), 
+            new WallPostCacheManager(),
             new UserFollowerProvider())
         {
 
         }
         public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
-            ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo,
+            IWallPostCacheManager wallPostCacheManager,
             IUserFollowerProvider userFollowerProvider)
         {
             this.feedCacheRepo = feedCacheRepo;
-            this.wallPostCacheRepo = wallPostCacheRepo;
+            this.wallPostCacheManager = wallPostCacheManager;
             this.userFollowerProvider = userFollowerProvider;
         }
          
@@ -60,8 +62,8 @@ namespace SFeed.Business.Providers
                 var item = Mapper.Map<NewsfeedResponseItem>(feed);
                 if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
                 {
-                    var referencePost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
-                    if (item.TypeId == (short)  NewsfeedEntryType.wallpost && referencePost == null)
+                    var referencePost = wallPostCacheManager.GetPost(feed.ReferencePostId);
+                    if (item.TypeId == (short)NewsfeedEntryType.wallpost && referencePost == null)
                     {
                         continue;
                     }
@@ -90,9 +92,9 @@ namespace SFeed.Business.Providers
             {
                 feedCacheRepo.Dispose();
             }
-            if (wallPostCacheRepo != null)
+            if (wallPostCacheManager != null)
             {
-                wallPostCacheRepo.Dispose();
+                wallPostCacheManager.Dispose();
             }
             if (userFollowerProvider != null)
             {

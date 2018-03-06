@@ -13,7 +13,6 @@ namespace SFeed.Tests.BusinessServiceTests
     public class NewsfeedServiceTest : ProviderTestBase
     {
         IUserNewsfeedService userNewsfeedService;
-        IUserWallPostProvider userWallPostProvider;
         IUserNewsfeedProvider userNewsfeedProvider;
 
         [TestInitialize]

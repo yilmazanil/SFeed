@@ -2,6 +2,7 @@
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.RedisRepository;
 using SFeed.SqlRepository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,15 +74,26 @@ namespace SFeed.Business.Providers
 
         public void Dispose()
         {
-            if (followerRepo != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                followerRepo.Dispose();
-            }
-            if (followerCacheRepo != null)
-            {
-                followerCacheRepo.Dispose();
+                if (followerRepo != null)
+                {
+                    followerRepo.Dispose();
+                }
+                if (followerCacheRepo != null)
+                {
+                    followerCacheRepo.Dispose();
+                }
+
             }
         }
+
 
     }
 }

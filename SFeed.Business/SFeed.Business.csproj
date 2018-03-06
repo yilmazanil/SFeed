@@ -67,7 +67,7 @@
     <Compile Include="Providers\UserFollowerProvider.cs" />
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />
-    <Compile Include="Caching\WallPostCacheProvider.cs" />
+    <Compile Include="Caching\WallPostCacheManager.cs" />
     <Compile Include="Services\UserFollowerService.cs" />
     <Compile Include="Services\UserNewsfeedService.cs" />
     <Compile Include="Services\UserWallEntryService.cs" />
