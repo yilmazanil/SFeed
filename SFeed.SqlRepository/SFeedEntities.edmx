@@ -119,6 +119,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserCommentLike_UserCommentLike">
+          <End Role="UserCommentLike" Type="Self.UserCommentLike" Multiplicity="1" />
+          <End Role="UserCommentLike1" Type="Self.UserCommentLike" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="UserCommentLike">
+              <PropertyRef Name="CommentId" />
+            </Principal>
+            <Dependent Role="UserCommentLike1">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserWall_WallPost">
           <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
           <End Role="UserWall" Type="Self.UserWall" Multiplicity="0..1" />
@@ -177,6 +189,10 @@
             <End Role="UserComment" EntitySet="UserComment" />
             <End Role="UserCommentLike" EntitySet="UserCommentLike" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserCommentLike_UserCommentLike" Association="Self.FK_UserCommentLike_UserCommentLike">
+            <End Role="UserCommentLike" EntitySet="UserCommentLike" />
+            <End Role="UserCommentLike1" EntitySet="UserCommentLike" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserWall_WallPost" Association="Self.FK_UserWall_WallPost">
             <End Role="WallPost" EntitySet="WallPost" />
             <End Role="UserWall" EntitySet="UserWall" />
@@ -215,6 +231,10 @@
           <AssociationSet Name="FK_UserCommentLike_UserComment" Association="SocialFeedDataModel.FK_UserCommentLike_UserComment">
             <End Role="UserComment" EntitySet="UserComment" />
             <End Role="UserCommentLike" EntitySet="UserCommentLike" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserCommentLike_UserCommentLike" Association="SocialFeedDataModel.FK_UserCommentLike_UserCommentLike">
+            <End Role="UserCommentLike" EntitySet="UserCommentLike" />
+            <End Role="UserCommentLike1" EntitySet="UserCommentLike" />
           </AssociationSet>
           <AssociationSet Name="FK_UserWall_WallPost" Association="SocialFeedDataModel.FK_UserWall_WallPost">
             <End Role="WallPost" EntitySet="WallPost" />
@@ -267,6 +287,8 @@
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="UserComment" Relationship="SocialFeedDataModel.FK_UserCommentLike_UserComment" FromRole="UserCommentLike" ToRole="UserComment" />
+          <NavigationProperty Name="UserCommentLike1" Relationship="SocialFeedDataModel.FK_UserCommentLike_UserCommentLike" FromRole="UserCommentLike" ToRole="UserCommentLike1" />
+          <NavigationProperty Name="UserCommentLike2" Relationship="SocialFeedDataModel.FK_UserCommentLike_UserCommentLike" FromRole="UserCommentLike1" ToRole="UserCommentLike" />
         </EntityType>
         <EntityType Name="UserFollower">
           <Key>
@@ -351,6 +373,18 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="UserCommentLike">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserCommentLike_UserCommentLike">
+          <End Type="SocialFeedDataModel.UserCommentLike" Role="UserCommentLike" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.UserCommentLike" Role="UserCommentLike1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="UserCommentLike">
+              <PropertyRef Name="CommentId" />
+            </Principal>
+            <Dependent Role="UserCommentLike1">
               <PropertyRef Name="CommentId" />
             </Dependent>
           </ReferentialConstraint>

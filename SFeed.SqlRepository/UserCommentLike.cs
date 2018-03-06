@@ -19,5 +19,7 @@ namespace SFeed.SqlRepository
         public System.DateTime CreatedDate { get; set; }
     
         public virtual UserComment UserComment { get; set; }
+        public virtual UserCommentLike UserCommentLike1 { get; set; }
+        public virtual UserCommentLike UserCommentLike2 { get; set; }
     }
 }
