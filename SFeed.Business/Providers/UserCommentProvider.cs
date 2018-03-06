@@ -27,7 +27,8 @@ namespace SFeed.Business.Providers
                 Body = entry.Body,
                 CreatedBy = entry.CreatedBy,
                 CreatedDate = DateTime.Now,
-                IsDeleted = false
+                IsDeleted = false,
+                WallPostId = entry.WallPostId
             };
             commentRepo.Add(dbEntry);
             commentRepo.CommitChanges();
@@ -54,7 +55,7 @@ namespace SFeed.Business.Providers
 
         public IEnumerable<CommentModel> GetComments(string postId)
         {
-            var result = commentRepo.GetMany(p => p.WallPostId == postId);
+            var result = commentRepo.GetMany(p => p.WallPostId == postId && p.IsDeleted == false);
             return Mapper.Map<IEnumerable<CommentModel>>(result);
         }
 

@@ -2,6 +2,8 @@
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.SqlRepository;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFeed.Business.Providers
 {
@@ -43,7 +45,15 @@ namespace SFeed.Business.Providers
             wallPostLikeRepo.Delete(u => u.CreatedBy == userId && u.WallPostId == postId);
             wallPostLikeRepo.CommitChanges();
         }
+        public IEnumerable<string> GetPostLikes(string postId)
+        {
+            return wallPostLikeRepo.GetMany(w => w.WallPostId == postId).Select(w=>w.CreatedBy);
+        }
 
+        public IEnumerable<string> GetCommentLikes(long commentId)
+        {
+            return userCommentLikeRepo.GetMany(w => w.CommentId == commentId).Select(w => w.CreatedBy);
+        }
         public void Dispose()
         {
             Dispose(true);
@@ -64,5 +74,7 @@ namespace SFeed.Business.Providers
                 }
             }
         }
+
+       
     }
 }
