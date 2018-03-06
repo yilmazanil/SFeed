@@ -6,9 +6,9 @@ namespace SFeed.SqlRepository
     {
         public override void Add(GroupFollower entity)
         {
-            if (!dbSet.Any(u => u.FollowerId == entity.FollowerId && u.GroupId == entity.GroupId))
+            if (!DbSet.Any(u => u.FollowerId == entity.FollowerId && u.GroupId == entity.GroupId))
             {
-                dbSet.Add(entity);
+                DbSet.Add(entity);
             }
         }
     }

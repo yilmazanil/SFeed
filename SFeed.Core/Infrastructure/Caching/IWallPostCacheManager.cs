@@ -1,7 +1,6 @@
 ﻿using SFeed.Core.Models.Comments;
 using SFeed.Core.Models.Newsfeed;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers

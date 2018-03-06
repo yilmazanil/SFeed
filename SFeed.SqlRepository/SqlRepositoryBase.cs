@@ -7,67 +7,79 @@ using System.Linq.Expressions;
 
 namespace SFeed.SqlRepository
 {
-    public abstract class SqlRepositoryBase<T>: IRepository<T> where T : class
+    public abstract class SqlRepositoryBase<T> : IRepository<T> where T : class
     {
         private SocialFeedEntities dataContext;
-        protected readonly IDbSet<T> dbSet;
+        private IDbSet<T> dbSet;
+
+
+        protected IDbSet<T> DbSet
+        {
+            get
+            {
+                if (dbSet != null)
+                {
+                    return dbSet;
+                }
+                else
+                {
+                    dbSet = DbContext.Set<T>();
+                    return dbSet;
+                }
+            }
+        }
 
         protected SocialFeedEntities DbContext
         {
             get { return dataContext ?? (dataContext = new SocialFeedEntities()); }
         }
 
-        protected SqlRepositoryBase()
-        {
-            dbSet = DbContext.Set<T>();
-        }
-
         public virtual void Add(T entity)
         {
-            dbSet.Add(entity);
+            DbSet.Add(entity);
         }
 
         public virtual void Update(T entity)
         {
-            dbSet.Attach(entity);
+            DbSet.Attach(entity);
             dataContext.Entry(entity).State = EntityState.Modified;
         }
 
         public virtual void Delete(T entity)
         {
-            dbSet.Remove(entity);
+            DbSet.Remove(entity);
         }
 
         public virtual void Delete(Expression<Func<T, bool>> where)
         {
-            IEnumerable<T> objects = dbSet.Where<T>(where).AsEnumerable();
+            IEnumerable<T> objects = DbSet.Where<T>(where).AsEnumerable();
             foreach (T obj in objects)
-                dbSet.Remove(obj);
+                DbSet.Remove(obj);
         }
 
         public virtual T GetById(int id)
         {
-            return dbSet.Find(id);
+            return DbSet.Find(id);
         }
 
         public virtual IEnumerable<T> GetAll()
         {
-            return dbSet.ToList();
+            return DbSet.ToList();
         }
 
         public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where)
         {
-            return dbSet.Where(where).ToList();
+            return DbSet.Where(where).ToList();
         }
 
         public T Get(Expression<Func<T, bool>> where)
         {
-            return dbSet.Where(where).FirstOrDefault<T>();
+            return DbSet.Where(where).FirstOrDefault<T>();
         }
 
         public bool Any(Expression<Func<T, bool>> where)
         {
-            return dbSet.Any(where);
+            return DbSet.Any(where);
         }
 
         public void CommitChanges()

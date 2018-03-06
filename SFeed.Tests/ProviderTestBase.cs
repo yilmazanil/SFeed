@@ -13,6 +13,7 @@ namespace SFeed.Tests
         protected IUserWallPostProvider wallPostProvider;
         protected string testWallOwnerId = "UnitTestUserWallOwner1";
         protected string testUserId = "UnitTestUser1";
+        protected string testGroupId = "UnitTestGroup1";
 
         [TestInitialize]
         public void InitializeCommon()
