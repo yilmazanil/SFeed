@@ -1,9 +1,10 @@
 ﻿using SFeed.Core.Models.Comments;
+using System;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface IUserCommentProvider
+    public interface IUserCommentProvider : IDisposable
     {
         long AddComment(CommentRequestModel request);
         void DeleteComment(string wallPostId, long commentId);

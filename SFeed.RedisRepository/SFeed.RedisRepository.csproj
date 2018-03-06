@@ -60,6 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisConnectionProvider.cs" />
     <Compile Include="RedisFeedRepository.cs" />
+    <Compile Include="RedisGroupFollowerRepository.cs" />
     <Compile Include="RedisListRepositoryBase.cs" />
     <Compile Include="RedisTypedRepositoryBase.cs" />
     <Compile Include="RedisUserFollowerRepository.cs" />

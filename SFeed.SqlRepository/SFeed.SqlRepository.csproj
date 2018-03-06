@@ -54,6 +54,7 @@
     <Compile Include="GroupFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="GroupFollowerRepository.cs" />
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>

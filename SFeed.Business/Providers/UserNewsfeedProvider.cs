@@ -4,6 +4,7 @@ using SFeed.Core.Infrastructue.Repository;
 using SFeed.RedisRepository;
 using SFeed.Core.Models.Newsfeed;
 using AutoMapper;
+using SFeed.Core.Models;
 
 namespace SFeed.Business.Providers
 {
@@ -11,18 +12,18 @@ namespace SFeed.Business.Providers
     {
         ICacheListRepository<NewsfeedEntry> feedCacheRepo;
         IWallPostCacheManager wallPostCacheManager;
-        IUserFollowerProvider userFollowerProvider;
+        IFollowerProvider userFollowerProvider;
 
         public UserNewsfeedProvider() : this(
             new RedisUserFeedRepository(), 
             new WallPostCacheManager(),
-            new UserFollowerProvider())
+            new FollowerProvider())
         {
 
         }
         public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
             IWallPostCacheManager wallPostCacheManager,
-            IUserFollowerProvider userFollowerProvider)
+            IFollowerProvider userFollowerProvider)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.wallPostCacheManager = wallPostCacheManager;
@@ -78,10 +79,10 @@ namespace SFeed.Business.Providers
 
         private IEnumerable<string> GetFollowers(NewsfeedEntry entry)
         {
-            var actors = new List<string> { entry.From.Id };
+            var actors = new List<Actor> { new Actor { Id = entry.From.Id, ActorTypeId = (short)ActorType.user } };
             if (entry.To != null)
             {
-                actors.Add(entry.To.Id);
+                actors.Add(new Actor { Id = entry.To.Id, ActorTypeId = (short)ActorType.user });
             }
             return userFollowerProvider.GetFollowers(actors);
         }

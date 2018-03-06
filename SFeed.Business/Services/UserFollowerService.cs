@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using SFeed.Core.Infrastructue.Services;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
+using SFeed.Core.Models;
 
 namespace SFeed.Business.Services
 {
     public sealed class UserFollowerService : IUserFollowerService, IDisposable
     {
-        private readonly IUserFollowerProvider userFollowerProvider;
+        private readonly IFollowerProvider userFollowerProvider;
 
         public UserFollowerService() :
-            this(new UserFollowerProvider())
+            this(new FollowerProvider())
         {
 
         }
 
-        public UserFollowerService(IUserFollowerProvider userFollowerProvider)
+        public UserFollowerService(IFollowerProvider userFollowerProvider)
         {
             this.userFollowerProvider = userFollowerProvider;
         }
@@ -41,7 +42,7 @@ namespace SFeed.Business.Services
 
         public IEnumerable<string> GetFollowers(string userId)
         {
-            return userFollowerProvider.GetFollowers(userId);
+            return userFollowerProvider.GetFollowers(new Actor { Id = userId, ActorTypeId = (short)ActorType.user } );
         }
     }
 }

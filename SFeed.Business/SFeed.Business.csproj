@@ -64,7 +64,8 @@
     <Compile Include="MapperConfig\RegisterEntityToViewModelMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\UserCommentProvider.cs" />
-    <Compile Include="Providers\UserFollowerProvider.cs" />
+    <Compile Include="Providers\FollowerProvider.cs" />
+    <Compile Include="Providers\UserLikeProvider.cs" />
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />
     <Compile Include="Caching\WallPostCacheManager.cs" />

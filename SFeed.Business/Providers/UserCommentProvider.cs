@@ -12,7 +12,11 @@ namespace SFeed.Business.Providers
     {
         IRepository<UserComment> commentRepo;
 
-        public UserCommentProvider()
+        public UserCommentProvider() : this(new CommentRepository())
+        {
+
+        }
+        public UserCommentProvider(IRepository<UserComment> commentRepo)
         {
             this.commentRepo = new CommentRepository();
         }
@@ -36,21 +40,38 @@ namespace SFeed.Business.Providers
             commentRepo.CommitChanges();
         }
 
+        public void UpdateComment(string commentBody, long commentId, string postId)
+        {
+            var comment = commentRepo.Get(c => c.Id == commentId && c.WallPostId == postId);
+            if (comment != null)
+            {
+                comment.ModifiedDate = DateTime.Now;
+                comment.Body = commentBody;
+                commentRepo.Update(comment);
+                commentRepo.CommitChanges();
+            }
+        }
+
         public IEnumerable<CommentModel> GetComments(string postId)
         {
             var result = commentRepo.GetMany(p => p.WallPostId == postId);
             return Mapper.Map<IEnumerable<CommentModel>>(result);
         }
 
-        public void UpdateComment(string commentBody, long commentId, string postId)
+        public void Dispose()
         {
-            var comment = commentRepo.Get(c => c.Id == commentId && c.WallPostId == postId);
-            if (comment != null )
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                comment.ModifiedDate = DateTime.Now;
-                comment.Body = commentBody;
-                commentRepo.Update(comment);
-                commentRepo.CommitChanges();
+                if (commentRepo != null)
+                {
+                    commentRepo.Dispose();
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ namespace SFeed.Tests
         [TestInitialize]
         public void InitializeCommon()
         {
-            using (var followerProvider = new UserFollowerProvider())
+            using (var followerProvider = new FollowerProvider())
             {
                 followerProvider.FollowUser(testUserId, testWallOwnerId);
                 followerProvider.FollowUser(testWallOwnerId, testUserId);

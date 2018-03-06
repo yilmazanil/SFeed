@@ -41,10 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\Caching\IWallPostCacheManager.cs" />
-    <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />
-    <Compile Include="Infrastructure\Providers\IUserFollowerProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserNewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />

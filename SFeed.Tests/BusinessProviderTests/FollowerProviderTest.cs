@@ -2,18 +2,19 @@
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using System.Linq;
+using SFeed.Core.Models;
 
 namespace SFeed.Tests.BusinessProviderTests
 {
     [TestClass]
     public class FollowerProviderTest : ProviderTestBase
     {
-        IUserFollowerProvider userFollowerProvider;
+        IFollowerProvider userFollowerProvider;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.userFollowerProvider = new UserFollowerProvider();
+            this.userFollowerProvider = new FollowerProvider();
         }
         [TestCleanup]
         public void Cleanup()
@@ -26,7 +27,7 @@ namespace SFeed.Tests.BusinessProviderTests
             userFollowerProvider.FollowUser(testUserId, testWallOwnerId);
             userFollowerProvider.FollowUser(testUserId, testWallOwnerId);
 
-            var followers = userFollowerProvider.GetFollowers(testWallOwnerId);
+            var followers = userFollowerProvider.GetFollowers(new Actor { Id = testWallOwnerId, ActorTypeId = (short)ActorType.user });
 
             var testUserEntries = followers.Where(f => f == testUserId);
             var shouldExist = testUserEntries.Any();
@@ -40,7 +41,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             userFollowerProvider.UnfollowUser(testUserId, testWallOwnerId);
 
-            var followers = userFollowerProvider.GetFollowers(testWallOwnerId);
+            var followers = userFollowerProvider.GetFollowers(new Actor { Id = testWallOwnerId, ActorTypeId = (short)ActorType.user });
 
             var shouldNotExist = followers.Any(f => f == testUserId);
 

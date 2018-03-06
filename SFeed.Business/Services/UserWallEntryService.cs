@@ -12,19 +12,19 @@ namespace SFeed.Business.Services
     {
         IUserWallPostProvider wallPostProvider;
         IUserNewsfeedProvider newsFeedProvider;
-        IUserFollowerProvider followerProvider;
+        IFollowerProvider followerProvider;
 
         public UserWallEntryService(): this(
             new UserWallPostProvider(),
             new UserNewsfeedProvider(),
-            new UserFollowerProvider())
+            new FollowerProvider())
         {
 
         }
         public UserWallEntryService(
             IUserWallPostProvider wallPostProvider,
             IUserNewsfeedProvider newsFeedProvider,
-            IUserFollowerProvider followerProvider)
+            IFollowerProvider followerProvider)
         {
             this.wallPostProvider = wallPostProvider;
             this.newsFeedProvider = newsFeedProvider;
