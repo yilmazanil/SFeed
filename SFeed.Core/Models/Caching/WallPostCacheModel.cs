@@ -14,7 +14,7 @@ namespace SFeed.Core.Models.Newsfeed
 
         public Actor WallOwner { get; set; }
 
-        public List<UserCommentModel> LatestComments { get; set; }
+        public List<CommentRequestModel> LatestComments { get; set; }
 
         public int CommentCount { get; set; }
 

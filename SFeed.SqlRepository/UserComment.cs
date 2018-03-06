@@ -12,7 +12,7 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class Comment
+    public partial class UserComment
     {
         public long Id { get; set; }
         public string Body { get; set; }
@@ -22,7 +22,7 @@ namespace SFeed.SqlRepository
         public string WallPostId { get; set; }
         public bool IsDeleted { get; set; }
     
-        public virtual CommentLike CommentLike { get; set; }
         public virtual WallPost WallPost { get; set; }
+        public virtual UserCommentLike UserCommentLike { get; set; }
     }
 }

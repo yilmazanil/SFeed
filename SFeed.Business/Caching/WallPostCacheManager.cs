@@ -4,6 +4,7 @@ using SFeed.Core.Infrastructue.Repository;
 using SFeed.RedisRepository;
 using System.Collections.Generic;
 using System;
+using SFeed.Core.Models.Comments;
 
 namespace SFeed.Business.Providers
 {
@@ -59,6 +60,21 @@ namespace SFeed.Business.Providers
         public void UpdatePost(WallPostCacheModel wallPost)
         {
             wallPostCacheRepo.UpdateItem(wallPost.Id, wallPost);
+        }
+
+        public void AddComment(CommentRequestModel comment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateComment(string commentBody, string commentId, string postId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteComment(string postId, string commentId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

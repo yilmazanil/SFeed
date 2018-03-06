@@ -11,7 +11,7 @@ namespace SFeed.Core.Infrastructure.Providers
         void AddPost(WallPostCacheModel wallPost);
         void UpdatePost(WallPostCacheModel wallPost);
         void DeletePost(string Id);
-        void AddComment(UserCommentModel comment);
+        void AddComment(CommentRequestModel comment);
         void UpdateComment(string commentBody, string commentId, string postId);
         void DeleteComment(string postId, string commentId);
         WallPostCacheModel GetPost(string id);

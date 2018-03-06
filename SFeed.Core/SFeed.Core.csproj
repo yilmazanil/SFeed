@@ -55,7 +55,8 @@
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
-    <Compile Include="Models\Comments\UserCommentModel.cs" />
+    <Compile Include="Models\Comments\CommentModel.cs" />
+    <Compile Include="Models\Comments\CommentRequestModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface ICommentProvider
+    public interface IUserCommentProvider
     {
-        string AddComment(UserCommentModel entry);
-        void DeleteComment(string commentId);
-        void UpdateComment(UserCommentModel entry);
-        IEnumerable<UserCommentModel> GetComments(string postId);
+        long AddComment(CommentRequestModel request);
+        void DeleteComment(string wallPostId, long commentId);
+        void UpdateComment(string body, long commentId, string postId);
+        IEnumerable<CommentModel> GetComments(string postId);
     }
 }

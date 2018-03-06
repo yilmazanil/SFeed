@@ -14,7 +14,16 @@ namespace SFeed.SqlRepository
     
     public partial class WallPostType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public WallPostType()
+        {
+            this.WallPost = new HashSet<WallPost>();
+        }
+    
         public byte Id { get; set; }
         public string Type { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<WallPost> WallPost { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace SFeed.SqlRepository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public WallPost()
         {
-            this.Comment = new HashSet<Comment>();
+            this.UserComment = new HashSet<UserComment>();
             this.WallPostLike = new HashSet<WallPostLike>();
         }
     
@@ -29,10 +29,11 @@ namespace SFeed.SqlRepository
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Comment> Comment { get; set; }
         public virtual GroupWall GroupWall { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserComment> UserComment { get; set; }
         public virtual UserWall UserWall { get; set; }
+        public virtual WallPostType WallPostType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WallPostLike> WallPostLike { get; set; }
     }

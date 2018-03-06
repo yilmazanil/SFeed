@@ -12,12 +12,12 @@ namespace SFeed.SqlRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class CommentLike
+    public partial class UserCommentLike
     {
         public long CommentId { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual Comment Comment { get; set; }
+        public virtual UserComment UserComment { get; set; }
     }
 }
