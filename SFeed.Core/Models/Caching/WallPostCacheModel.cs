@@ -1,4 +1,6 @@
 ﻿using SFeed.Core.Models.Caching;
+using SFeed.Core.Models.Comments;
+using System.Collections.Generic;
 
 namespace SFeed.Core.Models.Newsfeed
 {
@@ -12,7 +14,7 @@ namespace SFeed.Core.Models.Newsfeed
 
         public Actor WallOwner { get; set; }
 
-        public string[] LatestComments { get; set; }
+        public List<UserCommentModel> LatestComments { get; set; }
 
         public int CommentCount { get; set; }
 

@@ -68,6 +68,10 @@
       <DependentUpon>SFeedEntities.edmx</DependentUpon>
     </Compile>
     <Compile Include="SqlRepositoryBase.cs" />
+    <Compile Include="UserComment.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CommentRepository.cs" />
     <Compile Include="UserFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>

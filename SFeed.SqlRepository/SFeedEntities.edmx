@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SocialFeedDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="UserComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="WallPostId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserFollower">
           <Key>
             <PropertyRef Name="UserId" />
@@ -39,6 +51,18 @@
           <Property Name="Id" Type="tinyint" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_UserComment_WallPost">
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
+          <End Role="UserComment" Type="Self.UserComment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserComment">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserWall_WallPost">
           <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
           <End Role="UserWall" Type="Self.UserWall" Multiplicity="0..1" />
@@ -64,10 +88,15 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SocialFeedDataModelStoreContainer">
+          <EntitySet Name="UserComment" EntityType="Self.UserComment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserFollower" EntityType="Self.UserFollower" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserWall" EntityType="Self.UserWall" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WallPost" EntityType="Self.WallPost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WallPostType" EntityType="Self.WallPostType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UserComment_WallPost" Association="Self.FK_UserComment_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserComment" EntitySet="UserComment" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserWall_WallPost" Association="Self.FK_UserWall_WallPost">
             <End Role="WallPost" EntitySet="WallPost" />
             <End Role="UserWall" EntitySet="UserWall" />
@@ -82,10 +111,15 @@
     <edmx:ConceptualModels>
       <Schema Namespace="SocialFeedDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SocialFeedEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UserComment" EntityType="SocialFeedDataModel.UserComment" />
           <EntitySet Name="UserFollower" EntityType="SocialFeedDataModel.UserFollower" />
           <EntitySet Name="UserWall" EntityType="SocialFeedDataModel.UserWall" />
           <EntitySet Name="WallPost" EntityType="SocialFeedDataModel.WallPost" />
           <EntitySet Name="WallPostType" EntityType="SocialFeedDataModel.WallPostType" />
+          <AssociationSet Name="FK_UserComment_WallPost" Association="SocialFeedDataModel.FK_UserComment_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserComment" EntitySet="UserComment" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserWall_WallPost" Association="SocialFeedDataModel.FK_UserWall_WallPost">
             <End Role="WallPost" EntitySet="WallPost" />
             <End Role="UserWall" EntitySet="UserWall" />
@@ -95,6 +129,19 @@
             <End Role="WallPost" EntitySet="WallPost" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="UserComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="WallPostId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_UserComment_WallPost" FromRole="UserComment" ToRole="WallPost" />
+        </EntityType>
         <EntityType Name="UserFollower">
           <Key>
             <PropertyRef Name="UserId" />
@@ -122,6 +169,7 @@
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="UserComment" Relationship="SocialFeedDataModel.FK_UserComment_WallPost" FromRole="WallPost" ToRole="UserComment" />
           <NavigationProperty Name="UserWall" Relationship="SocialFeedDataModel.FK_UserWall_WallPost" FromRole="WallPost" ToRole="UserWall" />
           <NavigationProperty Name="WallPostType" Relationship="SocialFeedDataModel.FK_WallPost_WallPostType" FromRole="WallPost" ToRole="WallPostType" />
         </EntityType>
@@ -133,6 +181,18 @@
           <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_WallPost_WallPostType" FromRole="WallPostType" ToRole="WallPost" />
         </EntityType>
+        <Association Name="FK_UserComment_WallPost">
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.UserComment" Role="UserComment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserComment">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserWall_WallPost">
           <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
           <End Type="SocialFeedDataModel.UserWall" Role="UserWall" Multiplicity="0..1" />
@@ -163,6 +223,19 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SocialFeedDataModelStoreContainer" CdmEntityContainer="SocialFeedEntities">
+          <EntitySetMapping Name="UserComment">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserComment">
+              <MappingFragment StoreEntitySet="UserComment">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserFollower">
             <EntityTypeMapping TypeName="SocialFeedDataModel.UserFollower">
               <MappingFragment StoreEntitySet="UserFollower">

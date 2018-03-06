@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SFeed.Core.Models.Comments;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Models.WallPost;
 using SFeed.SqlRepository;
@@ -12,6 +13,7 @@ namespace SFeed.Business.MapperConfig
             cfg.CreateMap<WallPost, WallPostModel>();
             cfg.CreateMap<WallPostCreateRequest, WallPostModel>();
             cfg.CreateMap<NewsfeedEntry, NewsfeedResponseItem>();
+            cfg.CreateMap<UserComment, UserCommentModel>();
         }
     }
 }

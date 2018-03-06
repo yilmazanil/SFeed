@@ -25,6 +25,7 @@ namespace SFeed.SqlRepository
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<UserComment> UserComment { get; set; }
         public virtual DbSet<UserFollower> UserFollower { get; set; }
         public virtual DbSet<UserWall> UserWall { get; set; }
         public virtual DbSet<WallPost> WallPost { get; set; }
