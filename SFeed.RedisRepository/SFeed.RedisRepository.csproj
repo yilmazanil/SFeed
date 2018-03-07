@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedisCacheListRepositoryBase.cs" />
+    <Compile Include="RedisCommentRepository.cs" />
     <Compile Include="RedisConnectionProvider.cs" />
     <Compile Include="RedisFeedRepository.cs" />
     <Compile Include="RedisGroupFollowerRepository.cs" />

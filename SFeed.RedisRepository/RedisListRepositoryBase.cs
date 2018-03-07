@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisListRepositoryBase<T> : ICacheListRepository<T>
+    public abstract class RedisListRepositoryBase<T> : INamedCacheListRepository<T>
     {
         protected abstract string ListPrefix { get; }
 
@@ -43,6 +43,9 @@ namespace SFeed.RedisRepository
         {
             return string.Concat(ListPrefix, ":", key);
         }
+
+
+
 
         protected virtual IRedisList<T> GetAssociatedList(string listKey)
         {

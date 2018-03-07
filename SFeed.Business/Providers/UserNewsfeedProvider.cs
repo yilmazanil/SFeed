@@ -15,7 +15,7 @@ namespace SFeed.Business.Providers
     //TODO: Include wallpost owner followers for wallpost
     public class UserNewsfeedProvider : INewsfeedProvider
     {
-        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
+        INamedCacheListRepository<NewsfeedEntry> feedCacheRepo;
         ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo;
         IFollowerProvider followerProvider;
         private int latestCommentCount = 3;
@@ -27,7 +27,7 @@ namespace SFeed.Business.Providers
         {
 
         }
-        public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
+        public UserNewsfeedProvider(INamedCacheListRepository<NewsfeedEntry> feedCacheRepo,
             ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo,
             IFollowerProvider followerProvider)
         {

@@ -5,20 +5,25 @@ using SFeed.Core.Models.Comments;
 using SFeed.Core.Infrastructue.Repository;
 using SFeed.SqlRepository;
 using AutoMapper;
+using SFeed.Core.Models.Caching;
+using SFeed.RedisRepository;
 
 namespace SFeed.Business.Providers
 {
     public class UserCommentProvider : IUserCommentProvider
     {
         IRepository<UserComment> commentRepo;
+        INamedCacheListRepository<CommentCacheModel> commentCacheRepo;
 
-        public UserCommentProvider() : this(new CommentRepository())
+        public UserCommentProvider() : this(new CommentRepository(), new RedisCommentRepository())
         {
 
         }
-        public UserCommentProvider(IRepository<UserComment> commentRepo)
+        public UserCommentProvider(IRepository<UserComment> commentRepo,
+              INamedCacheListRepository<CommentCacheModel> commentCacheRepo)
         {
-            this.commentRepo = new CommentRepository();
+            this.commentRepo = commentRepo;
+            this.commentCacheRepo = commentCacheRepo;
         }
         public long AddComment(CommentCreateModel entry)
         {
@@ -32,7 +37,6 @@ namespace SFeed.Business.Providers
             };
             commentRepo.Add(dbEntry);
             commentRepo.CommitChanges();
-            return dbEntry.Id;
         }
 
         public void DeleteComment(string wallPostId, long commentId)

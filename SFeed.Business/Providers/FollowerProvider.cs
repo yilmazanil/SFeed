@@ -13,8 +13,8 @@ namespace SFeed.Business.Providers
     {
         private readonly IRepository<UserFollower> userFollowerRepo;
         private readonly IRepository<GroupFollower> groupFollowerRepo;
-        private readonly ICacheListRepository<string> userFollowerCacheRepo;
-        private readonly ICacheListRepository<string> groupFollowerCacheRepo;
+        private readonly INamedCacheListRepository<string> userFollowerCacheRepo;
+        private readonly INamedCacheListRepository<string> groupFollowerCacheRepo;
 
         public FollowerProvider() : this(
             new UserFollowerRepository(),
@@ -29,8 +29,8 @@ namespace SFeed.Business.Providers
         public FollowerProvider(
             IRepository<UserFollower> userFollowerRepo,
             IRepository<GroupFollower> groupFollowerRepo,
-            ICacheListRepository<string> userFollowerCacheRepo,
-            ICacheListRepository<string> groupFollowerCacheRepo)
+            INamedCacheListRepository<string> userFollowerCacheRepo,
+            INamedCacheListRepository<string> groupFollowerCacheRepo)
         {
             this.userFollowerRepo = userFollowerRepo;
             this.groupFollowerRepo = groupFollowerRepo;

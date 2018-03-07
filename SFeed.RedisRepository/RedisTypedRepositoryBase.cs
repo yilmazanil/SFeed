@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T : TypedCacheItemBaseModel
+    public abstract class RedisTypedRepositoryBase<T>: ITypedCacheRepository<T>, IDisposable where T : CacheListItemBaseModel
     {
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;

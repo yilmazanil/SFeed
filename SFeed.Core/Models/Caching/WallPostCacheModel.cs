@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Models.Newsfeed
 {
-    public class WallPostCacheModel : TypedCacheItemBaseModel
+    public class WallPostCacheModel : CacheListItemBaseModel
     {
         public string Body { get; set; }
 

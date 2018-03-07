@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models.Caching
 {
-    public class TypedCacheItemBaseModel
+    public class CacheListItemBaseModel
     {
         public string Id { get; set; }
     }
