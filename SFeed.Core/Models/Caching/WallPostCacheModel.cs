@@ -12,13 +12,5 @@ namespace SFeed.Core.Models.Newsfeed
         public short PostType { get; set; }
 
         public Actor WallOwner { get; set; }
-
-        public int CommentCount { get; set; }
-
-        public List<CommentCacheModel> LatestComments { get; set; }
-
-        //x and other users liked
-        public List<string> Likes { get; set; }
-
     }
 }

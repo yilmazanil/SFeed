@@ -25,6 +25,7 @@ namespace SFeed.Business.Providers
             this.commentRepo = commentRepo;
             this.commentCacheRepo = commentCacheRepo;
         }
+
         public long AddComment(CommentCreateModel entry)
         {
             var dbEntry = new UserComment
@@ -37,12 +38,22 @@ namespace SFeed.Business.Providers
             };
             commentRepo.Add(dbEntry);
             commentRepo.CommitChanges();
+
+            var commentCacheModel = new CommentCacheModel
+            {
+                Body = dbEntry.Body,
+                Id = dbEntry.Id.ToString(),
+                CreatedBy = entry.CreatedBy
+            };
+            commentCacheRepo.AddOrUpdateItem(entry.WallPostId, commentCacheModel);
+            return dbEntry.Id;
         }
 
         public void DeleteComment(string wallPostId, long commentId)
         {
             commentRepo.Delete(p => p.Id == commentId && p.WallPostId == wallPostId);
             commentRepo.CommitChanges();
+            commentCacheRepo.RemoveItem(wallPostId, commentId.ToString());
         }
 
         public void UpdateComment(string commentBody, long commentId, string postId)
@@ -55,6 +66,9 @@ namespace SFeed.Business.Providers
                 commentRepo.Update(comment);
                 commentRepo.CommitChanges();
             }
+            var cacheComment = commentCacheRepo.GetItem(postId, commentId.ToString());
+            cacheComment.Body = commentBody;
+            commentCacheRepo.AddOrUpdateItem(postId, cacheComment);
         }
 
         public IEnumerable<CommentModel> GetComments(string postId)

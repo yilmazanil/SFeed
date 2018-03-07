@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SFeed.Core.Models.Caching;
+using System;
 
 namespace SFeed.Core.Models.Newsfeed
 {
-    public class NewsfeedEntry
+    public class NewsfeedEntry : CacheListItemBaseModel
     {
         public string ReferencePostId { get; set; }
 

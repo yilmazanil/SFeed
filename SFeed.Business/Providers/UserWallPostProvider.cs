@@ -8,23 +8,28 @@ using AutoMapper;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models;
 using SFeed.Core.Models.Newsfeed;
+using SFeed.RedisRepository;
 
 namespace SFeed.Business.Providers
 {
     public class UserWallPostProvider : IUserWallPostProvider
     {
         private IRepository<WallPost> wallPostRepo;
+        private ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo;
 
         public UserWallPostProvider() : this(
-            new WallPostRepository())
+            new WallPostRepository(),
+            new RedisWallPostRepository())
         {
 
         }
 
         public UserWallPostProvider(
-            IRepository<WallPost> wallPostRepo)
+            IRepository<WallPost> wallPostRepo,
+            ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
+            this.wallPostCacheRepo = wallPostCacheRepo;
         }
 
         public string AddPost(WallPostCreateRequest request)
@@ -45,18 +50,22 @@ namespace SFeed.Business.Providers
             wallPostRepo.Add(dbEntry);
             wallPostRepo.CommitChanges();
 
+            var cacheEntry = MapDbEntry(dbEntry);
+
+            wallPostCacheRepo.AddItem(cacheEntry);
 
             return newPostId;
         }
 
         private WallPostCacheModel MapDbEntry(WallPost dbEntry)
         {
-            return new WallPostCacheModel
+            return  new WallPostCacheModel
             {
-                Body = dbEntry.Body,
                 Id = dbEntry.Id,
+                Body = dbEntry.Body,
                 PostedBy = dbEntry.CreatedBy,
-                WallOwner = new Actor { Id = dbEntry.UserWall.UserId, ActorTypeId = (short)ActorType.user }
+                PostType = dbEntry.PostType,
+                WallOwner = new Actor { ActorTypeId = (short)ActorType.user, Id = dbEntry.UserWall.UserId }
             };
         }
         public void UpdatePost(WallPostModel model)
@@ -69,6 +78,9 @@ namespace SFeed.Business.Providers
             //Save Post
             wallPostRepo.Update(existingEntry);
             wallPostRepo.CommitChanges();
+
+            var cacheEntry = MapDbEntry(existingEntry);
+            wallPostCacheRepo.UpdateItem(cacheEntry);
         }
 
         public void DeletePost(string postId)
@@ -77,6 +89,7 @@ namespace SFeed.Business.Providers
             wallPostRepo.Delete(p => p.Id == postId);
             wallPostRepo.CommitChanges();
 
+            wallPostCacheRepo.RemoveItem(postId);
         }
 
         public WallPostModel GetPost(string postId)

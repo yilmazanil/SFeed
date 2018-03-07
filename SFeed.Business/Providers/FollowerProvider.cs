@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFeed.Core.Models;
+using SFeed.Core.Models.Caching;
 
 namespace SFeed.Business.Providers
 {
@@ -13,8 +14,8 @@ namespace SFeed.Business.Providers
     {
         private readonly IRepository<UserFollower> userFollowerRepo;
         private readonly IRepository<GroupFollower> groupFollowerRepo;
-        private readonly INamedCacheListRepository<string> userFollowerCacheRepo;
-        private readonly INamedCacheListRepository<string> groupFollowerCacheRepo;
+        private readonly INamedCacheListRepository<CacheListItemBaseModel> userFollowerCacheRepo;
+        private readonly INamedCacheListRepository<CacheListItemBaseModel> groupFollowerCacheRepo;
 
         public FollowerProvider() : this(
             new UserFollowerRepository(),
@@ -29,14 +30,15 @@ namespace SFeed.Business.Providers
         public FollowerProvider(
             IRepository<UserFollower> userFollowerRepo,
             IRepository<GroupFollower> groupFollowerRepo,
-            INamedCacheListRepository<string> userFollowerCacheRepo,
-            INamedCacheListRepository<string> groupFollowerCacheRepo)
+            INamedCacheListRepository<CacheListItemBaseModel> userFollowerCacheRepo,
+            INamedCacheListRepository<CacheListItemBaseModel> groupFollowerCacheRepo)
         {
             this.userFollowerRepo = userFollowerRepo;
             this.groupFollowerRepo = groupFollowerRepo;
             this.userFollowerCacheRepo = userFollowerCacheRepo;
             this.groupFollowerCacheRepo = groupFollowerCacheRepo;
         }
+
         public void FollowUser(string followerId, string userId)
         {
             bool alreadyFollowing = userFollowerRepo.Any(p => p.FollowerId == followerId && p.UserId == userId);
@@ -44,7 +46,7 @@ namespace SFeed.Business.Providers
             {
                 userFollowerRepo.Add(new UserFollower { FollowerId = followerId, UserId = userId });
                 userFollowerRepo.CommitChanges();
-                userFollowerCacheRepo.AppendToList(userId, followerId);
+                userFollowerCacheRepo.AddOrUpdateItem(userId, new CacheListItemBaseModel {  Id = followerId });
             }
         }
 
@@ -52,7 +54,7 @@ namespace SFeed.Business.Providers
         {
             userFollowerRepo.Delete(f => f.FollowerId == followerId && f.UserId == userId);
             userFollowerRepo.CommitChanges();
-            userFollowerCacheRepo.RemoveFromList(userId, followerId);
+            userFollowerCacheRepo.RemoveItem(userId, followerId);
         }
 
         public void FollowGroup(string followerId, string groupId)
@@ -62,7 +64,7 @@ namespace SFeed.Business.Providers
             {
                 groupFollowerRepo.Add(new GroupFollower { FollowerId = followerId, GroupId = groupId });
                 groupFollowerRepo.CommitChanges();
-                groupFollowerCacheRepo.AppendToList(groupId, followerId);
+                groupFollowerCacheRepo.AddOrUpdateItem(groupId, new CacheListItemBaseModel { Id = followerId });
             }
         }
 
@@ -70,7 +72,7 @@ namespace SFeed.Business.Providers
         {
             groupFollowerRepo.Delete(f => f.FollowerId == followerId && f.GroupId == groupId);
             groupFollowerRepo.CommitChanges();
-            groupFollowerCacheRepo.RemoveFromList(groupId, followerId);
+            groupFollowerCacheRepo.RemoveItem(groupId, followerId);
         }
 
         public IEnumerable<string> GetFollowers(IEnumerable<Actor> actors)
@@ -91,31 +93,40 @@ namespace SFeed.Business.Providers
 
         public IEnumerable<string> GetFollowers(Actor actor)
         {
-            IEnumerable<string> followers;
+            IEnumerable<CacheListItemBaseModel> followers;
             if (actor.ActorTypeId == (short)ActorType.user)
             {
                 followers = userFollowerCacheRepo.GetList(actor.Id);
 
-                if (!followers.Any())
+                if (followers == null || !followers.Any())
                 {
-                    followers = userFollowerRepo.GetMany(p => p.UserId == actor.Id).Select(u => u.FollowerId);
-                    userFollowerCacheRepo.RecreateList(actor.Id, followers);
-                    return followers;
+                    followers = userFollowerRepo.GetMany(p => p.UserId == actor.Id).Select(p=> new CacheListItemBaseModel {
+                         Id = p.FollowerId
+                    });
+                    if (followers != null)
+                    {
+                        userFollowerCacheRepo.RecreateList(actor.Id, followers);
+                    }
                 }
             }
             else
             {
                 followers = groupFollowerCacheRepo.GetList(actor.Id);
 
-                if (!followers.Any())
+                if (followers == null || !followers.Any())
                 {
-                    followers = groupFollowerRepo.GetMany(p => p.GroupId == actor.Id).Select(u => u.FollowerId);
-                    groupFollowerCacheRepo.RecreateList(actor.Id, followers);
-                    return followers;
+                    followers = groupFollowerRepo.GetMany(p => p.GroupId == actor.Id).Select(p => new CacheListItemBaseModel
+                    {
+                        Id = p.FollowerId
+                    });
+                    if (followers != null)
+                    {
+                        groupFollowerCacheRepo.RecreateList(actor.Id, followers);
+                    }
                 }
             }
 
-            return followers != null ? followers.Distinct() : null; 
+            return followers != null ? followers.Select(p=>p.Id).Distinct() : null; 
         }
 
 

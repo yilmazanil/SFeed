@@ -1,12 +1,15 @@
 ﻿using SFeed.Core.Models.Caching;
+using System;
+using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructure.Repository
+namespace SFeed.Core.Infrastructue.Repository
 {
-    public interface ICacheItemRepository<T> where T: CacheListItemBaseModel
+    public interface ICacheItemRepository<T> : IDisposable where T : CacheListItemBaseModel
     {
-        void AddItem(T item);
-        T GetItem(T item);
-        void DeleteItem(string itemId);
-        void UpdateItem(T item);
+        T AddItem(T cacheItem);
+        T GetItem(string id);
+        IEnumerable<T> GetByIds(IEnumerable<string> ids);
+        void RemoveItem(string id);
+        T UpdateItem(T cacheItem);
     }
 }

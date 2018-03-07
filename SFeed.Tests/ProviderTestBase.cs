@@ -44,7 +44,7 @@ namespace SFeed.Tests
             return new WallPostCreateRequest
             {
                 Body = body,
-                PostedBy = new Actor { ActorTypeId = (short)ActorType.user, Id = testUserId },
+                PostedBy = testUserId,
                 PostType = (short)WallPostType.text,
                 WallOwner = new Actor { ActorTypeId = (short)ActorType.user, Id = testWallOwnerId },
             };
