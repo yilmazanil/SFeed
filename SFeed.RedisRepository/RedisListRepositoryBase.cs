@@ -44,26 +44,26 @@ namespace SFeed.RedisRepository
             return string.Concat(ListPrefix, ":", key);
         }
 
-        protected IRedisList<T> GetAssociatedList(string listKey)
+        protected virtual IRedisList<T> GetAssociatedList(string listKey)
         {
             var listName = GetListName(listKey);
             return clientApi.Lists[listName];
         }
 
-        public void AppendToList(string listKey, T item)
+        public virtual void AppendToList(string listKey, T item)
         {
             var listRef = GetAssociatedList(listKey);
             listRef.RemoveValue(item);
             listRef.Add(item);
         }
 
-        public IEnumerable<T> GetList(string listKey)
+        public virtual IEnumerable<T> GetList(string listKey)
         {
             var listRef = GetAssociatedList(listKey);
             return listRef.GetAll();
         }
 
-        public void RecreateList(string listKey, IEnumerable<T> listItems)
+        public virtual void RecreateList(string listKey, IEnumerable<T> listItems)
         {
 
             var listRef = GetAssociatedList(listKey);
@@ -75,24 +75,24 @@ namespace SFeed.RedisRepository
             }
         }
 
-        public void RemoveFromList(string listKey, T item)
+        public virtual void RemoveFromList(string listKey, T item)
         {
             var listRef = GetAssociatedList(listKey);
             listRef.RemoveValue(item);
         }
 
-        public void ClearList(string listKey)
+        public virtual void ClearList(string listKey)
         {
             var listRef = GetAssociatedList(listKey);
             listRef.Clear();
         }
 
-        public void DeleteList(string listKey)
+        public virtual void DeleteList(string listKey)
         {
             clientApi.DeleteById(GetListName(listKey));
         }
 
-        public void PrependToList(string listKey, T item)
+        public virtual void PrependToList(string listKey, T item)
         {
             var listRef = GetAssociatedList(listKey);
             listRef.RemoveValue(item);

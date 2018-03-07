@@ -13,9 +13,9 @@ namespace SFeed.Core.Infrastructure.Providers
         void DeletePost(string Id);
         void AddComment(string postId, CommentCacheModel comment);
         void UpdateComment(string postId, CommentCacheModel comment);
-        void DeleteComment(string postId, string commentId, string commentBy);
-        void LikePost(string postId);
-        void UnlikePost(string postId);
+        void DeleteComment(string postId, long commentId, string commentBy);
+        void LikePost(string postId, string likedBy);
+        void UnlikePost(string postId, string unlikedBy);
         IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId);
     }
 }

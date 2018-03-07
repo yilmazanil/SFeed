@@ -34,14 +34,14 @@ namespace SFeed.Business.Services
         public string CreatePost(WallPostCreateRequest request)
         {
             var entryId =  wallPostProvider.AddPost(request);
-            var newsFeedEntry = new NewsfeedEntry
+            newsFeedProvider.AddPost(new WallPostCacheModel
             {
-                From = new Actor { ActorTypeId = (short)ActorType.user, Id = request.PostedBy.Id },
-                To = new Actor { ActorTypeId = (short)ActorType.user, Id = request.WallOwner.Id },
-                TypeId = (short)NewsfeedEntryType.wallpost,
-                ReferencePostId = entryId
-            };
-            newsFeedProvider.AddNewsfeedItem(newsFeedEntry);
+                Body = request.Body,
+                Id = entryId,
+                PostedBy = request.PostedBy,
+                PostType = request.PostType,
+                WallOwner = request.WallOwner
+            });
             return entryId;
         }
 

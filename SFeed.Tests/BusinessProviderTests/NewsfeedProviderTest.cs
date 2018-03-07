@@ -15,14 +15,12 @@ namespace SFeed.Tests.BusinessProviderTests
     {
         IUserWallPostProvider userWallPostProvider;
         INewsfeedProvider userNewsfeedProvider;
-        IWallPostCacheManager wallPostCacheProvider;
 
         [TestInitialize]
         public void Initialize()
         {
             this.userWallPostProvider = new UserWallPostProvider();
             this.userNewsfeedProvider = new UserNewsfeedProvider();
-            this.wallPostCacheProvider = new WallPostCacheManager();
         }
         [TestCleanup]
         public void Cleanup()

@@ -4,7 +4,7 @@
     {
         public string Body { get; set; }
 
-        public Actor PostedBy { get; set; }
+        public string PostedBy { get; set; }
 
         public short PostType { get; set; }
 

@@ -12,11 +12,12 @@ using System;
 
 namespace SFeed.Business.Providers
 {
-    public sealed class UserNewsfeedProvider : INewsfeedProvider
+    //TODO: Include wallpost owner followers for wallpost
+    public class UserNewsfeedProvider : INewsfeedProvider
     {
         ICacheListRepository<NewsfeedEntry> feedCacheRepo;
         ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo;
-        IFollowerProvider userFollowerProvider;
+        IFollowerProvider followerProvider;
         private int latestCommentCount = 3;
 
         public UserNewsfeedProvider() : this(
@@ -28,11 +29,11 @@ namespace SFeed.Business.Providers
         }
         public UserNewsfeedProvider(ICacheListRepository<NewsfeedEntry> feedCacheRepo,
             ITypedCacheRepository<WallPostCacheModel> wallPostCacheRepo,
-            IFollowerProvider userFollowerProvider)
+            IFollowerProvider followerProvider)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
-            this.userFollowerProvider = userFollowerProvider;
+            this.followerProvider = followerProvider;
         }
          
 
@@ -57,42 +58,15 @@ namespace SFeed.Business.Providers
 
             foreach (var userId in followers)
             {
+
                 feedCacheRepo.RemoveFromList(userId, entry);
-            }
-        }
-
-        private IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
-        {
-            var feeds = feedCacheRepo.GetList(userId);
-
-            foreach (var feed in feeds)
-            {
-
-                var item = Mapper.Map<NewsfeedResponseItem>(feed);
-                if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
-                {
-                    var referencePost = wallPostCacheManager.GetPost(feed.ReferencePostId);
-                    if (item.TypeId == (short)NewsfeedEntryType.wallpost && referencePost == null)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        item.ReferencedPost = referencePost;
-                    }
-                }
-                yield return item;
             }
         }
 
         private IEnumerable<string> GetFollowers(NewsfeedEntry entry)
         {
-            var actors = new List<Actor> { new Actor { Id = entry.From.Id, ActorTypeId = (short)ActorType.user } };
-            if (entry.To != null)
-            {
-                actors.Add(new Actor { Id = entry.To.Id, ActorTypeId = (short)ActorType.user });
-            }
-            return userFollowerProvider.GetFollowers(actors);
+            var actors = new List<Actor> { new Actor { Id = entry.By, ActorTypeId = (short)ActorType.user } };
+            return followerProvider.GetFollowers(actors);
         }
 
 
@@ -224,6 +198,54 @@ namespace SFeed.Business.Providers
             });
         }
 
-       
+        public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
+        {
+            var feeds = feedCacheRepo.GetList(userId);
+
+            foreach (var feed in feeds)
+            {
+
+                var item = Mapper.Map<NewsfeedResponseItem>(feed);
+                if (!string.IsNullOrWhiteSpace(feed.ReferencePostId))
+                {
+                    var refPost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
+
+                    if (refPost == null)
+                    {
+                        continue;
+                    }
+                    item.ReferencedPost = wallPostCacheRepo.GetItem(feed.ReferencePostId);
+                }
+                yield return item;
+            }
+        }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (feedCacheRepo != null)
+                {
+                    feedCacheRepo.Dispose();
+                }
+                if (wallPostCacheRepo != null)
+                {
+                    wallPostCacheRepo.Dispose();
+                }
+                if (followerProvider != null)
+                {
+                    followerProvider.Dispose();
+                }
+
+            }
+        }
+
     }
 }
