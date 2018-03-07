@@ -1,15 +1,18 @@
-﻿namespace SFeed.Core.Models.Newsfeed
+﻿using System;
+
+namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedEntry
     {
-        public Actor From { get; set; }
+        public string ReferencePostId { get; set; }
 
-        public Actor To { get; set; }
+        public string By { get; set; }
 
-        public short TypeId { get; set; }
+        public short EntryTypeId { get; set; }
 
         public string Body { get; set; }
 
-        public string ReferencePostId { get; set; }
+        public DateTime EventDate { get; set; }
+
     }
 }

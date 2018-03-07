@@ -20,7 +20,7 @@ namespace SFeed.Business.Providers
         {
             this.commentRepo = new CommentRepository();
         }
-        public long AddComment(CommentRequestModel entry)
+        public long AddComment(CommentCreateModel entry)
         {
             var dbEntry = new UserComment
             {

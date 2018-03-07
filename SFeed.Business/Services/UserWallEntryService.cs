@@ -11,7 +11,7 @@ namespace SFeed.Business.Services
     public sealed class UserWallEntryService : IUserWallPostService
     {
         IUserWallPostProvider wallPostProvider;
-        IUserNewsfeedProvider newsFeedProvider;
+        INewsfeedProvider newsFeedProvider;
         IFollowerProvider followerProvider;
 
         public UserWallEntryService(): this(
@@ -23,7 +23,7 @@ namespace SFeed.Business.Services
         }
         public UserWallEntryService(
             IUserWallPostProvider wallPostProvider,
-            IUserNewsfeedProvider newsFeedProvider,
+            INewsfeedProvider newsFeedProvider,
             IFollowerProvider followerProvider)
         {
             this.wallPostProvider = wallPostProvider;

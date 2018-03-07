@@ -14,7 +14,7 @@ namespace SFeed.Tests.BusinessProviderTests
     public class NewsfeedProviderTest : ProviderTestBase
     {
         IUserWallPostProvider userWallPostProvider;
-        IUserNewsfeedProvider userNewsfeedProvider;
+        INewsfeedProvider userNewsfeedProvider;
         IWallPostCacheManager wallPostCacheProvider;
 
         [TestInitialize]

@@ -15,7 +15,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             using (var commentProvider = new UserCommentProvider())
             {
-                var commentId =  commentProvider.AddComment(new CommentRequestModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
+                var commentId =  commentProvider.AddComment(new CommentCreateModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
 
                 var postComments = commentProvider.GetComments(samplePost.Id);
 
@@ -34,7 +34,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             using (var commentProvider = new UserCommentProvider())
             {
-                var commentId = commentProvider.AddComment(new CommentRequestModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
+                var commentId = commentProvider.AddComment(new CommentCreateModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
 
                 var postComments = commentProvider.GetComments(samplePost.Id);
 

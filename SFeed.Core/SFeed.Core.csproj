@@ -40,13 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\Caching\IWallPostCacheManager.cs" />
+    <Compile Include="Infrastructure\Specialized\INewsfeedCacheProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
-    <Compile Include="Infrastructure\Providers\IUserNewsfeedProvider.cs" />
+    <Compile Include="Infrastructure\Providers\INewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
@@ -55,9 +55,11 @@
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
     <Compile Include="Models\Actor.cs" />
+    <Compile Include="Models\Caching\CommentCacheModel.cs" />
+    <Compile Include="Models\Caching\LikeCacheModel.cs" />
     <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
     <Compile Include="Models\Comments\CommentModel.cs" />
-    <Compile Include="Models\Comments\CommentRequestModel.cs" />
+    <Compile Include="Models\Comments\CommentCreateModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />

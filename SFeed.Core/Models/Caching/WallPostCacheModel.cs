@@ -1,5 +1,4 @@
 ﻿using SFeed.Core.Models.Caching;
-using SFeed.Core.Models.Comments;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Models.Newsfeed
@@ -8,16 +7,18 @@ namespace SFeed.Core.Models.Newsfeed
     {
         public string Body { get; set; }
 
-        public Actor PostedBy { get; set; }
+        public string PostedBy { get; set; }
 
         public short PostType { get; set; }
 
         public Actor WallOwner { get; set; }
 
-        public List<CommentRequestModel> LatestComments { get; set; }
-
         public int CommentCount { get; set; }
 
-        public int LikeCount { get; set; }
+        public List<CommentCacheModel> LatestComments { get; set; }
+
+        //x and other users liked
+        public List<string> Likes { get; set; }
+
     }
 }

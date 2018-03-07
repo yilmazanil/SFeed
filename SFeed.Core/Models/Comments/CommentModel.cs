@@ -2,7 +2,7 @@
 
 namespace SFeed.Core.Models.Comments
 {
-    public class CommentModel : CommentRequestModel
+    public class CommentModel : CommentCreateModel
     {
         public long Id { get; set; }
 

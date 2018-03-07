@@ -5,9 +5,9 @@ namespace SFeed.Core.Infrastructure.Services
 {
     public interface ICommentService
     {
-        string AddComment(CommentRequestModel entry);
+        string AddComment(CommentCreateModel entry);
         void DeleteComment(string commetId);
-        void UpdateComment(CommentRequestModel entry);
-        IEnumerable<CommentRequestModel> GetComments(string postId);
+        void UpdateComment(CommentCreateModel entry);
+        IEnumerable<CommentCreateModel> GetComments(string postId);
     }
 }
