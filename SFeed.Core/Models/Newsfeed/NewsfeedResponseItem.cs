@@ -1,7 +1,13 @@
-﻿namespace SFeed.Core.Models.Newsfeed
+﻿using SFeed.Core.Models.Caching;
+using System;
+using System.Collections.Generic;
+
+namespace SFeed.Core.Models.Newsfeed
 {
-    public class NewsfeedResponseItem : NewsfeedEntry
+    public class NewsfeedResponseItem
     {
-        public WallPostCacheModel ReferencedPost { get; set; }
+        public List<NewsfeedEntry> UserActions { get; set; }
+
+        public NewsfeedWallPostModel ReferencedPost { get; set; }
     }
 }

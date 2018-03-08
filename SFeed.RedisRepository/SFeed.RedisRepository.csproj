@@ -67,6 +67,7 @@
     <Compile Include="RedisGroupFollowerRepository.cs" />
     <Compile Include="Base\RedisSetRepositoryBase.cs" />
     <Compile Include="Base\RedisTypedSetRepositoryBase.cs" />
+    <Compile Include="RedisNewsfeedResponseRepository.cs" />
     <Compile Include="RedisUserFollowerRepository.cs" />
     <Compile Include="RedisWallPostRepository.cs" />
   </ItemGroup>

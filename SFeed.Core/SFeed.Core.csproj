@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheUniqueListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\IReadonlyItemRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
@@ -58,7 +60,7 @@
     <Compile Include="Models\Caching\CommentCacheModel.cs" />
     <Compile Include="Models\Caching\LikeCacheModel.cs" />
     <Compile Include="Models\Caching\NewsfeedCacheModel.cs" />
-    <Compile Include="Models\Caching\TypedCacheItemBaseModel.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\Comments\CommentModel.cs" />
     <Compile Include="Models\Comments\CommentCreateModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
