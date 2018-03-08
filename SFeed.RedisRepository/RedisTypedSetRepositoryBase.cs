@@ -1,23 +1,17 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
-using SFeed.Core.Models.Caching;
 using System;
 using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedRepository<T> : ITypedCacheItemRepository<T>  where T: CacheListItemBaseModel
+    public abstract class RedisTypedSetRepositoryBase<T> : ITypedCacheSetRepository<T>
     {
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;
 
         public abstract string ListName { get; }
-
-        public RedisTypedRepository()
-        {
-
-        }
 
         protected IRedisClient Client
         {
@@ -43,28 +37,39 @@ namespace SFeed.RedisRepository
             }
         }
 
-        public T AddItem(T cacheItem)
+        protected virtual string GetEntryName(string itemId)
         {
-            return ClientApi.Store(cacheItem);
+            return string.Concat("urn:" + ListName, ":", itemId);
         }
 
-        public IEnumerable<T> GetByIds(IEnumerable<string> ids)
+        public bool Contains(string setId, T value)
         {
-            return ClientApi.GetByIds(ids);
+            var setName = GetEntryName(setId);
+            return ClientApi.Sets[setName].Contains(value);
         }
 
-        public void RemoveItem(string id)
+        public void RemoveItem(string setId, T value)
         {
-            ClientApi.DeleteById(id);
+            var setName = GetEntryName(setId);
+            var set = ClientApi.Sets[setName].Remove(value);
         }
 
-        public T UpdateItem(T cacheItem)
+        public void AddItem(string setId, T item)
         {
-            return ClientApi.Store(cacheItem);
+            var setName = GetEntryName(setId);
+            ClientApi.Sets[setName].Add(item);
         }
-        public T GetItem(string id)
+
+        public IEnumerable<T> GetItems(string setId)
         {
-            return ClientApi.GetById(id);
+            var setName = GetEntryName(setId);
+            return ClientApi.Sets[setName].GetAll();
+        }
+
+        public void Clear(string setId)
+        {
+            var setName = GetEntryName(setId);
+            ClientApi.Sets[setName].Clear();
         }
 
         public void Dispose()
@@ -85,6 +90,17 @@ namespace SFeed.RedisRepository
             }
         }
 
-  
+        public void RecreateSet(string setId, IEnumerable<T> values)
+        {
+            Clear(setId);
+            var setName = GetEntryName(setId);
+            var set = ClientApi.Sets[setName];
+
+            foreach (var item in values)
+            {
+                set.Add(item);
+            }
+
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace SFeed.Business.Providers
     public class UserWallPostProvider : IUserWallPostProvider
     {
         private IRepository<WallPost> wallPostRepo;
-        private ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo;
+        private ITypedCacheItemRepository<WallPostCacheModel> wallPostCacheRepo;
 
         public UserWallPostProvider() : this(
             new WallPostRepository(),
@@ -26,7 +26,7 @@ namespace SFeed.Business.Providers
 
         public UserWallPostProvider(
             IRepository<WallPost> wallPostRepo,
-            ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo)
+            ITypedCacheItemRepository<WallPostCacheModel> wallPostCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;

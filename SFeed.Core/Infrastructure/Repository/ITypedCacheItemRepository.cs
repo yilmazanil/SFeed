@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructue.Repository
 {
-    public interface ICacheItemRepository<T> : IDisposable where T : CacheListItemBaseModel
+    public interface ITypedCacheItemRepository<T> : IDisposable where T : CacheListItemBaseModel
     {
         T AddItem(T cacheItem);
         T GetItem(string id);
