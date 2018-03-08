@@ -50,7 +50,7 @@ namespace SFeed.RedisRepository
             ClientApi.SetValue(cacheKey, cacheItem);
         }
 
-        public void UpdateItem(string key, T cacheItem)
+        public void AddOrUpdateItem(string key, T cacheItem)
         {
             var cacheKey = GetEntryKey(key);
             ClientApi.SetValue(cacheKey, cacheItem);

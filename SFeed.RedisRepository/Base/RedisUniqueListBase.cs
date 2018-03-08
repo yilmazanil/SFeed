@@ -7,7 +7,7 @@ using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisUniqueListBase<T> : ICacheUniqueListRepository<T>
+    public abstract class RedisUniqueListBase<T> : ICacheChildListRepository<T>
     {
         public abstract string ListName { get; }
 
@@ -37,47 +37,47 @@ namespace SFeed.RedisRepository
             }
         }
 
-        protected virtual string GetEntryName(string listId, string itemId)
+        protected virtual string GetEntryName(string parentKey, string key)
         {
-            return string.Concat(ListName, ":", listId , ":", itemId);
+            return string.Concat(ListName, ":", parentKey , ":", key);
         }
 
-        protected virtual string GetListItemSearchPattern(string listId)
+        protected virtual string GetListItemSearchPattern(string parentKey)
         {
-            return string.Concat(ListName, ":", listId, ":*");
+            return string.Concat(ListName, ":", parentKey, ":*");
         }
 
-        protected List<string> GetListItemKeys(string listId)
+        protected List<string> GetListItemKeys(string parentKey)
         {
-            var keySearchPattern = GetListItemSearchPattern(listId);
+            var keySearchPattern = GetListItemSearchPattern(parentKey);
             return Client.ScanAllKeys(keySearchPattern).ToList();
         }
 
 
-        public virtual IEnumerable<T> GetList(string listId)
+        public virtual IEnumerable<T> GetList(string parentKey)
         {
             //max 1000
-            var keys = GetListItemKeys(listId);
+            var keys = GetListItemKeys(parentKey);
             return ClientApi.GetValues(keys);
         }
 
-        public virtual void RemoveItem(string listId, string itemId)
+        public virtual void RemoveItem(string parentKey, string key)
         {
-             var entryName = GetEntryName(listId, itemId);
+             var entryName = GetEntryName(parentKey, key);
              ClientApi.RemoveEntry(entryName);
         }
 
        
 
-        public void AddOrUpdateItem(string listKey, string itemId, T item)
+        public void AddOrUpdateItem(string listKey, string key, T item)
         {
-            var entryName = GetEntryName(listKey, itemId);
+            var entryName = GetEntryName(listKey, key);
             ClientApi.SetValue(entryName, item);
         }
 
-        public T GetItem(string listKey, string itemId)
+        public T GetItem(string listKey, string key)
         {
-            var entryName = GetEntryName(listKey, itemId);
+            var entryName = GetEntryName(listKey, key);
             return ClientApi.GetValue(entryName);
         }
 

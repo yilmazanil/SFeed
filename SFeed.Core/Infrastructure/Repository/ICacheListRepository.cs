@@ -5,8 +5,14 @@ using System.Linq.Expressions;
 namespace SFeed.Core.Infrastructure.Repository
 {
     public interface ICacheListRepository<T> : IDisposable
-    { 
-        void AddItem(string listKey, T item);
+    {
+        void AppendItem(string listKey, T item);
+        void PrependItem(string listKey, T item);
+
+        bool UpdateItem(string listKey, T item);
+        bool UpdateItem(string listKey, Predicate<T> where, T item);
+
+
         T GetItem(string listKey, Expression<Func<T, bool>> where);
 
         IEnumerable<T> GetList(string listKey);

@@ -45,7 +45,7 @@ namespace SFeed.Business.Providers
 
             foreach (var userId in followers)
             {
-                feedCacheRepo.AddItem(userId, newsFeedEntry);
+                feedCacheRepo.PrependItem(userId, newsFeedEntry);
             }
         }
 
@@ -55,7 +55,7 @@ namespace SFeed.Business.Providers
 
             foreach (var userId in followers)
             {
-                feedCacheRepo.AddItem(userId, newsFeedEntry);
+                feedCacheRepo.PrependItem(userId, newsFeedEntry);
             }
         }
 

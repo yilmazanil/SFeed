@@ -80,7 +80,7 @@ namespace SFeed.Business.Providers
             wallPostRepo.CommitChanges();
 
             var cacheEntry = MapDbEntry(existingEntry);
-            wallPostCacheRepo.UpdateItem(cacheEntry.Id, cacheEntry);
+            wallPostCacheRepo.AddOrUpdateItem(cacheEntry.Id, cacheEntry);
         }
 
         public void DeletePost(string postId)

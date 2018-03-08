@@ -43,9 +43,11 @@
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheItemCounter.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheUniqueListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheChildListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IReadonlyItemRepository.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheFixedListRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />

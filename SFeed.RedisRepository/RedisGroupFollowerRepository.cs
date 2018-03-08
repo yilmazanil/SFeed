@@ -5,6 +5,6 @@ namespace SFeed.RedisRepository
 {
     public class RedisGroupFollowerRepository : RedisListRepositoryBase<string>
     {
-        public override string ListName => "groupFollower";
+        public override string ListName => RedisNameConstants.GroupFollowerRepoPrefix;
     }
 }

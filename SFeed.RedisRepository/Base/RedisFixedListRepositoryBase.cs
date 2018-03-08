@@ -8,9 +8,11 @@ using System.Linq.Expressions;
 
 namespace SFeed.RedisRepository.Base
 {
-    public abstract class RedisListRepositoryBase<T> : ICacheListRepository<T>
+    public abstract class RedisFixedListRepositoryBase<T> : ICacheFixedListRepository<T>
     {
         public abstract string ListName { get; }
+
+        public abstract int ListSize { get; set; }
 
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;
@@ -47,23 +49,28 @@ namespace SFeed.RedisRepository.Base
         public void AppendItem(string listKey, T item)
         {
             var entryKey = GetEntryKey(listKey);
-            ClientApi.Lists[entryKey].Add(item);
+            var list = ClientApi.Lists[entryKey];
+            if (list.Count >= ListSize)
+            {
+                list.Trim(0, ListSize - 1);
+            }
+            list.Append(item);
         }
 
         public void PrependItem(string listKey, T item)
         {
             var entryKey = GetEntryKey(listKey);
-            ClientApi.Lists[entryKey].Prepend(item);
+            var list = ClientApi.Lists[entryKey];
+            if (list.Count >= ListSize)
+            {
+                list.Trim(1, ListSize);
+            }
+            list.Prepend(item);
         }
 
-        public void ClearList(string listKey)
-        {
-            var entryKey = GetEntryKey(listKey);
-            ClientApi.Lists[entryKey].Clear();
-        }
 
         public bool UpdateItem(string listKey, T item)
-        {
+        { 
             var entryKey = GetEntryKey(listKey);
             var list = ClientApi.Lists[entryKey];
 
@@ -77,8 +84,7 @@ namespace SFeed.RedisRepository.Base
             return false;
         }
 
-
-        public bool UpdateItem(string listKey, Predicate<T> where , T item)
+        public bool UpdateItem(string listKey, Predicate<T> where, T item)
         {
             var entryKey = GetEntryKey(listKey);
             var listRef = ClientApi.Lists[entryKey];
@@ -94,6 +100,14 @@ namespace SFeed.RedisRepository.Base
             }
             return false;
         }
+
+
+        public void ClearList(string listKey)
+        {
+            var entryKey = GetEntryKey(listKey);
+            ClientApi.Lists[entryKey].Clear();
+        }
+
         //Might run slow
         public T GetItem(string listKey , Expression<Func<T, bool>> where)
         {

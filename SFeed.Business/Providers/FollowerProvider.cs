@@ -47,7 +47,7 @@ namespace SFeed.Business.Providers
             {
                 userFollowerRepo.Add(new UserFollower { FollowerId = followerId, UserId = userId });
                 userFollowerRepo.CommitChanges();
-                userFollowerCacheRepo.AddItem(userId,followerId);
+                userFollowerCacheRepo.AppendItem(userId,followerId);
             }
         }
 
@@ -65,7 +65,7 @@ namespace SFeed.Business.Providers
             {
                 groupFollowerRepo.Add(new GroupFollower { FollowerId = followerId, GroupId = groupId });
                 groupFollowerRepo.CommitChanges();
-                groupFollowerCacheRepo.AddItem(groupId, followerId);
+                groupFollowerCacheRepo.AppendItem(groupId, followerId);
             }
         }
 

@@ -14,7 +14,7 @@ namespace SFeed.Business.Providers
     public class UserCommentProvider : IUserCommentProvider
     {
         IRepository<UserComment> commentRepo;
-        ICacheUniqueListRepository<CommentCacheModel> commentCacheRepo;
+        ICacheFixedListRepository<CommentCacheModel> commentCacheRepo;
 
         public UserCommentProvider() : this(new CommentRepository(),
             new RedisCommentRepository())
@@ -22,7 +22,7 @@ namespace SFeed.Business.Providers
 
         }
         public UserCommentProvider(IRepository<UserComment> commentRepo,
-              ICacheUniqueListRepository<CommentCacheModel> commentCacheRepo)
+              ICacheFixedListRepository<CommentCacheModel> commentCacheRepo)
         {
             this.commentRepo = commentRepo;
             this.commentCacheRepo = commentCacheRepo;
@@ -47,7 +47,7 @@ namespace SFeed.Business.Providers
                 Id = dbEntry.Id.ToString(),
                 CreatedBy = entry.CreatedBy
             };
-            commentCacheRepo.AddOrUpdateItem(entry.WallPostId, dbEntry.Id.ToString(), commentCacheModel);
+            commentCacheRepo.PrependItem(entry.WallPostId, commentCacheModel);
             return dbEntry.Id;
         }
 
@@ -55,7 +55,12 @@ namespace SFeed.Business.Providers
         {
             commentRepo.Delete(p => p.Id == commentId && p.WallPostId == wallPostId);
             commentRepo.CommitChanges();
-            commentCacheRepo.RemoveItem(wallPostId, commentId.ToString());
+            var commentIdString = commentId.ToString();
+            var relatedComment = commentCacheRepo.GetItem(wallPostId, p => p.Id == commentIdString);
+            if (relatedComment != null)
+            {
+                commentCacheRepo.RemoveItem(wallPostId, relatedComment);
+            }
         }
 
         public void UpdateComment(string commentBody, long commentId, string postId)
@@ -69,9 +74,13 @@ namespace SFeed.Business.Providers
                 commentRepo.CommitChanges();
             }
             var commentIdString = commentId.ToString();
-            var cacheComment = commentCacheRepo.GetItem(postId, commentIdString);
-            cacheComment.Body = commentBody;
-            commentCacheRepo.AddOrUpdateItem(postId, commentIdString, cacheComment);
+            var relatedComment = commentCacheRepo.GetItem(postId, p => p.Id == commentIdString);
+            if (relatedComment != null)
+            {
+                relatedComment.Body = commentBody;
+                commentCacheRepo.UpdateItem(postId, p=>p.Id == commentIdString,
+                   relatedComment);
+            }
         }
 
         public IEnumerable<CommentModel> GetComments(string postId)
