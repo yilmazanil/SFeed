@@ -42,17 +42,14 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ITypedCacheSetRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheSetRepository.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheUniqueListRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
-    <Compile Include="Infrastructure\Repository\INamedCacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ITypedCacheItemRepository.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheItemRepository.cs" />
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
