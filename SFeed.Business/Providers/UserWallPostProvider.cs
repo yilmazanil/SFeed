@@ -15,7 +15,7 @@ namespace SFeed.Business.Providers
     public class UserWallPostProvider : IUserWallPostProvider
     {
         private IRepository<WallPost> wallPostRepo;
-        private ITypedCacheItemRepository<WallPostCacheModel> wallPostCacheRepo;
+        private ICacheRepository<WallPostCacheModel> wallPostCacheRepo;
 
         public UserWallPostProvider() : this(
             new WallPostRepository(),
@@ -26,7 +26,7 @@ namespace SFeed.Business.Providers
 
         public UserWallPostProvider(
             IRepository<WallPost> wallPostRepo,
-            ITypedCacheItemRepository<WallPostCacheModel> wallPostCacheRepo)
+            ICacheRepository<WallPostCacheModel> wallPostCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
@@ -89,7 +89,7 @@ namespace SFeed.Business.Providers
             wallPostRepo.Delete(p => p.Id == postId);
             wallPostRepo.CommitChanges();
 
-            wallPostCacheRepo.RemoveItem(postId);
+            wallPostCacheRepo.RemoveItemById(postId);
         }
 
         public WallPostModel GetPost(string postId)

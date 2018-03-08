@@ -1,12 +1,13 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
+using SFeed.Core.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedSetRepositoryBase<T> : ITypedCacheSetRepository<T>
+    public abstract class RedisTypedSetRepositoryBase<T> : ICacheUniqueListRepository<T>
     {
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;
@@ -101,6 +102,36 @@ namespace SFeed.RedisRepository
                 set.Add(item);
             }
 
+        }
+
+        public void AddOrUpdateItem(string listKey, string itemId, T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T GetItem(string listKey, string itemId, T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> GetList(string listKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveItem(string listKey, string itemId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RecreateList(string listKey, Dictionary<string, T> listItems)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearList(string listKey)
+        {
+            throw new NotImplementedException();
         }
     }
 }

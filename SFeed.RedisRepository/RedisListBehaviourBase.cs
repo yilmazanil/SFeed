@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFeed.Core.Infrastructue.Repository;
-using SFeed.Core.Models.Caching;
 using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using System.Linq;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisNamedListRepositoryBase<T> : INamedCacheListRepository<T> where T: CacheListItemBaseModel
+    public abstract class RedisListBehaviourBase<T> : ICacheUniqueListRepository<T>
     {
         public abstract string ListName { get; }
 
@@ -43,23 +42,23 @@ namespace SFeed.RedisRepository
             return string.Concat(ListName, ":", listId , ":", itemId);
         }
 
-        public virtual void AddOrUpdateItem(string listId, T item)
-        { 
-            var entryName = GetEntryName(listId, item.Id);
-            ClientApi.SetValue(entryName, item);
+        protected virtual string GetListItemSearchPattern(string listId)
+        {
+            return string.Concat(ListName, ":", listId, ":*");
         }
+
+        protected List<string> GetListItemKeys(string listId)
+        {
+            var keySearchPattern = GetListItemSearchPattern(listId);
+            return Client.ScanAllKeys(keySearchPattern).ToList();
+        }
+
 
         public virtual IEnumerable<T> GetList(string listId)
         {
             //max 1000
-            var entryKeys = Client.ScanAllKeys(string.Concat(ListName,":", listId, ":*")).ToList();
-            return ClientApi.GetValues(entryKeys);
-        }
-
-        public virtual T GetItem(string listId, string itemId)
-        {
-            var entryName = GetEntryName(listId, itemId);
-            return ClientApi.GetValue(entryName);
+            var keys = GetListItemKeys(listId);
+            return ClientApi.GetValues(keys);
         }
 
         public virtual void RemoveItem(string listId, string itemId)
@@ -68,23 +67,40 @@ namespace SFeed.RedisRepository
              ClientApi.RemoveEntry(entryName);
         }
 
-        public virtual void RecreateList(string listId, IEnumerable<T> listItems)
+       
+
+        public void AddOrUpdateItem(string listKey, string itemId, T item)
         {
-            DeleteList(listId);
-            foreach (var listItem in listItems)
+            var entryName = GetEntryName(listKey, itemId);
+            ClientApi.SetValue(entryName, item);
+        }
+
+        public T GetItem(string listKey, string itemId, T item)
+        {
+            var entryName = GetEntryName(listKey, itemId);
+            return ClientApi.GetValue(entryName);
+        }
+
+        public void RecreateList(string listKey, Dictionary<string, T> listItems)
+        {
+            using (var transaction = Client.CreateTransaction())
             {
-                AddOrUpdateItem(listId, listItem);
+                ClearList(listKey);
+                foreach (var listItem in listItems)
+                {
+                    AddOrUpdateItem(listKey, listItem.Key, listItem.Value);
+                }
+                transaction.Commit();
             }
         }
 
-        public virtual void DeleteList(string listId)
+        public void ClearList(string listKey)
         {
-            var entryKeys = Client.ScanAllKeys(string.Concat(ListName, ":", listId, ":*")).ToList();
-            foreach (var entryKey in entryKeys)
-            {
-                ClientApi.RemoveEntry(entryKey);
-            }
+            var keys = GetListItemKeys(listKey);
+
+            Client.RemoveAll(keys);
         }
+
 
         public void Dispose()
         {

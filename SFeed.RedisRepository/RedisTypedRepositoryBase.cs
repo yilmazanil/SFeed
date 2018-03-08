@@ -1,23 +1,19 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
-using SFeed.Core.Models.Caching;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedRepository<T> : ITypedCacheItemRepository<T>  where T: CacheListItemBaseModel
+    public abstract class RedisTypedRepositoryBase<T> : ICacheRepository<T>
     {
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;
 
         public abstract string ListName { get; }
 
-        public RedisTypedRepository()
-        {
-
-        }
 
         protected IRedisClient Client
         {
@@ -43,29 +39,35 @@ namespace SFeed.RedisRepository
             }
         }
 
-        public T AddItem(T cacheItem)
+        protected virtual string GetEntryKey(string itemKey)
         {
-            return ClientApi.Store(cacheItem);
+            return string.Concat(ListName, ":", itemKey);
         }
 
-        public IEnumerable<T> GetByIds(IEnumerable<string> ids)
+        public void AddItem(string key, T cacheItem)
         {
-            return ClientApi.GetByIds(ids);
+            var cacheKey = GetEntryKey(key);
+            ClientApi.SetValue(cacheKey, cacheItem);
         }
 
-        public void RemoveItem(string id)
+        public void UpdateItem(string key, T cacheItem)
         {
-            ClientApi.DeleteById(id);
+            var cacheKey = GetEntryKey(key);
+            ClientApi.SetValue(cacheKey, cacheItem);
         }
 
-        public T UpdateItem(T cacheItem)
+        public void RemoveItem(string key)
         {
-            return ClientApi.Store(cacheItem);
+            var cacheKey = GetEntryKey(key);
+            ClientApi.RemoveEntry(cacheKey);
         }
-        public T GetItem(string id)
+
+        public IEnumerable<T> GetAllByKeys(IEnumerable<string> keys)
         {
-            return ClientApi.GetById(id);
+            var cacheKeys = keys.Select(t => GetEntryKey(t));
+            return Client.GetAll<T>(cacheKeys).Values;
         }
+
 
         public void Dispose()
         {
@@ -84,7 +86,5 @@ namespace SFeed.RedisRepository
 
             }
         }
-
-  
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisCommentRepository : RedisNamedListRepositoryBase<CommentCacheModel>
+    public class RedisCommentRepository : RedisListBehaviourBase<CommentCacheModel>
     {
         public override string ListName => "postComment";
     }

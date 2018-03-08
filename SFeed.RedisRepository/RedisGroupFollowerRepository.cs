@@ -2,7 +2,7 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisGroupFollowerRepository : RedisNamedListRepositoryBase<CacheListItemBaseModel>
+    public class RedisGroupFollowerRepository : RedisListBehaviourBase<CacheListItemBaseModel>
     {
         public override string ListName => "groupFollower";
     }
