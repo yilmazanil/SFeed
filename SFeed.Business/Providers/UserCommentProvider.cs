@@ -7,20 +7,22 @@ using SFeed.SqlRepository;
 using AutoMapper;
 using SFeed.Core.Models.Caching;
 using SFeed.RedisRepository;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.Business.Providers
 {
     public class UserCommentProvider : IUserCommentProvider
     {
         IRepository<UserComment> commentRepo;
-        INamedCacheListRepository<CommentCacheModel> commentCacheRepo;
+        ICacheUniqueListRepository<CommentCacheModel> commentCacheRepo;
 
-        public UserCommentProvider() : this(new CommentRepository(), new RedisCommentRepository())
+        public UserCommentProvider() : this(new CommentRepository(),
+            new RedisCommentRepository())
         {
 
         }
         public UserCommentProvider(IRepository<UserComment> commentRepo,
-              INamedCacheListRepository<CommentCacheModel> commentCacheRepo)
+              ICacheUniqueListRepository<CommentCacheModel> commentCacheRepo)
         {
             this.commentRepo = commentRepo;
             this.commentCacheRepo = commentCacheRepo;
@@ -45,7 +47,7 @@ namespace SFeed.Business.Providers
                 Id = dbEntry.Id.ToString(),
                 CreatedBy = entry.CreatedBy
             };
-            commentCacheRepo.AddOrUpdateItem(entry.WallPostId, commentCacheModel);
+            commentCacheRepo.AddOrUpdateItem(entry.WallPostId, dbEntry.Id.ToString(), commentCacheModel);
             return dbEntry.Id;
         }
 
@@ -66,9 +68,10 @@ namespace SFeed.Business.Providers
                 commentRepo.Update(comment);
                 commentRepo.CommitChanges();
             }
-            var cacheComment = commentCacheRepo.GetItem(postId, commentId.ToString());
+            var commentIdString = commentId.ToString();
+            var cacheComment = commentCacheRepo.GetItem(postId, commentIdString);
             cacheComment.Body = commentBody;
-            commentCacheRepo.AddOrUpdateItem(postId, cacheComment);
+            commentCacheRepo.AddOrUpdateItem(postId, commentIdString, cacheComment);
         }
 
         public IEnumerable<CommentModel> GetComments(string postId)

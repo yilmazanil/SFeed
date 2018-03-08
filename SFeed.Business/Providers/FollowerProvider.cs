@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFeed.Core.Models;
 using SFeed.Core.Models.Caching;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.Business.Providers
 {
@@ -14,8 +15,8 @@ namespace SFeed.Business.Providers
     {
         private readonly IRepository<UserFollower> userFollowerRepo;
         private readonly IRepository<GroupFollower> groupFollowerRepo;
-        private readonly INamedCacheListRepository<CacheListItemBaseModel> userFollowerCacheRepo;
-        private readonly INamedCacheListRepository<CacheListItemBaseModel> groupFollowerCacheRepo;
+        private readonly ICacheListRepository<string> userFollowerCacheRepo;
+        private readonly ICacheListRepository<string> groupFollowerCacheRepo;
 
         public FollowerProvider() : this(
             new UserFollowerRepository(),
@@ -30,8 +31,8 @@ namespace SFeed.Business.Providers
         public FollowerProvider(
             IRepository<UserFollower> userFollowerRepo,
             IRepository<GroupFollower> groupFollowerRepo,
-            INamedCacheListRepository<CacheListItemBaseModel> userFollowerCacheRepo,
-            INamedCacheListRepository<CacheListItemBaseModel> groupFollowerCacheRepo)
+            ICacheListRepository<string> userFollowerCacheRepo,
+            ICacheListRepository<string> groupFollowerCacheRepo)
         {
             this.userFollowerRepo = userFollowerRepo;
             this.groupFollowerRepo = groupFollowerRepo;
@@ -46,7 +47,7 @@ namespace SFeed.Business.Providers
             {
                 userFollowerRepo.Add(new UserFollower { FollowerId = followerId, UserId = userId });
                 userFollowerRepo.CommitChanges();
-                userFollowerCacheRepo.AddOrUpdateItem(userId, new CacheListItemBaseModel {  Id = followerId });
+                userFollowerCacheRepo.AddItem(userId,followerId);
             }
         }
 
@@ -64,7 +65,7 @@ namespace SFeed.Business.Providers
             {
                 groupFollowerRepo.Add(new GroupFollower { FollowerId = followerId, GroupId = groupId });
                 groupFollowerRepo.CommitChanges();
-                groupFollowerCacheRepo.AddOrUpdateItem(groupId, new CacheListItemBaseModel { Id = followerId });
+                groupFollowerCacheRepo.AddItem(groupId, followerId);
             }
         }
 
@@ -93,16 +94,14 @@ namespace SFeed.Business.Providers
 
         public IEnumerable<string> GetFollowers(Actor actor)
         {
-            IEnumerable<CacheListItemBaseModel> followers;
+            IEnumerable<string> followers;
             if (actor.ActorTypeId == (short)ActorType.user)
             {
                 followers = userFollowerCacheRepo.GetList(actor.Id);
 
                 if (followers == null || !followers.Any())
                 {
-                    followers = userFollowerRepo.GetMany(p => p.UserId == actor.Id).Select(p=> new CacheListItemBaseModel {
-                         Id = p.FollowerId
-                    });
+                    followers = userFollowerRepo.GetMany(p => p.UserId == actor.Id).Select(u=>u.FollowerId);
                     if (followers != null)
                     {
                         userFollowerCacheRepo.RecreateList(actor.Id, followers);
@@ -115,10 +114,7 @@ namespace SFeed.Business.Providers
 
                 if (followers == null || !followers.Any())
                 {
-                    followers = groupFollowerRepo.GetMany(p => p.GroupId == actor.Id).Select(p => new CacheListItemBaseModel
-                    {
-                        Id = p.FollowerId
-                    });
+                    followers = groupFollowerRepo.GetMany(p => p.GroupId == actor.Id).Select(g => g.FollowerId);
                     if (followers != null)
                     {
                         groupFollowerCacheRepo.RecreateList(actor.Id, followers);
@@ -126,7 +122,7 @@ namespace SFeed.Business.Providers
                 }
             }
 
-            return followers != null ? followers.Select(p=>p.Id).Distinct() : null; 
+            return followers != null ? followers.Distinct() : null; 
         }
 
 

@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
+    <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheUniqueListRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\ActorType.cs" />

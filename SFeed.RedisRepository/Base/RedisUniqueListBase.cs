@@ -7,7 +7,7 @@ using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisListBehaviourBase<T> : ICacheUniqueListRepository<T>
+    public abstract class RedisUniqueListBase<T> : ICacheUniqueListRepository<T>
     {
         public abstract string ListName { get; }
 
@@ -75,7 +75,7 @@ namespace SFeed.RedisRepository
             ClientApi.SetValue(entryName, item);
         }
 
-        public T GetItem(string listKey, string itemId, T item)
+        public T GetItem(string listKey, string itemId)
         {
             var entryName = GetEntryName(listKey, itemId);
             return ClientApi.GetValue(entryName);

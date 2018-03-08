@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace SFeed.RedisRepository
 {
-    public abstract class RedisTypedRepositoryBase<T> : ICacheRepository<T>
+    public abstract class RedisItemRepositoryBase<T> : ICacheItemRepository<T>
     {
         private IRedisClient client;
         private IRedisTypedClient<T> clientApi;
 
-        public abstract string ListName { get; }
+        public abstract string ItemPrefix { get; }
 
 
         protected IRedisClient Client
@@ -41,7 +41,7 @@ namespace SFeed.RedisRepository
 
         protected virtual string GetEntryKey(string itemKey)
         {
-            return string.Concat(ListName, ":", itemKey);
+            return string.Concat(ItemPrefix, ":", itemKey);
         }
 
         public void AddItem(string key, T cacheItem)

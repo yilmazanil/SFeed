@@ -2,8 +2,8 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisWallPostRepository : RedisTypedRepositoryBase<WallPostCacheModel>
+    public class RedisWallPostRepository : RedisItemRepositoryBase<WallPostCacheModel>
     {
-        public override string ListName => "wallPost";
+        public override string ItemPrefix => "wallPost";
     }
 }

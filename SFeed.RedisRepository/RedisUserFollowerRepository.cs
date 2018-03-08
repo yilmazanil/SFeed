@@ -1,9 +1,8 @@
-﻿using System;
-using SFeed.Core.Models.Caching;
+﻿using SFeed.RedisRepository.Base;
 
 namespace SFeed.RedisRepository
 {
-    public class RedisUserFollowerRepository : RedisListBehaviourBase<CacheListItemBaseModel>
+    public class RedisUserFollowerRepository : RedisListRepositoryBase<string>
     {
         public override string ListName => "userFollower";
     }

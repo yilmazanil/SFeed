@@ -10,7 +10,7 @@ namespace SFeed.Tests.BusinessProviderTests
     public class FollowerProviderTest : ProviderTestBase
     {
         IFollowerProvider followerProvider;
-        //OK
+
         [TestInitialize]
         public void Initialize()
         {

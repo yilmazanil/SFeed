@@ -14,6 +14,5 @@ namespace SFeed.Core.Models.Newsfeed
         public string Body { get; set; }
 
         public DateTime EventDate { get; set; }
-
     }
 }

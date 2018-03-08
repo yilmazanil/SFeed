@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.Providers;
+using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.Comments;
 using System.Linq;
 
@@ -8,6 +9,21 @@ namespace SFeed.Tests.BusinessProviderTests
     [TestClass]
     public class CommentProviderTest : ProviderTestBase
     {
+        IUserWallPostProvider wallPostProvider;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            this.wallPostProvider = new UserWallPostProvider();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.wallPostProvider.Dispose();
+        }
+
+
         [TestMethod]
         public void Should_Add_Comment_On_WallPost()
         {

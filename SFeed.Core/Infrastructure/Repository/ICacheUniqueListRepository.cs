@@ -8,7 +8,7 @@ namespace SFeed.Core.Infrastructure.Repository
         string ListName { get; }
 
         void AddOrUpdateItem(string listKey, string itemId, T item);
-        T GetItem(string listKey, string itemId, T item);
+        T GetItem(string listKey, string itemId);
 
         IEnumerable<T> GetList(string listKey);
 

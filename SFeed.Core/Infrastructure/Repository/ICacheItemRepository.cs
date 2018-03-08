@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructue.Repository
 {
-    public interface ICacheRepository<T> : IDisposable
+    public interface ICacheItemRepository<T> : IDisposable
     {
         void AddItem(string key, T cacheItem);
         void RemoveItem(string key);

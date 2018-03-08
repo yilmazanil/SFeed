@@ -8,6 +8,22 @@ namespace SFeed.Tests.BusinessProviderTests
     [TestClass]
     public class LikeProviderTest : ProviderTestBase
     {
+        IUserWallPostProvider wallPostProvider;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            this.wallPostProvider = new UserWallPostProvider();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            this.wallPostProvider.Dispose();
+        }
+
+
+
         [TestMethod]
         public void Should_Like_And_Dislike()
         {
