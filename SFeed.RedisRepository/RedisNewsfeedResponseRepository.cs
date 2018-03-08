@@ -4,7 +4,6 @@ using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Newsfeed;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFeed.RedisRepository
 {
@@ -26,21 +25,24 @@ namespace SFeed.RedisRepository
         }
         public NewsfeedWallPostModel GetItem(string id)
         {
-            var wallPostClient = Client.As<WallPostCacheModel>();
-            var wallPost = wallPostClient.GetValue(string.Concat("wallPost:", id));
+            var wallPost = Client.As<WallPostCacheModel>().GetValue(string.Concat(RedisNameConstants.WallPostRepoPrefix, ":", id));
             var responseModel = new NewsfeedWallPostModel();
 
             if (wallPost != null)
             {
                 responseModel.Body = wallPost.Body;
                 responseModel.Id = wallPost.Id;
-
-                var commentClient = Client.As<CommentCacheModel>();
-                var commentSearchPattern = string.Concat("postComment:", id, ":*");
-                var keys = Client.ScanAllKeys(commentSearchPattern).ToList();;
-                var comments = commentClient.GetValues(keys);
+                responseModel.PostedBy = wallPost.PostedBy;
+                responseModel.PostType = wallPost.PostType;
+                var commentsKey = string.Concat(RedisNameConstants.CommentCounterNamePrefix, ":", wallPost.Id);
+                var comments = Client.As<CommentCacheModel>().Lists[commentsKey].GetAll();
                 responseModel.LatestComments = comments;
-
+                var totalCommentCount = Client.GetValue(string.Concat(RedisNameConstants.CommentCounterNamePrefix, wallPost.Id));
+                var totalLikeCount = Client.GetValue(string.Concat(RedisNameConstants.LikeCounterNamePrefix, wallPost.Id));
+                responseModel.CommentCount = !string.IsNullOrWhiteSpace(totalCommentCount) ?
+                        Convert.ToInt32(totalCommentCount) : comments.Count;
+                responseModel.LikeCount = !string.IsNullOrWhiteSpace(totalLikeCount) ?
+                        Convert.ToInt32(totalLikeCount) : 0;
                 return responseModel;
 
             }

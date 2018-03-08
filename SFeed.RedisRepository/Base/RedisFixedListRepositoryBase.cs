@@ -120,6 +120,7 @@ namespace SFeed.RedisRepository.Base
             return default(T);
         }
 
+
         public IEnumerable<T> GetList(string listKey)
         {
             var entryKey = GetEntryKey(listKey);
@@ -157,5 +158,17 @@ namespace SFeed.RedisRepository.Base
             }
         }
 
+        public void RemoveItem(string listKey, Predicate<T> predicate)
+        {
+            var entryKey = GetEntryKey(listKey);
+            var foundItemIndex = ClientApi.Lists[entryKey].ToList().FindIndex(predicate);
+            if (foundItemIndex > -1)
+            {
+                ClientApi.Lists[entryKey].RemoveAt(foundItemIndex);
+            }
+           
+        }
+
+    
     }
 }

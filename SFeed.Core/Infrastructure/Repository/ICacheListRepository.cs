@@ -18,6 +18,7 @@ namespace SFeed.Core.Infrastructure.Repository
         IEnumerable<T> GetList(string listKey);
 
         void RemoveItem(string listKey, T item);
+        void RemoveItem(string listKey, Predicate<T> predicate);
 
         void RecreateList(string listKey, IEnumerable<T> listItems);
         void ClearList(string listKey);

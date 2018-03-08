@@ -63,7 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Base\RedisItemRepositoryBase.cs" />
     <Compile Include="Base\RedisUniqueListBase.cs" />
-    <Compile Include="RedisLikeCounter.cs" />
+    <Compile Include="RedisPostLikeCounter.cs" />
     <Compile Include="RedisCommentCounter.cs" />
     <Compile Include="RedisCommentRepository.cs" />
     <Compile Include="Base\RedisConnectionProvider.cs" />

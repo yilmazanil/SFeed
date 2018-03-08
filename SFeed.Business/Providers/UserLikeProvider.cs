@@ -1,5 +1,7 @@
 ﻿using SFeed.Core.Infrastructue.Repository;
 using SFeed.Core.Infrastructure.Providers;
+using SFeed.Core.Infrastructure.Repository;
+using SFeed.RedisRepository;
 using SFeed.SqlRepository;
 using System;
 using System.Collections.Generic;
@@ -9,24 +11,30 @@ namespace SFeed.Business.Providers
 {
     public class UserLikeProvider : IUserLikeProvider
     {
+        ICacheItemCounter likeCounter; 
         IRepository<WallPostLike> wallPostLikeRepo;
         IRepository<UserCommentLike> userCommentLikeRepo;
 
-        public UserLikeProvider() : this(new WallPostLikeRepository(),
-            new UserCommentLikeRepository())
+        public UserLikeProvider() : this(
+            new WallPostLikeRepository(),
+            new UserCommentLikeRepository(),
+            new RedisPostLikeCounter())
         {
 
         }
         public UserLikeProvider(IRepository<WallPostLike> wallPostLikeRepo,
-            IRepository<UserCommentLike> userCommentLikeRepo)
+            IRepository<UserCommentLike> userCommentLikeRepo,
+            ICacheItemCounter likeCounter)
         {
             this.wallPostLikeRepo = wallPostLikeRepo;
             this.userCommentLikeRepo = userCommentLikeRepo;
+            this.likeCounter = likeCounter;
         }
         public void LikeComment(long commentId, string userId)
         {
             userCommentLikeRepo.Add(new UserCommentLike { CommentId = commentId, CreatedBy = userId, CreatedDate = DateTime.Now });
             userCommentLikeRepo.CommitChanges();
+          
         }
         public void UnlikeComment(long commentId, string userId)
         {
@@ -38,6 +46,7 @@ namespace SFeed.Business.Providers
         {
             wallPostLikeRepo.Add(new WallPostLike { WallPostId = postId, CreatedBy = userId, CreatedDate = DateTime.Now });
             wallPostLikeRepo.CommitChanges();
+            likeCounter.Increment(postId);
         }
 
 
@@ -45,6 +54,7 @@ namespace SFeed.Business.Providers
         {
             wallPostLikeRepo.Delete(u => u.CreatedBy == userId && u.WallPostId == postId);
             wallPostLikeRepo.CommitChanges();
+            likeCounter.Decrement(postId);
         }
         public IEnumerable<string> GetPostLikes(string postId)
         {

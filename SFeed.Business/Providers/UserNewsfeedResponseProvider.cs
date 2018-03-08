@@ -30,10 +30,15 @@ namespace SFeed.Business.Providers
             {
                 if (!ignoreList.Contains(feedEntry.ReferencePostId))
                 {
-                    var existingItemIndex = response.FindIndex(n => n.ReferencedPost.Id == feedEntry.ReferencePostId);
+                    var existingItemIndex = 
+                        response.FindIndex(n => n.ReferencedPost.Id == feedEntry.ReferencePostId);
                     if (existingItemIndex > -1)
                     {
-                        response[existingItemIndex].UserActions.Add(feedEntry);
+                        var existingItem = response[existingItemIndex];
+                        if (!existingItem.UserActions.Any(p => p.By == feedEntry.By && p.EntryTypeId == feedEntry.EntryTypeId))
+                        {
+                            existingItem.UserActions.Add(feedEntry);
+                        }
                     }
                     else
                     {

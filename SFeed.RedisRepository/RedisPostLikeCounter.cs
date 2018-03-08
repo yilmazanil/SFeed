@@ -2,7 +2,7 @@
 
 namespace SFeed.RedisRepository
 {
-    public class RedisLikeCounter : RedisCounterBase
+    public class RedisPostLikeCounter : RedisCounterBase
     {
         public override string counterPrefix => RedisNameConstants.CommentCounterNamePrefix;
     }

@@ -7,6 +7,7 @@ using SFeed.Core.Models;
 using System;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Caching;
+using System.Linq.Expressions;
 
 namespace SFeed.Business.Providers
 {
@@ -59,23 +60,22 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry)
+        public void RemoveNewsfeedItem(string actionBy, Predicate<NewsfeedEntry> where)
         {
-            var followers = GetFollowers(new List<Actor> { new Actor { ActorTypeId = (short)ActorType.user, Id = newsFeedEntry.By } });
+            var followers = GetFollowers(new List<Actor> { new Actor { ActorTypeId = (short)ActorType.user, Id = actionBy } });
 
             foreach (var userId in followers)
             {
-                feedCacheRepo.RemoveItem(userId, newsFeedEntry);
+                feedCacheRepo.RemoveItem(userId, where);
             }
         }
-
-        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry, List<Actor> actors)
+        public void RemoveNewsfeedItem(List<Actor> actors, Predicate<NewsfeedEntry> where)
         {
             var followers = GetFollowers(actors);
 
             foreach (var userId in followers)
             {
-                feedCacheRepo.RemoveItem(userId, newsFeedEntry);
+                feedCacheRepo.RemoveItem(userId, where);
             }
         }
 
@@ -105,6 +105,10 @@ namespace SFeed.Business.Providers
 
             }
         }
+
+   
+
+
 
         //private int latestCommentCount = 3;
 
