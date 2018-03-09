@@ -12,12 +12,12 @@ namespace SFeed.RedisRepository.Base
 
         protected virtual string GetEntryKey(string cachePrefix, string id)
         {
-            return string.Concat(CacheEntryPrefix, ":", id);
+            return string.Concat(cachePrefix, ":", id);
         }
 
         protected virtual string GetEntrySearchPattern(string cachePrefix)
         {
-            return string.Concat(CacheEntryPrefix, ":");
+            return string.Concat(cachePrefix, ":");
         }
 
         protected IRedisTypedClient<T> GetTypedClientApi<T>(IRedisClient client)

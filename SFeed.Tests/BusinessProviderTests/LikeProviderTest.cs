@@ -28,7 +28,7 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Should_Like_And_Dislike()
         {
             var samplePostId = wallPostProvider.GetUserWall(testWallOwnerId).FirstOrDefault().Id;
-            using (var likeProvider = new UserLikeProvider())
+            using (var likeProvider = new EntryLikeProvider())
             {
                 var likes =  likeProvider.GetPostLikes(samplePostId);
 

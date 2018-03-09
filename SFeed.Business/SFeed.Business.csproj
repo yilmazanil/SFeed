@@ -65,7 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\UserCommentProvider.cs" />
     <Compile Include="Providers\FollowerProvider.cs" />
-    <Compile Include="Providers\UserLikeProvider.cs" />
+    <Compile Include="Providers\EntryLikeProvider.cs" />
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
     <Compile Include="Providers\UserNewsfeedResponseProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />

@@ -11,5 +11,7 @@
         public static readonly int CommentRepoSize = 3;
         public static readonly string CommentCounterNamePrefix = "commentCounter";
         public static readonly string LikeCounterNamePrefix = "likeCounter";
+        public static readonly string PostLikeCounterNamePrefix = "postLikeCounter";
+        public static readonly string CommentLikeCounterNamePrefix = "commentLikeCounter";
     }
 }

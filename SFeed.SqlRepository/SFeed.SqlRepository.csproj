@@ -58,6 +58,7 @@
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Implementation\EntryLikeRepository.cs" />
     <Compile Include="Implementation\FollowerRepository.cs" />
     <Compile Include="Implementation\WallPostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
