@@ -43,6 +43,7 @@
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
+    <Compile Include="Infrastructure\Repository\Caching\ICommentCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\Caching\IEntryLikeCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\Caching\IFollowerCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheItemCounter.cs" />
