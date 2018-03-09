@@ -37,7 +37,7 @@ namespace SFeed.SqlRepository.Implementation
                 entities.SaveChanges();
             }
 
-            return new WallPostCreateResponse { PostId = newEntryId, CreatedDate = DateTime.Now };
+            return new WallPostCreateResponse { PostId = newEntryId, CreatedDate = entry.CreatedDate };
         }
 
         public WallPostModel GetItem(string postId)
@@ -54,13 +54,18 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
-        public void RemoveItem(string postId)
+        public bool RemoveItem(string postId)
         {
             using (var entities = new SocialFeedEntities())
             {
                 var post = entities.WallPost.FirstOrDefault(p => p.Id == postId);
-                post.IsDeleted = true;
-                entities.SaveChanges();
+                if (post != null)
+                {
+                    post.IsDeleted = true;
+                    entities.SaveChanges();
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -92,16 +97,20 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
-        public DateTime UpdateItem(WallPostUpdateRequest model)
+        public DateTime? UpdateItem(WallPostUpdateRequest model)
         {
             using (var entities = new SocialFeedEntities())
             {
                 var post = entities.WallPost.FirstOrDefault(p => p.Id == model.PostId && p.IsDeleted == false);
-                post.ModifiedDate = DateTime.Now;
-                post.PostType = (byte)model.PostType;
-                entities.SaveChanges();
-                return post.ModifiedDate.Value;
+                if (post != null)
+                {
+                    post.ModifiedDate = DateTime.Now;
+                    post.PostType = (byte)model.PostType;
+                    entities.SaveChanges();
+                    return post.ModifiedDate.Value;
+                }
             }
+            return null;
         }
 
         public IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size)

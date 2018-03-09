@@ -49,13 +49,19 @@ namespace SFeed.Business.Providers
         public void UpdatePost(WallPostUpdateRequest model)
         {
             var modificationDate = wallPostRepo.UpdateItem(model);
-            wallPostCacheRepo.UpdateItem(model, modificationDate);
+            if (modificationDate.HasValue)
+            {
+                wallPostCacheRepo.UpdateItem(model, modificationDate.Value);
+            }
         }
 
         public void DeletePost(string postId)
         {
-            wallPostRepo.RemoveItem(postId);
-            wallPostCacheRepo.RemoveItem(postId);
+            var deleted = wallPostRepo.RemoveItem(postId);
+            if (deleted)
+            {
+                wallPostCacheRepo.RemoveItem(postId);
+            }
         }
 
         public WallPostModel GetPost(string postId)

@@ -8,9 +8,9 @@ namespace SFeed.Core.Infrastructure.Repository.Sql
     public interface IWallPostRepository
     {
         WallPostCreateResponse SaveItem(WallPostCreateRequest model);
-        DateTime UpdateItem(WallPostUpdateRequest model);
+        DateTime? UpdateItem(WallPostUpdateRequest model);
         WallPostModel GetItem(string postId);
-        void RemoveItem(string postId);
+        bool RemoveItem(string postId);
         IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size);
     }
 }

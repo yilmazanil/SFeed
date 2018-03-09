@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models.Comments
 {
-    public class CommentCreateModel
+    public class CommentCreateRequest
     {
         public string Body { get; set; }
 

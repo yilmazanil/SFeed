@@ -58,6 +58,7 @@
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Implementation\CommentProvider.cs" />
     <Compile Include="Implementation\EntryLikeRepository.cs" />
     <Compile Include="Implementation\FollowerRepository.cs" />
     <Compile Include="Implementation\WallPostRepository.cs" />
