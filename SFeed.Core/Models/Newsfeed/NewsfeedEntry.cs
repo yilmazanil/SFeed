@@ -1,7 +1,4 @@
-﻿using SFeed.Core.Models.Caching;
-using System;
-
-namespace SFeed.Core.Models.Newsfeed
+﻿namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedEntry
     {
@@ -9,8 +6,6 @@ namespace SFeed.Core.Models.Newsfeed
 
         public string By { get; set; }
 
-        public short EntryTypeId { get; set; }
-
-        public DateTime EventDate { get; set; }
+        public NewsfeedType FeedType { get; set; }
     }
 }

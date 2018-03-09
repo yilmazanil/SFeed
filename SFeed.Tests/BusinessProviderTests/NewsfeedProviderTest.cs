@@ -36,7 +36,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = newPost.PostedBy,
                 ReferencePostId = postId,
-                EntryTypeId = (short)NewsfeedEntryType.wallpost,
+                FeedType = (short)NewsfeedType.wallpost,
                 EventDate = DateTime.Now
             };
 
@@ -46,7 +46,7 @@ namespace SFeed.Tests.BusinessProviderTests
             var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
 
             var shouldExist = wallOwnerFeeds.Any(p=>p.ReferencedPost.Id == postId
-            && p.UserActions.Any(t=>t.EntryTypeId == newsFeedEntry.EntryTypeId && t.By == newsFeedEntry.By));
+            && p.UserActions.Any(t=>t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
 
             Assert.IsTrue(shouldExist);
 
@@ -62,7 +62,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = newPost.PostedBy,
                 ReferencePostId = postId,
-                EntryTypeId = (short)NewsfeedEntryType.wallpost,
+                FeedType = (short)NewsfeedType.wallpost,
                 EventDate = DateTime.Now
             };
 
@@ -70,13 +70,13 @@ namespace SFeed.Tests.BusinessProviderTests
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
             userNewsfeedProvider.RemoveNewsfeedItem(
                 newsFeedEntry.By,
-                p=>p.EntryTypeId == newsFeedEntry.EntryTypeId 
+                p=>p.FeedType == newsFeedEntry.FeedType 
                 && p.ReferencePostId == newsFeedEntry.ReferencePostId
                 && p.By == newsFeedEntry.By);
 
             var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
             var shouldNotExist = wallOwnerFeeds.Any(p => p.ReferencedPost.Id == postId
-            && p.UserActions.Any(t => t.EntryTypeId == newsFeedEntry.EntryTypeId && t.By == newsFeedEntry.By));
+            && p.UserActions.Any(t => t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
 
             Assert.IsFalse(shouldNotExist);
         }

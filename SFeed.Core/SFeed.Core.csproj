@@ -46,11 +46,12 @@
     <Compile Include="Infrastructure\Repository\Caching\ICommentCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\Caching\IEntryLikeCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\Caching\IFollowerCacheRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheItemCounter.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheChildListRepository.cs" />
-    <Compile Include="Infrastructure\Repository\IReadonlyItemRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheFixedListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Caching\INewsfeedCacheRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\ICacheItemCounter.cs" />
+    <Compile Include="Infrastructure\Repository\Common\ICacheListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\ICacheChildListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\IReadonlyItemRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\ICacheFixedListRepository.cs" />
     <Compile Include="Infrastructure\Repository\Caching\IWallPostCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\Sql\ICommentRepository.cs" />
     <Compile Include="Infrastructure\Repository\Sql\IEntryLikeRepository.cs" />
@@ -65,8 +66,8 @@
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
-    <Compile Include="Infrastructure\Repository\IRepository.cs" />
-    <Compile Include="Infrastructure\Repository\ICacheItemRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\IRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Common\ICacheItemRepository.cs" />
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\Comments\CommentModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntryType.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Caching\WallPostCacheModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />

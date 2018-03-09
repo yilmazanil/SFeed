@@ -35,7 +35,7 @@ namespace SFeed.Business.Providers
                     if (existingItemIndex > -1)
                     {
                         var existingItem = response[existingItemIndex];
-                        if (!existingItem.UserActions.Any(p => p.By == feedEntry.By && p.EntryTypeId == feedEntry.EntryTypeId))
+                        if (!existingItem.UserActions.Any(p => p.By == feedEntry.By && p.FeedType == feedEntry.FeedType))
                         {
                             existingItem.UserActions.Add(feedEntry);
                         }
