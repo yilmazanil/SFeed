@@ -2,13 +2,14 @@
 using SFeed.Business.Providers;
 using System.Linq;
 using SFeed.Core.Infrastructure.Providers;
+using System.Threading;
 
 namespace SFeed.Tests.BusinessProviderTests
 {
     [TestClass]
     public class UserWallPostProviderTest : ProviderTestBase
     {
-        private IUserWallPostProvider userWallPostProvider;
+        private IWallPostProvider userWallPostProvider;
 
         [TestInitialize]
         public void Initialize()
@@ -33,6 +34,7 @@ namespace SFeed.Tests.BusinessProviderTests
         [TestMethod]
         public void Should_Create_And_Get_Post()
         {
+       
             var request = GetSampleWallCreateRequest();
             var id = userWallPostProvider.AddPost(request);
 

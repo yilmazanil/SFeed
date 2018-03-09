@@ -33,7 +33,7 @@ namespace SFeed.Tests
                 Body = body,
                 PostedBy = testUserId,
                 PostType = (short)WallPostType.text,
-                WallOwner = new Actor { ActorTypeId = (short)ActorType.user, Id = testWallOwnerId },
+                WallOwner = new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = testWallOwnerId },
             };
 
         }

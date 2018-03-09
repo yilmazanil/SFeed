@@ -1,21 +1,20 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using SFeed.Core.Infrastructue.Repository;
-using SFeed.SqlRepository;
-using AutoMapper;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models;
 using SFeed.Core.Models.Newsfeed;
-using SFeed.RedisRepository;
+using SFeed.Core.Infrastructure.Repository;
+using SFeed.RedisRepository.Implementation;
+using SFeed.Core.Infrastructure.Repository.Sql;
+using SFeed.SqlRepository.Implementation;
+using System;
 
 namespace SFeed.Business.Providers
 {
-    public class UserWallPostProvider : IUserWallPostProvider
+    public class UserWallPostProvider : IWallPostProvider
     {
-        private IRepository<WallPost> wallPostRepo;
-        private ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo;
+        private IWallPostRepository wallPostRepo;
+        private IWallPostCacheRepository wallPostCacheRepo;
 
         public UserWallPostProvider() : this(
             new WallPostRepository(),
@@ -25,8 +24,8 @@ namespace SFeed.Business.Providers
         }
 
         public UserWallPostProvider(
-            IRepository<WallPost> wallPostRepo,
-            ICacheItemRepository<WallPostCacheModel> wallPostCacheRepo)
+            IWallPostRepository wallPostRepo,
+            IWallPostCacheRepository wallPostCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
@@ -34,104 +33,54 @@ namespace SFeed.Business.Providers
 
         public string AddPost(WallPostCreateRequest request)
         {
-            var newPostId = Guid.NewGuid().ToString();
-            var dbEntry = new WallPost
+            var result = wallPostRepo.SaveItem(request);
+
+            if (result != null && !string.IsNullOrWhiteSpace(result.PostId))
             {
-                Body = request.Body,
-                CreatedBy = request.PostedBy,
-                IsDeleted = false,
-                CreatedDate = DateTime.Now,
-                Id = newPostId,
-                PostType = Convert.ToByte(request.PostType),
-                UserWall = new UserWall { UserId = request.WallOwner.Id, WallPostId = newPostId }
-            };
+                var cacheEntry = MapRequestToCacheModel(request, result);
 
-            //Save Post
-            wallPostRepo.Add(dbEntry);
-            wallPostRepo.CommitChanges();
+                wallPostCacheRepo.AddItem(cacheEntry);
 
-            var cacheEntry = MapDbEntry(dbEntry);
-
-            wallPostCacheRepo.AddItem(newPostId, cacheEntry);
-
-            return newPostId;
+                return result.PostId;
+            }
+            return null;
         }
 
-        private WallPostCacheModel MapDbEntry(WallPost dbEntry)
+        public void UpdatePost(WallPostUpdateRequest model)
         {
-            return  new WallPostCacheModel
-            {
-                Id = dbEntry.Id,
-                Body = dbEntry.Body,
-                PostedBy = dbEntry.CreatedBy,
-                PostType = dbEntry.PostType,
-                WallOwner = new Actor { ActorTypeId = (short)ActorType.user, Id = dbEntry.UserWall.UserId }
-            };
-        }
-        public void UpdatePost(WallPostModel model)
-        {
-            var existingEntry = wallPostRepo.Get(p => p.Id == model.Id);
-            existingEntry.Body = model.Body;
-            existingEntry.ModifiedDate = DateTime.Now;
-            existingEntry.PostType = Convert.ToByte(model.PostType);
-
-            //Save Post
-            wallPostRepo.Update(existingEntry);
-            wallPostRepo.CommitChanges();
-
-            var cacheEntry = MapDbEntry(existingEntry);
-            wallPostCacheRepo.AddOrUpdateItem(cacheEntry.Id, cacheEntry);
+            var modificationDate = wallPostRepo.UpdateItem(model);
+            wallPostCacheRepo.UpdateItem(model, modificationDate);
         }
 
         public void DeletePost(string postId)
         {
-            //Mark as deleted
-            wallPostRepo.Delete(p => p.Id == postId);
-            wallPostRepo.CommitChanges();
-
+            wallPostRepo.RemoveItem(postId);
             wallPostCacheRepo.RemoveItem(postId);
         }
 
         public WallPostModel GetPost(string postId)
         {
-            var dbEntry =  wallPostRepo.Get(e => e.Id == postId && e.IsDeleted == false);
-            if (dbEntry != null)
-            {
-                var result = Mapper.Map<WallPostModel>(dbEntry);
-                result.PostedBy = new Actor { Id = dbEntry.CreatedBy, ActorTypeId = (short)ActorType.user };
-                return result;
-            }
-            return null;
+            return wallPostRepo.GetItem(postId);
         }
 
-        public IEnumerable<WallPostModel> GetUserWall(string wallOwnerId)
+        public IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size)
         {
-            return wallPostRepo.GetMany(p => p.UserWall.UserId == wallOwnerId && p.IsDeleted == false).Select(p => new WallPostModel
-            {
-                Body = p.Body,
-                PostedBy = new Actor { Id = p.CreatedBy, ActorTypeId = (short)ActorType.user }, 
-                PostType = p.PostType,
-                Id = p.Id.ToString()
-            });
+            return wallPostRepo.GetUserWall(wallOwner, olderThan, size);
         }
 
-
-        public void Dispose()
+        private WallPostCacheModel MapRequestToCacheModel(WallPostCreateRequest request, WallPostCreateResponse response)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            return new WallPostCacheModel
             {
-                if (wallPostRepo != null)
-                {
-                    wallPostRepo.Dispose();
-                }
-
-            }
+                Id = response.PostId,
+                Body = request.Body,
+                PostedBy = request.PostedBy,
+                PostType = (short)request.PostType,
+                WallOwner = new WallOwnerCacheModel { Id = request.WallOwner.Id, WallOwnerTypeId = (short)request.WallOwner.WallOwnerType },
+                CreatedDate = response.CreatedDate
+            };
         }
+
+
     }
 }

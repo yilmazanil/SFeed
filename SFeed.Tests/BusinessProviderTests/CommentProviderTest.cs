@@ -9,7 +9,7 @@ namespace SFeed.Tests.BusinessProviderTests
     [TestClass]
     public class CommentProviderTest : ProviderTestBase
     {
-        IUserWallPostProvider wallPostProvider;
+        IWallPostProvider wallPostProvider;
 
         [TestInitialize]
         public void Initialize()

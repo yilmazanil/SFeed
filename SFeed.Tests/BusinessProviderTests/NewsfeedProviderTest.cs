@@ -10,7 +10,7 @@ namespace SFeed.Tests.BusinessProviderTests
     [TestClass]
     public class NewsfeedProviderTest : ProviderTestBase
     {
-        IUserWallPostProvider userWallPostProvider;
+        IWallPostProvider userWallPostProvider;
         INewsfeedProvider userNewsfeedProvider;
 
         [TestInitialize]
@@ -68,7 +68,8 @@ namespace SFeed.Tests.BusinessProviderTests
 
 
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
-            userNewsfeedProvider.RemoveNewsfeedItem(newsFeedEntry.By,
+            userNewsfeedProvider.RemoveNewsfeedItem(
+                newsFeedEntry.By,
                 p=>p.EntryTypeId == newsFeedEntry.EntryTypeId 
                 && p.ReferencePostId == newsFeedEntry.ReferencePostId
                 && p.By == newsFeedEntry.By);

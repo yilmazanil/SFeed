@@ -43,13 +43,18 @@
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
+    <Compile Include="Infrastructure\Repository\Caching\IFollowerCacheRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheItemCounter.cs" />
     <Compile Include="Infrastructure\Repository\ICacheListRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheChildListRepository.cs" />
     <Compile Include="Infrastructure\Repository\IReadonlyItemRepository.cs" />
     <Compile Include="Infrastructure\Repository\ICacheFixedListRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Caching\IWallPostCacheRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Sql\IFollowerRepository.cs" />
+    <Compile Include="Infrastructure\Repository\Sql\IWallPostRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
-    <Compile Include="Models\ActorType.cs" />
+    <Compile Include="Models\WallOwnerCacheModel.cs" />
+    <Compile Include="Models\WallOwnerType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
@@ -58,7 +63,7 @@
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
-    <Compile Include="Models\Actor.cs" />
+    <Compile Include="Models\WallOwner.cs" />
     <Compile Include="Models\Caching\CommentCacheModel.cs" />
     <Compile Include="Models\Caching\LikeCacheModel.cs" />
     <Compile Include="Models\Caching\NewsfeedCacheModel.cs" />
@@ -70,8 +75,10 @@
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Caching\WallPostCacheModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
+    <Compile Include="Models\WallPost\WallPostCreateResponse.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\WallPost\WallPostType.cs" />
+    <Compile Include="Models\WallPost\WallPostUpdateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

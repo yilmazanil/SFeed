@@ -42,7 +42,7 @@ namespace SFeed.Business.Providers
 
         public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry)
         {
-            var followers = GetFollowers(new List<Actor> { new Actor { ActorTypeId = (short)ActorType.user, Id = newsFeedEntry.By } });
+            var followers = GetFollowers(new List<WallOwner> { new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = newsFeedEntry.By } });
 
             foreach (var userId in followers)
             {
@@ -50,7 +50,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, List<Actor> actors)
+        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, List<WallOwner> actors)
         {
             var followers = GetFollowers(actors);
 
@@ -62,14 +62,14 @@ namespace SFeed.Business.Providers
 
         public void RemoveNewsfeedItem(string actionBy, Predicate<NewsfeedEntry> where)
         {
-            var followers = GetFollowers(new List<Actor> { new Actor { ActorTypeId = (short)ActorType.user, Id = actionBy } });
+            var followers = GetFollowers(new List<WallOwner> { new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = actionBy } });
 
             foreach (var userId in followers)
             {
                 feedCacheRepo.RemoveItem(userId, where);
             }
         }
-        public void RemoveNewsfeedItem(List<Actor> actors, Predicate<NewsfeedEntry> where)
+        public void RemoveNewsfeedItem(List<WallOwner> actors, Predicate<NewsfeedEntry> where)
         {
             var followers = GetFollowers(actors);
 
@@ -79,7 +79,7 @@ namespace SFeed.Business.Providers
             }
         }
 
-        private IEnumerable<string> GetFollowers(IEnumerable<Actor> actors)
+        private IEnumerable<string> GetFollowers(IEnumerable<WallOwner> actors)
         {
             return followerProvider.GetFollowers(actors);
         }

@@ -1,9 +1,9 @@
 ﻿namespace SFeed.Core.Models
 {
-    public class Actor
+    public class WallOwner
     {
         public string Id { get; set; }
 
-        public short ActorTypeId { get; set; }
+        public WallOwnerType WallOwnerType { get; set; }
     }
 }

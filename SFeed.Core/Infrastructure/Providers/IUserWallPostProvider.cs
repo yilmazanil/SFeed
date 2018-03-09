@@ -1,15 +1,16 @@
-﻿using SFeed.Core.Models.WallPost;
+﻿using SFeed.Core.Models;
+using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface IUserWallPostProvider : IDisposable
+    public interface IWallPostProvider
     {
         string AddPost(WallPostCreateRequest request);
-        void UpdatePost(WallPostModel model);
+        void UpdatePost(WallPostUpdateRequest model);
         void DeletePost(string postId);
         WallPostModel GetPost(string postId);
-        IEnumerable<WallPostModel> GetUserWall(string wallOwnerId);
+        IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size);
     }
 }

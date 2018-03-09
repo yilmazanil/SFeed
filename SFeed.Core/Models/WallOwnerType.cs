@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Models
 {
-    public enum ActorType
+    public enum WallOwnerType
     {
         user = 1,
         group = 2

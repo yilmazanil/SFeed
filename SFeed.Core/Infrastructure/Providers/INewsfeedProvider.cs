@@ -9,8 +9,8 @@ namespace SFeed.Core.Infrastructure.Providers
     public interface INewsfeedProvider : INewsfeedResponseProvider, IDisposable
     {
         void AddNewsfeedItem(NewsfeedEntry newsFeedEntry);
-        void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, List<Actor> actors);
+        void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, List<WallOwner> actors);
         void RemoveNewsfeedItem(string actionBy, Predicate<NewsfeedEntry> where);
-        void RemoveNewsfeedItem(List<Actor> actors, Predicate<NewsfeedEntry> where);
+        void RemoveNewsfeedItem(List<WallOwner> actors, Predicate<NewsfeedEntry> where);
     }
 }

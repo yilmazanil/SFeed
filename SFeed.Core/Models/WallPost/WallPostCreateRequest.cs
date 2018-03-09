@@ -6,8 +6,8 @@
 
         public string PostedBy { get; set; }
 
-        public short PostType { get; set; }
+        public WallPostType PostType { get; set; }
 
-        public Actor WallOwner { get; set; }
+        public WallOwner WallOwner { get; set; }
     }
 }

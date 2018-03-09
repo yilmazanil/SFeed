@@ -42,7 +42,7 @@ namespace SFeed.Business.Services
 
         public IEnumerable<string> GetFollowers(string userId)
         {
-            return userFollowerProvider.GetFollowers(new Actor { Id = userId, ActorTypeId = (short)ActorType.user } );
+            return userFollowerProvider.GetFollowers(new WallOwner { Id = userId, ActorTypeId = (short)WallOwnerType.user } );
         }
     }
 }
