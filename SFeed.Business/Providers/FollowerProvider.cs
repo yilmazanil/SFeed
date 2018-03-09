@@ -61,6 +61,5 @@ namespace SFeed.Business.Providers
         {
             return followerRepo.GetGroupFollowers(groupId);
         }
-
     }
 }

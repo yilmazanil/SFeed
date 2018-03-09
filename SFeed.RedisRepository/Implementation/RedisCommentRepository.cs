@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository.Caching;
 using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Comments;
@@ -10,96 +9,72 @@ namespace SFeed.RedisRepository.Implementation
 {
     public class RedisCommentRepository : RedisRepositoryBase, ICommentCacheRepository
     {
-        public string CacheEntryPrefix => RedisNameConstants.CommentRepoPrefix;
+        public string RepoPrefix => RedisNameConstants.CommentRepoPrefix;
+        public string ListRepoPrefix => RedisNameConstants.CommentLatestRepoPrefix;
 
         public int ListSize => RedisNameConstants.CommentRepoSize;
 
+
+
         public void AddItem(CommentCacheModel model)
         {
-            var entryKey = GetEntryKey(CacheEntryPrefix, model.PostId);
+            var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
+            var listKey = GetEntryKey(ListRepoPrefix, model.PostId);
             using (var redisClient = GetClientInstance())
             {
                 var clientApi = GetTypedClientApi<CommentCacheModel>(redisClient);
-                var list = clientApi.Lists[entryKey];
+                clientApi.SetValue(entryKey, model);
+
+                var list = redisClient.Lists[listKey];
                 if (list.Count >= ListSize)
                 {
-                    list.Trim(1, ListSize);
+                    list.Trim(0, ListSize - 1);
                 }
-                list.Prepend(model);
+                list.Append(model.CommentId.ToString());
             }
         }
 
         public void RemoveAll(int maxRemovalSize)
         {
-            var searchPattern = GetEntrySearchPattern(CacheEntryPrefix);
+            var searchPattern= GetEntrySearchPattern(RepoPrefix);
+            var searchPatternLists = GetEntrySearchPattern(ListRepoPrefix);
             using (var redisClient = GetClientInstance())
             {
-                var keys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-                redisClient.RemoveAll(keys);
+                var commentKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
+                var postListKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
+                redisClient.RemoveAll(commentKeys.Union(postListKeys));
             }
         }
 
         public void RemoveComment(string postId, long commentId)
         {
-            var entryKey = GetEntryKey(CacheEntryPrefix, postId);
-            using (var redisClient = GetClientInstance())
-            {
-                var clientApi = GetTypedClientApi<CommentCacheModel>(redisClient);
-                var listRef = clientApi.Lists[entryKey];
-                var existingComment =
-                    listRef.FirstOrDefault(t => t.CommentId == commentId);
-                if (existingComment != null)
-                {
-                    clientApi.RemoveItemFromList(listRef, existingComment);
-                }
-            }
-        }
-
-        public void RemoveComments(string postId)
-        {
-            var entryKey = GetEntryKey(CacheEntryPrefix, postId);
+            var entryKey = GetEntryKey(RepoPrefix, commentId.ToString());
+            var listKey = GetEntryKey(ListRepoPrefix, postId);
             using (var redisClient = GetClientInstance())
             {
                 redisClient.Remove(entryKey);
+                redisClient.Lists[listKey].Remove(commentId.ToString());
             }
         }
 
-        public void RemoveComments(IEnumerable<string> postIds)
+        public bool UpdateItem(CommentUpdateRequest model, DateTime modificationDate)
         {
-            var entryList = new List<string>();
-            foreach (var postId in postIds)
-            {
-                entryList.Add(GetEntryKey(CacheEntryPrefix, postId));
-            }
-           
-            using (var redisClient = GetClientInstance())
-            {
-                redisClient.RemoveAll(entryList);
-            }
-        }
+            var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
 
-        public void UpdateItem(CommentUpdateRequest model, DateTime modificationDate)
-        {
-            var entryKey = GetEntryKey(CacheEntryPrefix, model.PostId);
             using (var redisClient = GetClientInstance())
             {
+
                 var clientApi = GetTypedClientApi<CommentCacheModel>(redisClient);
-                var listRef = clientApi.Lists[entryKey];
-                var existingComment = listRef.FirstOrDefault(t => t.CommentId == model.CommentId);
-                if (existingComment != null)
+                var existingItem = clientApi.GetValue(entryKey);
+                if (existingItem != null)
                 {
-                    listRef.Remove(existingComment);
-
-                    var doubleCheckIndex = listRef.IndexOf(existingComment);
-                    if(doubleCheckIndex )
-                    existingComment.Body = model.Body;
-                    existingComment.ModifiedDate = modificationDate;
-
-                   
-                    if(listRef.Contains()
-                    redisClient.SetItemInList()
+                    existingItem.ModifiedDate = modificationDate;
+                    existingItem.Body = model.Body;
+                    clientApi.SetValue(entryKey, existingItem);
+                    return true;
                 }
             }
+            return false;
         }
     }
 }
