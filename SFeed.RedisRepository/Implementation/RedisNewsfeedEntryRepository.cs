@@ -1,20 +1,16 @@
 ﻿using SFeed.Core.Infrastructure.Repository.Caching;
-using System;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
-using ServiceStack.Redis;
-using ServiceStack;
+using System;
 
 namespace SFeed.RedisRepository.Implementation
 {
     public class ActivityEntry
     {
-        short ActivityType { get; set; }
-        string ActivityBy { get; set; }
+        public string By { get; set; }
+        public short ActivityId { get; set; }
     }
-
-
 
     public class RedisNewsfeedEntryRepository : RedisRepositoryBase, INewsfeedCacheRepository
     {
@@ -24,30 +20,18 @@ namespace SFeed.RedisRepository.Implementation
 
         public void AddEntry(NewsfeedEntry entry, IEnumerable<string> followers)
         {
-            var followerKeys = new Dictionary<string, string>();
-            //user:comment
-            var activity = entry.ToJson();
-
-            foreach (var follower in followers)
-            {
-                //newsfeed:user
-                var followerNewsfeedKey = GetEntryKey(FeedPrefix, follower);
-                //userfeed:postId
-                var activityPrefix = GetActivityPrefix(follower, entry.ReferencePostId);
-
-                followerKeys.Add(followerNewsfeedKey, activityPrefix);
-            }
+            var activityEntry = ConvertToActivity(entry);
+            var keys = MapKeys(entry, followers);
 
             using (var client = GetClientInstance())
             {
                 using (var trans = client.CreateTransaction())
                 {
-                    foreach (var keys in followerKeys)
+                    foreach (var key in keys)
                     {
-
-                        trans.QueueCommand(r => r.AddItemToSet(keys.Key, entry.ReferencePostId));
+                        trans.QueueCommand(r => r.AddItemToSet(key.PostFeedKey, entry.ReferencePostId));
                         //uses zincr adds if not exists
-                        trans.QueueCommand(r => r.IncrementItemInSortedSet(keys.Value, activity, 1));
+                        trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, 1));
                     }
                     trans.Commit();
                 }
@@ -56,70 +40,112 @@ namespace SFeed.RedisRepository.Implementation
 
         public void RemoveEntry(NewsfeedEntry entry, IEnumerable<string> followers)
         {
-            var followerKeys = new Dictionary<string, string>();
+            var activityEntry = ConvertToActivity(entry);
 
-            var activity = entry.ToJson();
+            var keys = MapKeys(entry, followers);
 
+            using (var client = GetClientInstance())
+            {
+                using (var trans = client.CreateTransaction())
+                {
+                    //List<Action<IRedisClient>> removalCommands = new List<Action<IRedisClient>>();
+                    foreach (var key in keys)
+                    {
+                        //Decrement user activity rank in associated post details of a follower feed
+                        //If user commented twice and deleted one of them
+                        //Post should still be displayed
+                        trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, -1));
+                        //remove the details of a post if it has a rank below 0, 10 could be any negative value
+                        trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostActionsKey, -10, 0));
+                        //trans.QueueCommand(r => r.GetSetCount(key.PostActionsKey), r=>
+                        //{
+                        //    if (r < 1)
+                        //    {
+                        //        removalCommands.Add(c => c.RemoveItemFromSet(key.PostFeedKey, key.PostId));
+                        //    }
+
+                        //});
+
+                        trans.Commit();
+                    }
+
+                    //cleanup
+                    //foreach (var command in removalCommands)
+                    //{
+                    //    trans.QueueCommand(command);
+                    //}
+                    //trans.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// When user unfollows a group, postIds by group must be provided
+        /// </summary>
+        /// <param name="follower"></param>
+        /// <param name="postIds"></param>
+        public void RemovePostsFromUser(string follower, IEnumerable<string> postIds)
+        {
+            //slowest method alternative could be fetching the 
+            //activities from alternative data storage mechanism
+
+            var userFeedKey = GetEntryKey(FeedPrefix, follower);
+            var postDetailKeys = new Dictionary<string, string>();
+            foreach (var postId in postIds)
+            {
+                postDetailKeys.Add(postId, GetEntryKey(follower, postId));
+            }
+
+            using (var client = GetClientInstance())
+            {
+                using (var trans = client.CreateTransaction())
+                {
+                    foreach (var postDetailKey in postDetailKeys)
+                    {
+                        trans.QueueCommand(r => r.RemoveItemFromSet(userFeedKey, postDetailKey.Key));
+                        trans.QueueCommand(r => r.Remove(postDetailKey.Value));
+                    }
+                    trans.Commit();
+                }
+
+
+            }
+        }
+
+        private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
+        {
+            var activity = activityStringRepresentation.Split(':');
+            return new ActivityEntry
+            {
+                By = activity[0],
+                ActivityId = Convert.ToInt16(activity[1])
+            };
+        }
+
+        private string ConvertToActivity(NewsfeedEntry newsFeedEntry)
+        {
+            return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
+        }
+
+        private IEnumerable<FollowerRedisKeys> MapKeys(NewsfeedEntry entry, IEnumerable<string> followers)
+        {
+            var retVal = new List<FollowerRedisKeys>();
 
             foreach (var follower in followers)
             {
-                //newsfeed:user
-                var followerNewsfeedKey = GetEntryKey(FeedPrefix, follower);
-                //userfeed:postId
-                var activityPrefix = GetActivityPrefix(follower, entry.ReferencePostId);
-
-                followerKeys.Add(followerNewsfeedKey, activityPrefix);
-            }
-
-
-            using (var client = GetClientInstance())
-            {
-                using (var trans = client.CreateTransaction())
+                var item = new FollowerRedisKeys
                 {
-                    foreach (var followerKey in followerKeys)
-                    {
-                        trans.QueueCommand(r => r.IncrementItemInSortedSet(followerKey.Value, activity, -1));
-                        trans.QueueCommand(r =>
-                        {
-                            r.RemoveRangeFromSortedSet(followerKey.Value, -10, 0);
-                            if (r.GetSetCount(followerKey.Value) < 1)
-                            {
-                                r.RemoveItemFromSet(followerKey.Key, entry.ReferencePostId);
-                            }
-                        });
-                    }
-                }
+                    //newsfeed:user      
+                    PostFeedKey = GetEntryKey(FeedPrefix, follower),
+                    //userfeed:postId
+                    PostActionsKey = GetEntryKey(follower, entry.ReferencePostId),
+                    PostId = entry.ReferencePostId
+                };
+
+                retVal.Add(item);
             }
-        }
+            return retVal;
 
-        public void RemoveEntriesByUser(string user, Dictionary<string, NewsfeedEntry> userActivitesToRemove)
-        {
-            
-            //items: action : count
-            var userNewsfeedKey = GetEntryKey(FeedPrefix, user);
-
-            using (var client = GetClientInstance())
-            {
-                using (var trans = client.CreateTransaction())
-                {
-                    var newsFeedPosts = client.GetAllItemsFromSortedSet(userNewsfeedKey);
-                }
-
-
-            }
-        }
-
-
-
-        private void GetActivities(IRedisClient client, IEnumerable<string> following)
-        {
-            //usernewsfeed
-            //
-        }
-
-        private string GetActivityPrefix(string follower, string postId)
-        {
-            return string.Concat(follower, ":", postId);
         }
     }
 }
