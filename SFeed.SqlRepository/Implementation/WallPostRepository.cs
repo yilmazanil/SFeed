@@ -126,5 +126,16 @@ namespace SFeed.SqlRepository.Implementation
                 yield return MapDbEntity(entry);
             }
         }
+
+
+        public WallOwner GetWallOwnerByPostId(string postId)
+        {
+
+            using (var entities = new SocialFeedEntities())
+            {
+                dbEntries = entities.WallPost.Where(p => p.Id == postId).Select(p=> new KeyValuePair<UserWall, string>(p.UserWall)
+            }
+
+        }
     }
 }

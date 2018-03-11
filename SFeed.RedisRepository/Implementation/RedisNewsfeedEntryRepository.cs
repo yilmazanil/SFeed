@@ -6,11 +6,7 @@ using System;
 
 namespace SFeed.RedisRepository.Implementation
 {
-    public class ActivityEntry
-    {
-        public string By { get; set; }
-        public short ActivityId { get; set; }
-    }
+   
 
     public class RedisNewsfeedEntryRepository : RedisRepositoryBase, INewsfeedCacheRepository
     {

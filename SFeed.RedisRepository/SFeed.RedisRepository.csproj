@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivityEntry.cs" />
     <Compile Include="Base\RedisCounterBase.cs" />
     <Compile Include="Base\RedisFixedListRepositoryBase.cs" />
     <Compile Include="Base\RedisListRepositoryBase.cs" />

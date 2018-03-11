@@ -1,13 +1,8 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
 using System.Collections.Generic;
-using SFeed.RedisRepository;
 using SFeed.Core.Models.Newsfeed;
-using AutoMapper;
 using SFeed.Core.Models;
 using System;
-using SFeed.Core.Infrastructure.Repository;
-using SFeed.Core.Models.Caching;
-using System.Linq.Expressions;
 using SFeed.Core.Infrastructure.Repository.Caching;
 using SFeed.RedisRepository.Implementation;
 using System.Linq;
@@ -110,7 +105,7 @@ namespace SFeed.Business.Providers
             feedCacheRepo.AddEntry(newsFeedEntry, followers);
         }
 
-        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry)
+        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry, WallOwner wallowner)
         {
 
             feedCacheRepo.RemoveEntry(newsFeedEntry);
