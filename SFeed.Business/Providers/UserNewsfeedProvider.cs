@@ -8,40 +8,41 @@ using System;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Caching;
 using System.Linq.Expressions;
+using SFeed.Core.Infrastructure.Repository.Caching;
+using SFeed.RedisRepository.Implementation;
+using System.Linq;
 
 namespace SFeed.Business.Providers
 {
     //TODO: Include wallpost owner followers for wallpost
     public class UserNewsfeedProvider : INewsfeedProvider
     {
-        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
+        INewsfeedCacheRepository feedCacheRepo;
         IFollowerProvider followerProvider;
-        INewsfeedResponseProvider newsFeedResponseProvider;
 
         public UserNewsfeedProvider() : this(
-            new RedisUserFeedRepository(),
-            new FollowerProvider(),
-            new UserNewsfeedResponseProvider())
+            new RedisNewsfeedEntryRepository(),
+            new FollowerProvider())
         {
 
         }
         public UserNewsfeedProvider(
-            ICacheListRepository<NewsfeedEntry> feedCacheRepo,
-            IFollowerProvider followerProvider,
-            INewsfeedResponseProvider newsFeedResponseProvider)
+            INewsfeedCacheRepository feedCacheRepo,
+            IFollowerProvider followerProvider)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.followerProvider = followerProvider;
-            this.newsFeedResponseProvider = newsFeedResponseProvider;
         }       
        
         public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
         {
+            throw new NotImplementedException();
             return newsFeedResponseProvider.GetUserNewsfeed(userId);
         }
 
         public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry)
         {
+
             var followers = GetFollowers(new List<WallOwner> { new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = newsFeedEntry.By } });
 
             foreach (var userId in followers)
@@ -84,29 +85,48 @@ namespace SFeed.Business.Providers
             return followerProvider.GetFollowers(actors);
         }
 
-        public void Dispose()
+        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, WallOwner wallowner)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            IEnumerable<string> followers = followerProvider.GetUserFollowers(newsFeedEntry.By);
+            if (wallowner.WallOwnerType == WallOwnerType.user && !string.Equals(wallowner.Id, newsFeedEntry.By))
             {
-                if (feedCacheRepo != null)
-                {
-                    feedCacheRepo.Dispose();
-                }
-                if (followerProvider != null)
-                {
-                    followerProvider.Dispose();
-                }
+                var wallOwnerFollowers = followerProvider.GetUserFollowers(wallowner.Id);
+                followers = followers.Union(wallOwnerFollowers).Distinct();
 
             }
+            else
+            {
+                if (wallowner.WallOwnerType != WallOwnerType.privateGroup)
+                {
+                    var wallOwnerFollowers = followerProvider.GetUserFollowers(wallowner.Id);
+                    followers = followers.Union(wallOwnerFollowers).Distinct();
+                }
+                else
+                {
+                    followers = followerProvider.GetGroupFollowers(wallowner.Id);
+                }
+            }
+
+            feedCacheRepo.AddEntry(newsFeedEntry, followers);
         }
 
-   
+        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry)
+        {
+
+            feedCacheRepo.RemoveEntry(newsFeedEntry);
+        }
+
+        public void RemoveFeedsFromUser(string userId, WallOwner fromWall)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveFeedsFromUser(string userId, string fromUser)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
 
 
