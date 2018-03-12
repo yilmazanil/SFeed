@@ -3,7 +3,6 @@
     public enum WallOwnerType
     {
         user = 1,
-        group = 2,
-        privateGroup = 3
+        group = 2
     }
 }

@@ -69,9 +69,6 @@
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
     <Compile Include="Providers\UserNewsfeedResponseProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />
-    <Compile Include="Services\UserFollowerService.cs" />
-    <Compile Include="Services\UserNewsfeedService.cs" />
-    <Compile Include="Services\UserWallEntryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFeed.Core\SFeed.Core.csproj">

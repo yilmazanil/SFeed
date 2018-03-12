@@ -6,6 +6,7 @@ using System;
 using SFeed.Core.Infrastructure.Repository.Caching;
 using SFeed.RedisRepository.Implementation;
 using System.Linq;
+using SFeed.Core.Models.Caching;
 
 namespace SFeed.Business.Providers
 {
@@ -27,98 +28,93 @@ namespace SFeed.Business.Providers
         {
             this.feedCacheRepo = feedCacheRepo;
             this.followerProvider = followerProvider;
-        }       
-       
-        public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
-        {
-            throw new NotImplementedException();
-            return newsFeedResponseProvider.GetUserNewsfeed(userId);
         }
 
-        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry)
+        //public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
+        //{
+        //    throw new NotImplementedException();
+        //    return newsFeedResponseProvider.GetUserNewsfeed(userId);
+        //}
+
+        public void AddNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
+            var followers = GetFollowers(newsFeedEntry.By, newsFeedEntry.WallOwner);
 
-            var followers = GetFollowers(new List<WallOwner> { new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = newsFeedEntry.By } });
-
-            foreach (var userId in followers)
+            if (followers.Any())
             {
-                feedCacheRepo.PrependItem(userId, newsFeedEntry);
+                var cacheModel = new NewsfeedCacheModel
+                {
+                    By = newsFeedEntry.By,
+                    FeedType = newsFeedEntry.FeedType,
+                    ReferencePostId = newsFeedEntry.ReferencePostId
+                };
+                feedCacheRepo.AddEntry(cacheModel, followers);
             }
         }
 
-        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, List<WallOwner> actors)
+        public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
-            var followers = GetFollowers(actors);
+            var followers = GetFollowers(newsFeedEntry.By, newsFeedEntry.WallOwner);
 
-            foreach (var userId in followers)
+            if (followers.Any())
             {
-                feedCacheRepo.PrependItem(userId, newsFeedEntry);
+                var cacheModel = new NewsfeedCacheModel
+                {
+                    By = newsFeedEntry.By,
+                    FeedType = newsFeedEntry.FeedType,
+                    ReferencePostId = newsFeedEntry.ReferencePostId
+                };
+                feedCacheRepo.RemoveEntry(cacheModel, followers);
             }
         }
 
-        public void RemoveNewsfeedItem(string actionBy, Predicate<NewsfeedEntry> where)
-        {
-            var followers = GetFollowers(new List<WallOwner> { new WallOwner { ActorTypeId = (short)WallOwnerType.user, Id = actionBy } });
+        //public void RemoveFeedsFromUser(string fromUser, string byUser)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-            foreach (var userId in followers)
+        //public void RemoveFeedsFromGroup(string fromUser, string byGroup)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
+        private IEnumerable<string> GetFollowers(string entryBy, WallOwner targetWall)
+        {
+            IEnumerable<string> followers;
+            //user posts to another user wall
+            if (targetWall.WallOwnerType == WallOwnerType.user)
             {
-                feedCacheRepo.RemoveItem(userId, where);
+                followers = followerProvider.GetUserFollowers(entryBy);
+
+                if (string.Equals(entryBy, targetWall.Id))
+                {
+                    //user posted to his/her own wall no action required
+                }
+                else if (targetWall.IsPublic)
+                {
+                    //target user profile is public, add target user followers
+                    var targetUserFollowers = followerProvider.GetUserFollowers(entryBy);
+                    followers = followers.Union(targetUserFollowers);
+                }
             }
-        }
-        public void RemoveNewsfeedItem(List<WallOwner> actors, Predicate<NewsfeedEntry> where)
-        {
-            var followers = GetFollowers(actors);
-
-            foreach (var userId in followers)
-            {
-                feedCacheRepo.RemoveItem(userId, where);
-            }
-        }
-
-        private IEnumerable<string> GetFollowers(IEnumerable<WallOwner> actors)
-        {
-            return followerProvider.GetFollowers(actors);
-        }
-
-        public void AddNewsfeedItem(NewsfeedEntry newsFeedEntry, WallOwner wallowner)
-        {
-            IEnumerable<string> followers = followerProvider.GetUserFollowers(newsFeedEntry.By);
-            if (wallowner.WallOwnerType == WallOwnerType.user && !string.Equals(wallowner.Id, newsFeedEntry.By))
-            {
-                var wallOwnerFollowers = followerProvider.GetUserFollowers(wallowner.Id);
-                followers = followers.Union(wallOwnerFollowers).Distinct();
-
-            }
+            //user posts to a group wall
             else
             {
-                if (wallowner.WallOwnerType != WallOwnerType.privateGroup)
+                if (!targetWall.IsPublic)
                 {
-                    var wallOwnerFollowers = followerProvider.GetUserFollowers(wallowner.Id);
-                    followers = followers.Union(wallOwnerFollowers).Distinct();
+                    //For private group posts, only users that can follow target group gets newsfeed item
+                    followers = followerProvider.GetGroupFollowers(targetWall.Id);
                 }
                 else
                 {
-                    followers = followerProvider.GetGroupFollowers(wallowner.Id);
+                    //for public groups notify both
+                    followers = followerProvider.GetUserFollowers(entryBy);
+                    var groupFollowers = followerProvider.GetGroupFollowers(targetWall.Id);
+                    followers = followers.Union(groupFollowers);
                 }
             }
-
-            feedCacheRepo.AddEntry(newsFeedEntry, followers);
-        }
-
-        public void RemoveNewsfeedItem(NewsfeedEntry newsFeedEntry, WallOwner wallowner)
-        {
-
-            feedCacheRepo.RemoveEntry(newsFeedEntry);
-        }
-
-        public void RemoveFeedsFromUser(string userId, WallOwner fromWall)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveFeedsFromUser(string userId, string fromUser)
-        {
-            throw new NotImplementedException();
+            return followers.Distinct();
         }
 
 

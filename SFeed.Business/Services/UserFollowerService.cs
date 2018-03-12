@@ -32,17 +32,5 @@ namespace SFeed.Business.Services
             userFollowerProvider.UnfollowUser(activeUserId, userIdToUnFollow);
         }
 
-        public void Dispose()
-        {
-            if (userFollowerProvider != null)
-            {
-                userFollowerProvider.Dispose();
-            }
-       }
-
-        public IEnumerable<string> GetFollowers(string userId)
-        {
-            return userFollowerProvider.GetFollowers(new WallOwner { Id = userId, ActorTypeId = (short)WallOwnerType.user } );
-        }
     }
 }

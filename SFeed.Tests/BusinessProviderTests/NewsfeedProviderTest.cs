@@ -32,7 +32,7 @@ namespace SFeed.Tests.BusinessProviderTests
             var newPost = GetSampleWallCreateRequest();
             var postId = userWallPostProvider.AddPost(newPost);
 
-            var newsFeedEntry = new NewsfeedEntry
+            var newsFeedEntry = new NewsfeedItem
             {
                 By = newPost.PostedBy,
                 ReferencePostId = postId,
@@ -58,7 +58,7 @@ namespace SFeed.Tests.BusinessProviderTests
             var newPost = GetSampleWallCreateRequest();
             var postId = userWallPostProvider.AddPost(newPost);
 
-            var newsFeedEntry = new NewsfeedEntry
+            var newsFeedEntry = new NewsfeedItem
             {
                 By = newPost.PostedBy,
                 ReferencePostId = postId,

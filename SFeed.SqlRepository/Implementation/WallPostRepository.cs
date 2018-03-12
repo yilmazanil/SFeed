@@ -104,6 +104,7 @@ namespace SFeed.SqlRepository.Implementation
                 var post = entities.WallPost.FirstOrDefault(p => p.Id == model.PostId && p.IsDeleted == false);
                 if (post != null)
                 {
+                    post.Body = model.Body;
                     post.ModifiedDate = DateTime.Now;
                     post.PostType = (byte)model.PostType;
                     entities.SaveChanges();
@@ -113,29 +114,50 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
-        public IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size)
+        public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
         {
             List<WallPost> dbEntries;
             using (var entities = new SocialFeedEntities())
             {
-                dbEntries = entities.WallPost.Where(p => p.CreatedDate> olderThan && p.IsDeleted == false).Take(size).ToList();
+                dbEntries = entities.WallPost.Include("UserWall").Include("GroupWall").Where(
+                    p => p.CreatedDate < olderThan && p.IsDeleted == false
+                    && p.UserWall.UserId == userId).Take(size).ToList();
             }
 
+            var returnList = new List<WallPostModel>();
             foreach (var entry in dbEntries)
             {
-                yield return MapDbEntity(entry);
+                returnList.Add(MapDbEntity(entry));
             }
+            return returnList;
         }
 
-
-        public WallOwner GetWallOwnerByPostId(string postId)
+        public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
         {
-
+            List<WallPost> dbEntries;
             using (var entities = new SocialFeedEntities())
             {
-                dbEntries = entities.WallPost.Where(p => p.Id == postId).Select(p=> new KeyValuePair<UserWall, string>(p.UserWall)
+                dbEntries = entities.WallPost.Include("UserWall").Include("GroupWall").Where(
+                    p => p.CreatedDate < olderThan && p.IsDeleted == false
+                    && p.GroupWall.GroupId == groupId).Take(size).ToList();
             }
 
+            var returnList = new List<WallPostModel>();
+            foreach (var entry in dbEntries)
+            {
+                returnList.Add(MapDbEntity(entry));
+            }
+            return returnList;
         }
+
+        public IEnumerable<string> GetPostIdsByUserWall(string userId)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                return entities.UserWall.Where(p => p.UserId == userId).Select(p => p.WallPostId).ToList();
+            }
+        }
+
+
     }
 }

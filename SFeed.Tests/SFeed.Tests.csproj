@@ -60,14 +60,10 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessProviderTests\CommentProviderTest.cs" />
     <Compile Include="BusinessProviderTests\FollowerProviderTest.cs" />
-    <Compile Include="BusinessProviderTests\LikeProviderTest.cs" />
-    <Compile Include="BusinessProviderTests\NewsfeedProviderTest.cs" />
+    <Compile Include="BusinessProviderTests\UserWallPostProviderTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProviderTestBase.cs" />
-    <Compile Include="BusinessProviderTests\UserWallPostProviderTest.cs" />
-    <Compile Include="BusinessServiceTests\NewsfeedServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils.cs" />
   </ItemGroup>

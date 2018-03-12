@@ -6,7 +6,7 @@ namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedResponseItem
     {
-        public List<NewsfeedEntry> UserActions { get; set; }
+        public List<NewsfeedItem> UserActions { get; set; }
 
         public NewsfeedWallPostModel ReferencedPost { get; set; }
     }

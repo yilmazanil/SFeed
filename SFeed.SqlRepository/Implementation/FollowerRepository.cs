@@ -34,7 +34,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                return entities.GroupFollower.Where(t => t.GroupId == groupId).Select(t => t.FollowerId);
+                return entities.GroupFollower.Where(t => t.GroupId == groupId).Select(t => t.FollowerId).ToList();
             }
         }
 
@@ -42,7 +42,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                return entities.UserFollower.Where(t => t.UserId == userId).Select(t => t.FollowerId);
+                return entities.UserFollower.Where(t => t.UserId == userId).Select(t => t.FollowerId).ToList();
             }
         }
 
@@ -50,8 +50,12 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                entities.GroupFollower.Remove(new GroupFollower { GroupId = groupId, FollowerId = followerId });
-                entities.SaveChanges();
+                var record = entities.GroupFollower.FirstOrDefault(p => p.FollowerId == followerId && p.GroupId == groupId);
+                if (record != null)
+                {
+                    entities.GroupFollower.Remove(record);
+                    entities.SaveChanges();
+                }
             }
         }
 
@@ -59,8 +63,12 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                entities.UserFollower.Remove(new UserFollower { UserId = userId, FollowerId = followerId });
-                entities.SaveChanges();
+                var record = entities.UserFollower.FirstOrDefault(p => p.FollowerId == followerId && p.UserId == userId);
+                if (record != null)
+                {
+                    entities.UserFollower.Remove(record);
+                    entities.SaveChanges();
+                }
             }
         }
     }

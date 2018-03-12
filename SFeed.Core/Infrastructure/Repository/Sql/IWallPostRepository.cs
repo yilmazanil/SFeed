@@ -11,6 +11,8 @@ namespace SFeed.Core.Infrastructure.Repository.Sql
         DateTime? UpdateItem(WallPostUpdateRequest model);
         WallPostModel GetItem(string postId);
         bool RemoveItem(string postId);
-        IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size);
+        IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size);
+        IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size);
+        IEnumerable<string> GetPostIdsByUserWall(string userId);
     }
 }

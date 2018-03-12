@@ -3,7 +3,7 @@ using SFeed.RedisRepository.Base;
 
 namespace SFeed.RedisRepository
 {
-    public class RedisUserFeedRepository : RedisFixedListRepositoryBase<NewsfeedEntry>
+    public class RedisUserFeedRepository : RedisFixedListRepositoryBase<NewsfeedItem>
     {
         public override string ListName => RedisNameConstants.FeedRepoPrefix;
 

@@ -3,6 +3,7 @@ using SFeed.Core.Models.Newsfeed;
 using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
 using System;
+using SFeed.Core.Models.Caching;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -14,7 +15,7 @@ namespace SFeed.RedisRepository.Implementation
         public string ActivityIdPrefix => RedisNameConstants.ActivityIdPrefix;
         public string ActivityPrefix => RedisNameConstants.ActivityPrefix;
 
-        public void AddEntry(NewsfeedEntry entry, IEnumerable<string> followers)
+        public void AddEntry(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = ConvertToActivity(entry);
             var keys = MapKeys(entry, followers);
@@ -34,7 +35,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveEntry(NewsfeedEntry entry, IEnumerable<string> followers)
+        public void RemoveEntry(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = ConvertToActivity(entry);
 
@@ -118,12 +119,12 @@ namespace SFeed.RedisRepository.Implementation
             };
         }
 
-        private string ConvertToActivity(NewsfeedEntry newsFeedEntry)
+        private string ConvertToActivity(NewsfeedCacheModel newsFeedEntry)
         {
             return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
         }
 
-        private IEnumerable<FollowerRedisKeys> MapKeys(NewsfeedEntry entry, IEnumerable<string> followers)
+        private IEnumerable<FollowerRedisKeys> MapKeys(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var retVal = new List<FollowerRedisKeys>();
 

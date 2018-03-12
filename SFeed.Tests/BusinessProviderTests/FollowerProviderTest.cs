@@ -16,60 +16,69 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             this.followerProvider = new FollowerProvider();
         }
-        [TestCleanup]
-        public void Cleanup()
-        {
-            this.followerProvider.Dispose();
-        }
+
         [TestMethod]
         public void Should_Follow_User_Once()
         {
-            followerProvider.FollowUser(testUserId, testWallOwnerId);
-            followerProvider.FollowUser(testUserId, testWallOwnerId);
+            var follower = GetRandomUserName();
+            var targetUser = GetRandomUserName();
+            followerProvider.FollowUser(follower, targetUser);
+            followerProvider.FollowUser(follower, targetUser);
 
-            var followers = followerProvider.GetFollowers(new WallOwner { Id = testWallOwnerId, ActorTypeId = (short)WallOwnerType.user });
-            var testUserEntries = followers.Where(f => f == testUserId);
+            var followers = followerProvider.GetUserFollowers(targetUser);
+            var followerRecords = followers.Where(f => f == follower);
 
-            var shouldExist = testUserEntries.Any();
+            var shouldExist = followerRecords.Any();
+            var shouldExistOnce = followerRecords.Count() == 1;
 
-            var shouldExistOnce = testUserEntries.Count() == 1;
             Assert.IsTrue(shouldExist && shouldExistOnce);
         }
 
         [TestMethod]
         public void Should_Unfollow_User()
         {
-            followerProvider.UnfollowUser(testUserId, testWallOwnerId);
+            var follower = GetRandomUserName();
+            var targetUser = GetRandomUserName();
+            followerProvider.FollowUser(follower, targetUser);
+            followerProvider.UnfollowUser(follower, targetUser);
 
-            var followers = followerProvider.GetFollowers(new WallOwner { Id = testWallOwnerId, ActorTypeId = (short)WallOwnerType.user });
+            var followers = followerProvider.GetUserFollowers(targetUser);
+            var followerRecords = followers.Where(f => f == follower);
 
-            var shouldNotExist = followers.Any(f => f == testUserId);
+            var shouldNotExist = followers.Any(f => f == follower);
             Assert.IsTrue(!shouldNotExist);
         }
 
         [TestMethod]
         public void Should_Follow_Group_Once()
         {
-            followerProvider.FollowGroup(testUserId, testGroupId);
-            followerProvider.FollowGroup(testUserId, testGroupId);
+            var follower = GetRandomUserName();
+            var targetGroup = GetRandomGroupName();
+            followerProvider.FollowGroup(follower, targetGroup);
+            followerProvider.FollowGroup(follower, targetGroup);
 
-            var followers = followerProvider.GetFollowers(new WallOwner { Id = testGroupId, ActorTypeId = (short)WallOwnerType.group });
-            var testUserEntries = followers.Where(f => f == testUserId);
+            var followers = followerProvider.GetGroupFollowers(targetGroup);
+            var followerRecords = followers.Where(f => f == follower);
 
-            var shouldExist = testUserEntries.Any();
-            var shouldExistOnce = testUserEntries.Count() == 1;
+            var shouldExist = followers.Any();
+            var shouldExistOnce = followerRecords.Count() == 1;
             Assert.IsTrue(shouldExist && shouldExistOnce);
         }
 
         [TestMethod]
         public void Should_Unfollow_Group()
         {
-            followerProvider.UnfollowGroup(testUserId, testGroupId);
+            var follower = GetRandomUserName();
+            var targetGroup = GetRandomGroupName();
+            followerProvider.FollowGroup(follower, targetGroup);
+            followerProvider.UnfollowGroup(follower, targetGroup);
 
-            var followers = followerProvider.GetFollowers(new WallOwner { Id = testGroupId, ActorTypeId = (short)WallOwnerType.group });
+            var followers = followerProvider.GetGroupFollowers(targetGroup);
+            var followerRecords = followers.Where(f => f == follower);
 
-            var shouldNotExist = followers.Any(f => f == testGroupId);
-            Assert.IsTrue(!shouldNotExist);
+            var shouldNotExist = followers.Any(f => f == follower);
+
+            Assert.IsFalse(shouldNotExist);
         }
     }
 }

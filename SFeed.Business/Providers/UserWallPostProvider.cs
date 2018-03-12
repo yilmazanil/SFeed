@@ -69,11 +69,15 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetItem(postId);
         }
 
-        public IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size)
+        public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
         {
-            return wallPostRepo.GetUserWall(wallOwner, olderThan, size);
+            return wallPostRepo.GetUserWall(userId, olderThan, size);
         }
 
+        public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
+        {
+            return wallPostRepo.GetGroupWall(groupId, olderThan, size);
+        }
         private WallPostCacheModel MapRequestToCacheModel(WallPostCreateRequest request, WallPostCreateResponse response)
         {
             return new WallPostCacheModel
@@ -86,7 +90,6 @@ namespace SFeed.Business.Providers
                 CreatedDate = response.CreatedDate
             };
         }
-
 
     }
 }

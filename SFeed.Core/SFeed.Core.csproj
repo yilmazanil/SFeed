@@ -77,7 +77,7 @@
     <Compile Include="Models\Caching\NewsfeedCacheModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\Comments\CommentModel.cs" />
-    <Compile Include="Models\Newsfeed\NewsfeedEntry.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedItem.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedType.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedResponseItem.cs" />
     <Compile Include="Models\Caching\WallPostCacheModel.cs" />

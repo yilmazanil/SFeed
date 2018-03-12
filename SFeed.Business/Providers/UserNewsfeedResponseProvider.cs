@@ -11,7 +11,7 @@ namespace SFeed.Business.Providers
 {
     public class UserNewsfeedResponseProvider : INewsfeedResponseProvider
     {
-        ICacheListRepository<NewsfeedEntry> feedCacheRepo;
+        ICacheListRepository<NewsfeedItem> feedCacheRepo;
         IReadonlyItemRepository<NewsfeedWallPostModel> wallPostCacheRepo;
 
         public UserNewsfeedResponseProvider()
@@ -47,7 +47,7 @@ namespace SFeed.Business.Providers
                         {
                             response.Add(new NewsfeedResponseItem
                             {
-                                UserActions = new List<NewsfeedEntry> { feedEntry },
+                                UserActions = new List<NewsfeedItem> { feedEntry },
                                 ReferencedPost = post
                             });
                         }

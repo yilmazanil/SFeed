@@ -11,6 +11,7 @@ namespace SFeed.Core.Infrastructure.Providers
         void UpdatePost(WallPostUpdateRequest model);
         void DeletePost(string postId);
         WallPostModel GetPost(string postId);
-        IEnumerable<WallPostModel> GetUserWall(WallOwner wallOwner, DateTime olderThan, int size);
+        IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size);
+        IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size);
     }
 }

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.Core.Models.Caching
 {
     public class NewsfeedCacheModel
     {
+        public string ReferencePostId { get; set; }
+
+        public string By { get; set; }
+
+        public NewsfeedType FeedType { get; set; }
     }
 }
