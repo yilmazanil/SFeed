@@ -11,5 +11,7 @@ namespace SFeed.Core.Infrastructure.Repository.Caching
         bool UpdateItem(CommentUpdateRequest model, DateTime modificationDate);
         void RemoveComment(string postId, long commentId);
         void RemoveAll(int maxRemovalSize);
+        IEnumerable<CommentCacheModel> GetLatestComments(string postId);
+        int GetCommentCount(string postId);
     }
 }

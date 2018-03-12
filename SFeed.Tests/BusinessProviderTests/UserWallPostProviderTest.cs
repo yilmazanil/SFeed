@@ -21,12 +21,15 @@ namespace SFeed.Tests.BusinessProviderTests
         [TestMethod]
         public void Should_Create_Post()
         {
-            var sampleUser = GetRandomUserName();
-            var sampleUserWall = GetRandomUserWallOwner(true);
+            for (int i = 0; i < 1000; i++)
+            {
+                var sampleUser = GetRandomUserName();
+                var sampleUserWall = GetRandomUserWallOwner(true);
 
-            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-            var id = userWallPostProvider.AddPost(request);
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+                var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+                var id = userWallPostProvider.AddPost(request);
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+            }
         }
 
         [TestMethod]

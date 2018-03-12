@@ -8,6 +8,7 @@ namespace SFeed.Core.Infrastructure.Repository.Caching
     {
         void AddEntry(NewsfeedCacheModel entry, IEnumerable<string> followers);
         void RemoveEntry(NewsfeedCacheModel entry, IEnumerable<string> followers);
+        void RemovePost(string postId, IEnumerable<string> followers);
         void RemovePostsFromUser(string follower, IEnumerable<string> postIds);
     }
 }

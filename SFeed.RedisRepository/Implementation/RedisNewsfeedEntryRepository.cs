@@ -4,6 +4,8 @@ using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
 using System;
 using SFeed.Core.Models.Caching;
+using SFeed.Core.Infrastructure.Repository;
+using System.Linq;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -15,10 +17,20 @@ namespace SFeed.RedisRepository.Implementation
         public string ActivityIdPrefix => RedisNameConstants.ActivityIdPrefix;
         public string ActivityPrefix => RedisNameConstants.ActivityPrefix;
 
+        ICommentCacheRepository commentRepo;
+        IEntryLikeCacheRepository entryLikeRepo;
+        IWallPostCacheRepository wallPostRepo;
+
+        public RedisNewsfeedEntryRepository()
+        {
+            this.commentRepo = new RedisCommentRepository();
+            this.entryLikeRepo = new RedisEntryLikeRepository();
+            this.wallPostRepo = new RedisWallPostRepository();
+        }
         public void AddEntry(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = ConvertToActivity(entry);
-            var keys = MapKeys(entry, followers);
+            var keys = MapKeys(entry.ReferencePostId, followers);
 
             using (var client = GetClientInstance())
             {
@@ -26,7 +38,7 @@ namespace SFeed.RedisRepository.Implementation
                 {
                     foreach (var key in keys)
                     {
-                        trans.QueueCommand(r => r.AddItemToSet(key.PostFeedKey, entry.ReferencePostId));
+                        trans.QueueCommand(r => r.AddItemToList(key.PostFeedKey, entry.ReferencePostId));
                         //uses zincr adds if not exists
                         trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, 1));
                     }
@@ -39,7 +51,7 @@ namespace SFeed.RedisRepository.Implementation
         {
             var activityEntry = ConvertToActivity(entry);
 
-            var keys = MapKeys(entry, followers);
+            var keys = MapKeys(entry.ReferencePostId, followers);
 
             using (var client = GetClientInstance())
             {
@@ -72,6 +84,19 @@ namespace SFeed.RedisRepository.Implementation
                     //    trans.QueueCommand(command);
                     //}
                     //trans.Commit();
+                }
+            }
+        }
+
+        public void RemovePost(string postId, IEnumerable<string> followers)
+        {
+            var keys = MapKeys(postId, followers);
+            using (var client = GetClientInstance())
+            {
+                foreach (var key in keys)
+                {
+                    client.RemoveItemFromList(key.PostFeedKey, postId);
+                    client.RemoveEntry(key.PostActionsKey);
                 }
             }
         }
@@ -124,7 +149,7 @@ namespace SFeed.RedisRepository.Implementation
             return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
         }
 
-        private IEnumerable<FollowerRedisKeys> MapKeys(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        private IEnumerable<FollowerRedisKeys> MapKeys(string postId, IEnumerable<string> followers)
         {
             var retVal = new List<FollowerRedisKeys>();
 
@@ -135,14 +160,65 @@ namespace SFeed.RedisRepository.Implementation
                     //newsfeed:user      
                     PostFeedKey = GetEntryKey(FeedPrefix, follower),
                     //userfeed:postId
-                    PostActionsKey = GetEntryKey(follower, entry.ReferencePostId),
-                    PostId = entry.ReferencePostId
+                    PostActionsKey = GetEntryKey(FeedPrefix, string.Concat(follower,":", postId)),
+                    PostId = postId
                 };
 
                 retVal.Add(item);
             }
             return retVal;
 
+        }
+
+        public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
+        {
+            var userFeedKey = GetEntryKey(FeedPrefix, userId);
+            List<string> postIds;
+            List<NewsfeedWallPostModel> responseItems = new List<NewsfeedWallPostModel>();
+
+            using (var client = GetClientInstance())
+            {
+                postIds = client.GetRangeFromList(userFeedKey, skip, take);
+                foreach (var postId in postIds)
+                {
+                    var post = wallPostRepo.GetItem(postId);
+                    if (post != null)
+                    {
+                        var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
+                        var actions = client.GetAllItemsFromSet(postFeedReasonKey);
+                        if (actions != null)
+                        {
+                            var latestComments = commentRepo.GetLatestComments(post.Id);
+                            var commentCount = commentRepo.GetCommentCount(post.Id);
+                            var likeCount = entryLikeRepo.GetPostLikeCount(post.Id);
+                            var model = new NewsfeedWallPostModel
+                            {
+                                Body = post.Body,
+                                CreatedDate = post.CreatedDate,
+                                Id = post.Id,
+                                ModifiedDate = post.ModifiedDate,
+                                PostedBy = post.PostedBy,
+                                PostType = post.PostType,
+                                WallOwner = post.WallOwner,
+                                FeedDescription = actions.ToList(),
+                                LikeCount = likeCount,
+                                CommentCount = commentCount,
+                                LatestComments = latestComments
+                            };
+                            responseItems.Add(model);
+                        }
+                        else
+                        {
+                            client.RemoveEntry(postFeedReasonKey);
+                        }
+                    }
+                    else
+                    {
+                        client.RemoveItemFromList(userFeedKey, postId);
+                    }
+                }
+                return responseItems;
+            }
         }
     }
 }

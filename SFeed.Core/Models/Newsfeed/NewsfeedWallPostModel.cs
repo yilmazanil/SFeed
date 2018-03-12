@@ -5,10 +5,12 @@ namespace SFeed.Core.Models.Caching
 {
     public class NewsfeedWallPostModel : WallPostCacheModel
     {
-        public List<CommentCacheModel> LatestComments { get; set; }
+        public IEnumerable<CommentCacheModel> LatestComments { get; set; }
 
         public int LikeCount { get; set; }
 
         public int CommentCount { get; set; }
+
+        public List<string> FeedDescription { get; set; }
     }
 }

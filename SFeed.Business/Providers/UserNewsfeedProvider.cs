@@ -54,17 +54,35 @@ namespace SFeed.Business.Providers
 
         public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
+            if (newsFeedEntry.FeedType == NewsfeedType.wallpost)
+            {
+                RemovePost(newsFeedEntry);
+            }
+            else
+            {
+                var followers = GetFollowers(newsFeedEntry.By, newsFeedEntry.WallOwner);
+
+                if (followers.Any())
+                {
+                    var cacheModel = new NewsfeedCacheModel
+                    {
+                        By = newsFeedEntry.By,
+                        FeedType = newsFeedEntry.FeedType,
+                        ReferencePostId = newsFeedEntry.ReferencePostId
+                    };
+                    feedCacheRepo.RemoveEntry(cacheModel, followers);
+                }
+            }
+        }
+
+
+        public void RemovePost(NewsfeedItem newsFeedEntry)
+        {
             var followers = GetFollowers(newsFeedEntry.By, newsFeedEntry.WallOwner);
 
             if (followers.Any())
             {
-                var cacheModel = new NewsfeedCacheModel
-                {
-                    By = newsFeedEntry.By,
-                    FeedType = newsFeedEntry.FeedType,
-                    ReferencePostId = newsFeedEntry.ReferencePostId
-                };
-                feedCacheRepo.RemoveEntry(cacheModel, followers);
+                feedCacheRepo.RemovePost(newsFeedEntry.ReferencePostId, followers);
             }
         }
 
@@ -116,6 +134,7 @@ namespace SFeed.Business.Providers
             }
             return followers.Distinct();
         }
+
 
 
 
