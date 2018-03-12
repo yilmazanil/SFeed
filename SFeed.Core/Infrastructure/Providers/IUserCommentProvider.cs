@@ -10,5 +10,6 @@ namespace SFeed.Core.Infrastructure.Providers
         void DeleteComment(string postId, long commentId);
         void UpdateComment(CommentUpdateRequest request);
         IEnumerable<CommentModel> GetComments(string postId, DateTime olderThan, int size);
+        CommentModel GetComment(string postId, long commentId);
     }
 }

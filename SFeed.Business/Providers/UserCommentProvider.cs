@@ -69,5 +69,10 @@ namespace SFeed.Business.Providers
             commentRepo.RemoveItem(postId, commentId);
             commentCacheRepo.RemoveComment(postId, commentId);
         }
+
+        public CommentModel GetComment(string postId, long commentId)
+        {
+           return commentRepo.GetComment(postId, commentId);
+        }
     }
 }

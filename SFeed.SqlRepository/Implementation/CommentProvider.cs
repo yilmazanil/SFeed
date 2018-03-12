@@ -27,7 +27,8 @@ namespace SFeed.SqlRepository.Implementation
             var result = new List<CommentModel>();
             using (var context = new SocialFeedEntities())
             {
-                var comments = context.UserComment.Where(t => t.WallPostId == postId && t.CreatedDate< olderThan && t.IsDeleted == false).Skip(size).ToList();
+                var comments = context.UserComment.Where(t => t.WallPostId == postId && t.CreatedDate< olderThan && t.IsDeleted == false)
+                    .OrderByDescending(p=>p.Id).Take(size).ToList();
                 foreach (var comment in comments)
                 {
                     var likeCount = context.UserCommentLike.Count(t => t.CommentId == comment.Id);
@@ -76,6 +77,7 @@ namespace SFeed.SqlRepository.Implementation
                 if (comment != null)
                 {
                     comment.ModifiedDate = DateTime.Now;
+                    comment.Body = model.Body;
                     entities.SaveChanges();
                     return comment.ModifiedDate.Value;
                 }

@@ -2,6 +2,7 @@
 using SFeed.Business.Providers;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.Comments;
+using System;
 using System.Linq;
 
 namespace SFeed.Tests.BusinessProviderTests
@@ -10,62 +11,109 @@ namespace SFeed.Tests.BusinessProviderTests
     public class CommentProviderTest : ProviderTestBase
     {
         IWallPostProvider wallPostProvider;
+        IUserCommentProvider commentProvider;
 
         [TestInitialize]
         public void Initialize()
         {
             this.wallPostProvider = new UserWallPostProvider();
+            this.commentProvider = new UserCommentProvider();
         }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            this.wallPostProvider.Dispose();
-        }
-
 
         [TestMethod]
         public void Should_Add_Comment_On_WallPost()
         {
-            var samplePost = wallPostProvider.GetUserWall(testWallOwnerId).FirstOrDefault();
+            var sampleUser = GetRandomUserName();
+            var sampleUserWall = GetRandomUserWallOwner(true);
+            var sampleCommentUser = GetRandomUserName();
 
-            using (var commentProvider = new UserCommentProvider())
+            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var samplePostId = wallPostProvider.AddPost(request);
+
+            var commentCreateRequest = new CommentCreateRequest
             {
-                var commentId =  commentProvider.AddComment(new CommentCreateModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
+                Body = "TestComment",
+                CreatedBy = sampleCommentUser,
+                WallPostId = samplePostId
+            };
 
-                var postComments = commentProvider.GetComments(samplePost.Id);
+            var commentId = commentProvider.AddComment(commentCreateRequest);
 
-                var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == testUserId);
+            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
 
-                Assert.IsTrue(shouldExist);
+            var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
 
-            }
-                
+            Assert.IsTrue(shouldExist);   
         }
 
         [TestMethod]
         public void Should_Remove_Comment_From_WallPost()
         {
-            var samplePost = wallPostProvider.GetUserWall(testWallOwnerId).FirstOrDefault();
+            var sampleUser = GetRandomUserName();
+            var sampleUserWall = GetRandomUserWallOwner(true);
+            var sampleCommentUser = GetRandomUserName();
 
-            using (var commentProvider = new UserCommentProvider())
+            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var samplePostId = wallPostProvider.AddPost(request);
+
+            var commentCreateRequest = new CommentCreateRequest
             {
-                var commentId = commentProvider.AddComment(new CommentCreateModel { Body = "Test Comment", CreatedBy = testUserId, WallPostId = samplePost.Id });
+                Body = "TestComment",
+                CreatedBy = sampleCommentUser,
+                WallPostId = samplePostId
+            };
 
-                var postComments = commentProvider.GetComments(samplePost.Id);
+            var commentId = commentProvider.AddComment(commentCreateRequest);
 
-                var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == testUserId);
+            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
 
-                Assert.IsTrue(shouldExist);
+            var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
+
+            Assert.IsTrue(shouldExist);
+
+            commentProvider.DeleteComment(samplePostId, commentId);
+            postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            var shouldNotExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
+
+            Assert.IsFalse(shouldNotExist);
+        }
 
 
-                commentProvider.DeleteComment(samplePost.Id, commentId);
-                postComments = commentProvider.GetComments(samplePost.Id);
-                var shouldNotExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == testUserId);
+        [TestMethod]
+        public void Should_Update_Comment()
+        {
+            var sampleUser = GetRandomUserName();
+            var sampleUserWall = GetRandomUserWallOwner(true);
+            var sampleCommentUser = GetRandomUserName();
 
-                Assert.IsFalse(shouldNotExist);
-            }
+            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var samplePostId = wallPostProvider.AddPost(request);
 
+            var commentCreateRequest = new CommentCreateRequest
+            {
+                Body = "TestComment",
+                CreatedBy = sampleCommentUser,
+                WallPostId = samplePostId
+            };
+
+            var commentId = commentProvider.AddComment(commentCreateRequest);
+
+
+            var commentUpdateRequest = new CommentUpdateRequest
+            {
+                CommentId = commentId,
+                PostId = samplePostId,
+                Body = "UpdatedComment"
+            };
+
+            commentProvider.UpdateComment(commentUpdateRequest);
+
+            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            var spesificComment = commentProvider.GetComment(samplePostId, commentId);
+            var shouldBeEqual = string.Equals(spesificComment.Body, commentUpdateRequest.Body, StringComparison.OrdinalIgnoreCase);
+            var shouldExist = postComments.Any(c => c.Id == commentId && c.ModifiedDate.HasValue && c.Body == commentUpdateRequest.Body);
+
+            Assert.IsTrue(shouldExist);
         }
 
     }

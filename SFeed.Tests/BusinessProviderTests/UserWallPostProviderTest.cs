@@ -30,6 +30,20 @@ namespace SFeed.Tests.BusinessProviderTests
         }
 
         [TestMethod]
+        public void Should_Create_More_Posts()
+        {
+            var sampleUserWall = GetRandomUserWallOwner(true);
+
+            foreach (var user in RandomUserNames)
+            {
+                var request = GetSampleWallCreateRequest(user, sampleUserWall);
+                var id = userWallPostProvider.AddPost(request);
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+            }
+            
+        }
+
+        [TestMethod]
         public void Should_Create_And_Get_Post()
         {
             var sampleUser = GetRandomUserName();

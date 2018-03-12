@@ -121,7 +121,7 @@ namespace SFeed.SqlRepository.Implementation
             {
                 dbEntries = entities.WallPost.Include("UserWall").Include("GroupWall").Where(
                     p => p.CreatedDate < olderThan && p.IsDeleted == false
-                    && p.UserWall.UserId == userId).Take(size).ToList();
+                    && p.UserWall.UserId == userId).OrderByDescending(p => p.Id).Take(size).ToList();
             }
 
             var returnList = new List<WallPostModel>();

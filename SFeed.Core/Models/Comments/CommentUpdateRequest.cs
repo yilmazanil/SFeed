@@ -6,7 +6,7 @@ namespace SFeed.Core.Models.Comments
     {
         public string PostId { get; set; }
 
-        public int CommentId { get; set; }
+        public long CommentId { get; set; }
 
         public string Body { get; set; }
     }
