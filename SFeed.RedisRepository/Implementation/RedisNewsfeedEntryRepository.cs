@@ -185,7 +185,7 @@ namespace SFeed.RedisRepository.Implementation
                     if (post != null)
                     {
                         var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
-                        var actions = client.GetAllItemsFromSet(postFeedReasonKey);
+                        var actions = client.GetAllItemsFromSortedSet(postFeedReasonKey);
                         if (actions != null)
                         {
                             var latestComments = commentRepo.GetLatestComments(post.Id);

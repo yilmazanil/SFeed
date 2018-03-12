@@ -44,15 +44,18 @@ namespace SFeed.Tests.BusinessProviderTests
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
 
-            userNewsfeedProvider.RemovePost(newsFeedEntry);
+            //userNewsfeedProvider.RemovePost(newsFeedEntry);
 
-            //foreach(var user in RandomUserNames)
+            foreach (var user in RandomUserNames)
+            {
+                userNewsfeedProvider.GetUserFeed(user, 0, 30);
+            }
             //var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
 
-            //var shouldExist = wallOwnerFeeds.Any(p=>p.ReferencedPost.Id == postId
-            //&& p.UserActions.Any(t=>t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
+                //var shouldExist = wallOwnerFeeds.Any(p=>p.ReferencedPost.Id == postId
+                //&& p.UserActions.Any(t=>t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
 
-            //Assert.IsTrue(shouldExist);
+                //Assert.IsTrue(shouldExist);
         }
 
         //[TestMethod]

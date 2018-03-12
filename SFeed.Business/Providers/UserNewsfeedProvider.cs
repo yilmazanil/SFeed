@@ -52,6 +52,11 @@ namespace SFeed.Business.Providers
             }
         }
 
+        public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
+        {
+            return feedCacheRepo.GetUserFeed(userId, skip, take);
+        }
+
         public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
             if (newsFeedEntry.FeedType == NewsfeedType.wallpost)
