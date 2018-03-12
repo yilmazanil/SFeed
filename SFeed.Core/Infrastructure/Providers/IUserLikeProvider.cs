@@ -11,5 +11,7 @@ namespace SFeed.Core.Infrastructure.Providers
         IEnumerable<string> GetCommentLikes(long commentId);
         void LikeComment(long commentId, string userId);
         void UnlikeComment(long commentId, string userId);
+        int GetPostLikeCountCached(string postId);
+        int GetCommentLikeCountCached(long commentId);
     }
 }

@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessProviderTests\FollowerProviderTest.cs" />
+    <Compile Include="BusinessProviderTests\LikeProviderTest.cs" />
     <Compile Include="BusinessProviderTests\UserWallPostProviderTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProviderTestBase.cs" />

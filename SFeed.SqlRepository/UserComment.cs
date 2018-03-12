@@ -14,6 +14,12 @@ namespace SFeed.SqlRepository
     
     public partial class UserComment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public UserComment()
+        {
+            this.UserCommentLike = new HashSet<UserCommentLike>();
+        }
+    
         public long Id { get; set; }
         public string Body { get; set; }
         public string CreatedBy { get; set; }
@@ -23,6 +29,7 @@ namespace SFeed.SqlRepository
         public bool IsDeleted { get; set; }
     
         public virtual WallPost WallPost { get; set; }
-        public virtual UserCommentLike UserCommentLike { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserCommentLike> UserCommentLike { get; set; }
     }
 }

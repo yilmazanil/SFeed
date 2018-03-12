@@ -2,7 +2,6 @@
 using SFeed.Business.Providers;
 using System.Linq;
 using SFeed.Core.Infrastructure.Providers;
-using System.Threading;
 using SFeed.Core.Models.WallPost;
 using System;
 

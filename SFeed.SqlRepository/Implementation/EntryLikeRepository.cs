@@ -11,7 +11,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                if (entities.UserCommentLike.Any(t => t.CreatedBy == userId && t.CommentId == commentId))
+                if (!entities.UserCommentLike.Any(t => t.CreatedBy == userId && t.CommentId == commentId))
                 {
                     entities.UserCommentLike.Add(new UserCommentLike {
                         CreatedDate = DateTime.Now, CommentId = commentId , CreatedBy = userId });
@@ -41,7 +41,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                if (entities.WallPostLike.Any(t => t.CreatedBy == userId && t.WallPostId == postId))
+                if (!entities.WallPostLike.Any(t => t.CreatedBy == userId && t.WallPostId == postId))
                 {
                     entities.WallPostLike.Add(new WallPostLike { CreatedDate = DateTime.Now, WallPostId = postId, CreatedBy = userId });
                     entities.SaveChanges();
@@ -71,7 +71,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                return entities.WallPostLike.Where(t => t.WallPostId == postId).Select(t => t.CreatedBy);
+                return entities.WallPostLike.Where(t => t.WallPostId == postId).Select(t => t.CreatedBy).ToList();
             }
         }
 
@@ -79,7 +79,7 @@ namespace SFeed.SqlRepository.Implementation
         {
             using (var entities = new SocialFeedEntities())
             {
-                return entities.UserCommentLike.Where(t => t.CommentId == commentId).Select(t => t.CreatedBy);
+                return entities.UserCommentLike.Where(t => t.CommentId == commentId).Select(t => t.CreatedBy).ToList();
             }
         }
     }

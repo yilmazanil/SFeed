@@ -6,5 +6,7 @@
         void DecrementPostLikeCount(string postId);
         void IncrementCommentLikeCount(long commentId);
         void DecrementCommentLikeCount(long commentId);
+        int GetCommentLikeCount(long commentId);
+        int GetPostLikeCount(string postId);
     }
 }

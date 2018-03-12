@@ -71,5 +71,15 @@ namespace SFeed.Business.Providers
             return entryLikeRepo.GetCommentLikes(commentId);
         }
 
+        public int GetPostLikeCountCached(string postId)
+        {
+            return entryLikeCacheRepo.GetPostLikeCount(postId);
+        }
+
+        public int GetCommentLikeCountCached(long commentId)
+        {
+            return entryLikeCacheRepo.GetCommentLikeCount(commentId);
+        }
+
     }
 }
