@@ -37,6 +37,15 @@ namespace SFeed.SqlRepository
         public virtual DbSet<WallPostLike> WallPostLike { get; set; }
         public virtual DbSet<WallPostType> WallPostType { get; set; }
     
+        public virtual ObjectResult<GetLatestComments_Result> GetLatestComments(string postId)
+        {
+            var postIdParameter = postId != null ?
+                new ObjectParameter("PostId", postId) :
+                new ObjectParameter("PostId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLatestComments_Result>("GetLatestComments", postIdParameter);
+        }
+    
         public virtual ObjectResult<GetWallPost_Result> GetWallPost(string postId)
         {
             var postIdParameter = postId != null ?
@@ -46,13 +55,38 @@ namespace SFeed.SqlRepository
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetWallPost_Result>("GetWallPost", postIdParameter);
         }
     
-        public virtual ObjectResult<GetLatestComments_Result> GetLatestComments(string postId)
+        public virtual ObjectResult<GetWall_Result> GetUserWall(string userId, Nullable<System.DateTime> olderThan, Nullable<int> size)
         {
-            var postIdParameter = postId != null ?
-                new ObjectParameter("PostId", postId) :
-                new ObjectParameter("PostId", typeof(string));
+            var userIdParameter = userId != null ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLatestComments_Result>("GetLatestComments", postIdParameter);
+            var olderThanParameter = olderThan.HasValue ?
+                new ObjectParameter("OlderThan", olderThan) :
+                new ObjectParameter("OlderThan", typeof(System.DateTime));
+    
+            var sizeParameter = size.HasValue ?
+                new ObjectParameter("Size", size) :
+                new ObjectParameter("Size", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetWall_Result>("GetUserWall", userIdParameter, olderThanParameter, sizeParameter);
+        }
+    
+        public virtual ObjectResult<GetWall_Result> GetGroupWall(string groupId, Nullable<System.DateTime> olderThan, Nullable<int> size)
+        {
+            var groupIdParameter = groupId != null ?
+                new ObjectParameter("GroupId", groupId) :
+                new ObjectParameter("GroupId", typeof(string));
+    
+            var olderThanParameter = olderThan.HasValue ?
+                new ObjectParameter("OlderThan", olderThan) :
+                new ObjectParameter("OlderThan", typeof(System.DateTime));
+    
+            var sizeParameter = size.HasValue ?
+                new ObjectParameter("Size", size) :
+                new ObjectParameter("Size", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetWall_Result>("GetGroupWall", groupIdParameter, olderThanParameter, sizeParameter);
         }
     }
 }

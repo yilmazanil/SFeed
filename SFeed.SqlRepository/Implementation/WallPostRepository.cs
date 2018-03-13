@@ -75,7 +75,7 @@ namespace SFeed.SqlRepository.Implementation
                 }
             }
             return MapGetPostProcedureResult(postResult, commentResult);
-            
+
         }
 
         private WallPostModel MapGetPostProcedureResult(GetWallPost_Result postResult, IEnumerable<GetLatestComments_Result> commentResult)
@@ -145,71 +145,83 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-
         public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
         {
-            List<WallPost> dbEntries;
+            IEnumerable<GetWall_Result> userWallEntries;
             using (var entities = new SocialFeedEntities())
             {
-                dbEntries = entities.WallPost.Include("UserWall").Include("GroupWall").Where(
-                    p => p.CreatedDate < olderThan && p.IsDeleted == false
-                    && p.UserWall.UserId == userId).OrderByDescending(p => p.Id).Take(size).ToList();
+                userWallEntries = entities.GetUserWall(userId, olderThan, size);
             }
-
-            var returnList = new List<WallPostModel>();
-            foreach (var entry in dbEntries)
-            {
-                returnList.Add(MapDbEntity(entry));
-            }
-            return returnList;
+            return MapWallResult(userWallEntries, new WallModel { IsPublic = true, OwnerId = userId, WallOwnerType = WallType.user  });
         }
 
         public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
         {
-            List<WallPost> dbEntries;
+
+            IEnumerable<GetWall_Result> userWallEntries;
             using (var entities = new SocialFeedEntities())
             {
-                dbEntries = entities.WallPost.Include("UserWall").Include("GroupWall").Where(
-                    p => p.CreatedDate < olderThan && p.IsDeleted == false
-                    && p.GroupWall.GroupId == groupId).Take(size).ToList();
+                userWallEntries = entities.GetGroupWall(groupId, olderThan, size);
             }
-
-            var returnList = new List<WallPostModel>();
-            foreach (var entry in dbEntries)
-            {
-                returnList.Add(MapDbEntity(entry));
-            }
-            return returnList;
+            return MapWallResult(userWallEntries, new WallModel { IsPublic = true, OwnerId = groupId, WallOwnerType = WallType.group });
         }
 
-
-
-        private WallPostModel MapDbEntity(WallPost entry)
+        private IEnumerable<WallPostModel> MapWallResult(IEnumerable<GetWall_Result> wallPostResult, WallModel wallOwner)
         {
-            if (entry != null)
+            List<WallPostModel> result = new List<WallPostModel>();
+            if (wallPostResult != null && wallPostResult.Any())
             {
-                var retVal = new WallPostModel
+                foreach (var record in wallPostResult)
                 {
-                    Body = entry.Body,
-                    Id = entry.Id,
-                    PostedBy = entry.CreatedBy,
-                    PostType = entry.PostType,
-                    ModifiedDate = entry.ModifiedDate,
-                    CreatedDate = entry.CreatedDate
+                    var existingRecord = result.FirstOrDefault(p => p.Id == record.Id);
+                    if (existingRecord == null)
+                    {
+                        var relatedPost = new WallPostModel
+                        {
+                            Body = record.Body,
+                            CommentCount = record.CommentCount.Value,
+                            CreatedDate = record.CreatedDate,
+                            Id = record.Id,
+                            LikeCount = record.LikeCount.Value,
+                            ModifiedDate = record.ModifiedDate,
+                            PostedBy = record.CreatedBy,
+                            PostType = record.PostType,
+                            WallOwner = wallOwner
+                        };
 
+                        relatedPost.LatestComments = new List<CommentModel>();
+                        result.Add(relatedPost);
+
+                    }
+                    existingRecord = result.FirstOrDefault(p => p.Id == record.Id);
+
+                    var comment = MapWallResultToComment(record);
+                    if (comment != null)
+                    {
+                        (existingRecord.LatestComments as List<CommentModel>).Add(comment);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private CommentModel MapWallResultToComment(GetWall_Result record)
+        {
+            if (record.CommentId.HasValue)
+            {
+                var comment = new CommentModel
+                {
+                    Body = record.CommentBody,
+                    CreatedBy = record.CommentCreatedBy,
+                    CreatedDate = record.CommentCreatedDate.Value,
+                    Id = record.CommentId.Value,
+                    LikeCount = record.CommentLikeCount.Value,
+                    ModifiedDate = record.CommentModifiedDate
                 };
-
-                if (entry.UserWall != null)
-                {
-                    retVal.WallOwner = new WallModel { WallOwnerType = WallType.user, OwnerId = entry.UserWall.UserId };
-                }
-                else
-                {
-                    retVal.WallOwner = new WallModel { WallOwnerType = WallType.group, OwnerId = entry.GroupWall.GroupId };
-                }
-                return retVal;
+                return comment;
             }
             return null;
         }
     }
 }
+
