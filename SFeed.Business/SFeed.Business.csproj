@@ -67,7 +67,6 @@
     <Compile Include="Providers\FollowerProvider.cs" />
     <Compile Include="Providers\EntryLikeProvider.cs" />
     <Compile Include="Providers\UserNewsfeedProvider.cs" />
-    <Compile Include="Providers\UserNewsfeedResponseProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />
   </ItemGroup>
   <ItemGroup>

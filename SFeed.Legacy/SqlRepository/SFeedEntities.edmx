@@ -1,0 +1,509 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SocialFeedDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GroupFollower">
+          <Key>
+            <PropertyRef Name="GroupId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="GroupId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FollowerId" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GroupWall">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+          </Key>
+          <Property Name="WallPostId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GroupId" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="WallPostId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserCommentLike">
+          <Key>
+            <PropertyRef Name="CommentId" />
+            <PropertyRef Name="CreatedBy" />
+          </Key>
+          <Property Name="CommentId" Type="bigint" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserFollower">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="UserId" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="FollowerId" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserWall">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+          </Key>
+          <Property Name="WallPostId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallPost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PostType" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallPostLike">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+            <PropertyRef Name="CreatedBy" />
+          </Key>
+          <Property Name="WallPostId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WallPostType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="tinyint" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GroupWall_WallPost">
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
+          <End Role="GroupWall" Type="Self.GroupWall" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupWall">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserComment_WallPost">
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
+          <End Role="UserComment" Type="Self.UserComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserComment">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserCommentLike_UserComment">
+          <End Role="UserComment" Type="Self.UserComment" Multiplicity="1" />
+          <End Role="UserCommentLike" Type="Self.UserCommentLike" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserComment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserCommentLike">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserWall_WallPost">
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
+          <End Role="UserWall" Type="Self.UserWall" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserWall">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallPost_WallPostType">
+          <End Role="WallPostType" Type="Self.WallPostType" Multiplicity="1" />
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPostType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallPost">
+              <PropertyRef Name="PostType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallPostLike_WallPost">
+          <End Role="WallPost" Type="Self.WallPost" Multiplicity="1" />
+          <End Role="WallPostLike" Type="Self.WallPostLike" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallPostLike">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SocialFeedDataModelStoreContainer">
+          <EntitySet Name="GroupFollower" EntityType="Self.GroupFollower" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupWall" EntityType="Self.GroupWall" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserComment" EntityType="Self.UserComment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserCommentLike" EntityType="Self.UserCommentLike" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserFollower" EntityType="Self.UserFollower" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserWall" EntityType="Self.UserWall" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WallPost" EntityType="Self.WallPost" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WallPostLike" EntityType="Self.WallPostLike" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WallPostType" EntityType="Self.WallPostType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_GroupWall_WallPost" Association="Self.FK_GroupWall_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="GroupWall" EntitySet="GroupWall" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserComment_WallPost" Association="Self.FK_UserComment_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserComment" EntitySet="UserComment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserCommentLike_UserComment" Association="Self.FK_UserCommentLike_UserComment">
+            <End Role="UserComment" EntitySet="UserComment" />
+            <End Role="UserCommentLike" EntitySet="UserCommentLike" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserWall_WallPost" Association="Self.FK_UserWall_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserWall" EntitySet="UserWall" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallPost_WallPostType" Association="Self.FK_WallPost_WallPostType">
+            <End Role="WallPostType" EntitySet="WallPostType" />
+            <End Role="WallPost" EntitySet="WallPost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallPostLike_WallPost" Association="Self.FK_WallPostLike_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="WallPostLike" EntitySet="WallPostLike" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SocialFeedDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SocialFeedEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="GroupFollower" EntityType="SocialFeedDataModel.GroupFollower" />
+          <EntitySet Name="GroupWall" EntityType="SocialFeedDataModel.GroupWall" />
+          <EntitySet Name="UserComment" EntityType="SocialFeedDataModel.UserComment" />
+          <EntitySet Name="UserCommentLike" EntityType="SocialFeedDataModel.UserCommentLike" />
+          <EntitySet Name="UserFollower" EntityType="SocialFeedDataModel.UserFollower" />
+          <EntitySet Name="UserWall" EntityType="SocialFeedDataModel.UserWall" />
+          <EntitySet Name="WallPost" EntityType="SocialFeedDataModel.WallPost" />
+          <EntitySet Name="WallPostLike" EntityType="SocialFeedDataModel.WallPostLike" />
+          <EntitySet Name="WallPostType" EntityType="SocialFeedDataModel.WallPostType" />
+          <AssociationSet Name="FK_GroupWall_WallPost" Association="SocialFeedDataModel.FK_GroupWall_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="GroupWall" EntitySet="GroupWall" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserComment_WallPost" Association="SocialFeedDataModel.FK_UserComment_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserComment" EntitySet="UserComment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserCommentLike_UserComment" Association="SocialFeedDataModel.FK_UserCommentLike_UserComment">
+            <End Role="UserComment" EntitySet="UserComment" />
+            <End Role="UserCommentLike" EntitySet="UserCommentLike" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserWall_WallPost" Association="SocialFeedDataModel.FK_UserWall_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="UserWall" EntitySet="UserWall" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallPost_WallPostType" Association="SocialFeedDataModel.FK_WallPost_WallPostType">
+            <End Role="WallPostType" EntitySet="WallPostType" />
+            <End Role="WallPost" EntitySet="WallPost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WallPostLike_WallPost" Association="SocialFeedDataModel.FK_WallPostLike_WallPost">
+            <End Role="WallPost" EntitySet="WallPost" />
+            <End Role="WallPostLike" EntitySet="WallPostLike" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="GroupFollower">
+          <Key>
+            <PropertyRef Name="GroupId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="GroupId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FollowerId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="GroupWall">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+          </Key>
+          <Property Name="WallPostId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GroupId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_GroupWall_WallPost" FromRole="GroupWall" ToRole="WallPost" />
+        </EntityType>
+        <EntityType Name="UserComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Body" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="WallPostId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_UserComment_WallPost" FromRole="UserComment" ToRole="WallPost" />
+          <NavigationProperty Name="UserCommentLike" Relationship="SocialFeedDataModel.FK_UserCommentLike_UserComment" FromRole="UserComment" ToRole="UserCommentLike" />
+        </EntityType>
+        <EntityType Name="UserCommentLike">
+          <Key>
+            <PropertyRef Name="CommentId" />
+            <PropertyRef Name="CreatedBy" />
+          </Key>
+          <Property Name="CommentId" Type="Int64" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="UserComment" Relationship="SocialFeedDataModel.FK_UserCommentLike_UserComment" FromRole="UserCommentLike" ToRole="UserComment" />
+        </EntityType>
+        <EntityType Name="UserFollower">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FollowerId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FollowerId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UserWall">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+          </Key>
+          <Property Name="WallPostId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_UserWall_WallPost" FromRole="UserWall" ToRole="WallPost" />
+        </EntityType>
+        <EntityType Name="WallPost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PostType" Type="Byte" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="GroupWall" Relationship="SocialFeedDataModel.FK_GroupWall_WallPost" FromRole="WallPost" ToRole="GroupWall" />
+          <NavigationProperty Name="UserComment" Relationship="SocialFeedDataModel.FK_UserComment_WallPost" FromRole="WallPost" ToRole="UserComment" />
+          <NavigationProperty Name="UserWall" Relationship="SocialFeedDataModel.FK_UserWall_WallPost" FromRole="WallPost" ToRole="UserWall" />
+          <NavigationProperty Name="WallPostType" Relationship="SocialFeedDataModel.FK_WallPost_WallPostType" FromRole="WallPost" ToRole="WallPostType" />
+          <NavigationProperty Name="WallPostLike" Relationship="SocialFeedDataModel.FK_WallPostLike_WallPost" FromRole="WallPost" ToRole="WallPostLike" />
+        </EntityType>
+        <EntityType Name="WallPostLike">
+          <Key>
+            <PropertyRef Name="WallPostId" />
+            <PropertyRef Name="CreatedBy" />
+          </Key>
+          <Property Name="WallPostId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_WallPostLike_WallPost" FromRole="WallPostLike" ToRole="WallPost" />
+        </EntityType>
+        <EntityType Name="WallPostType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Byte" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="WallPost" Relationship="SocialFeedDataModel.FK_WallPost_WallPostType" FromRole="WallPostType" ToRole="WallPost" />
+        </EntityType>
+        <Association Name="FK_GroupWall_WallPost">
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.GroupWall" Role="GroupWall" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupWall">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserComment_WallPost">
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.UserComment" Role="UserComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserComment">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserCommentLike_UserComment">
+          <End Type="SocialFeedDataModel.UserComment" Role="UserComment" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.UserCommentLike" Role="UserCommentLike" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserComment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserCommentLike">
+              <PropertyRef Name="CommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserWall_WallPost">
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.UserWall" Role="UserWall" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserWall">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallPost_WallPostType">
+          <End Type="SocialFeedDataModel.WallPostType" Role="WallPostType" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPostType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallPost">
+              <PropertyRef Name="PostType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WallPostLike_WallPost">
+          <End Type="SocialFeedDataModel.WallPost" Role="WallPost" Multiplicity="1" />
+          <End Type="SocialFeedDataModel.WallPostLike" Role="WallPostLike" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WallPost">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WallPostLike">
+              <PropertyRef Name="WallPostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SocialFeedDataModelStoreContainer" CdmEntityContainer="SocialFeedEntities">
+          <EntitySetMapping Name="GroupFollower">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupFollower">
+              <MappingFragment StoreEntitySet="GroupFollower">
+                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupWall">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupWall">
+              <MappingFragment StoreEntitySet="GroupWall">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserComment">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserComment">
+              <MappingFragment StoreEntitySet="UserComment">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserCommentLike">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserCommentLike">
+              <MappingFragment StoreEntitySet="UserCommentLike">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserFollower">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserFollower">
+              <MappingFragment StoreEntitySet="UserFollower">
+                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserWall">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserWall">
+              <MappingFragment StoreEntitySet="UserWall">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPost">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPost">
+              <MappingFragment StoreEntitySet="WallPost">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PostType" ColumnName="PostType" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPostLike">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostLike">
+              <MappingFragment StoreEntitySet="WallPostLike">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPostType">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostType">
+              <MappingFragment StoreEntitySet="WallPostType">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

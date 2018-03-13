@@ -1,6 +1,7 @@
 ﻿using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using SFeed.Core.Infrastructue.Repository;
+using SFeed.RedisRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -58,9 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityEntry.cs" />
-    <Compile Include="Base\RedisCounterBase.cs" />
-    <Compile Include="Base\RedisFixedListRepositoryBase.cs" />
-    <Compile Include="Base\RedisListRepositoryBase.cs" />
+    <Compile Include="Base\RedisNameConstants.cs" />
     <Compile Include="Base\RedisRepositoryBase.cs" />
     <Compile Include="Implementation\FollowerRedisKeys.cs" />
     <Compile Include="Implementation\RedisCommentRepository.cs" />
@@ -69,20 +67,7 @@
     <Compile Include="Implementation\RedisNewsfeedEntryRepository.cs" />
     <Compile Include="Implementation\RedisWallPostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Base\RedisItemRepositoryBase.cs" />
-    <Compile Include="Base\RedisUniqueListBase.cs" />
-    <Compile Include="RedisPostLikeCounter.cs" />
-    <Compile Include="RedisCommentCounter.cs" />
-    <Compile Include="RedisCommentRepository.cs" />
     <Compile Include="Base\RedisConnectionProvider.cs" />
-    <Compile Include="RedisFeedRepository.cs" />
-    <Compile Include="RedisGroupFollowerRepository.cs" />
-    <Compile Include="Base\RedisSetRepositoryBase.cs" />
-    <Compile Include="Base\RedisTypedSetRepositoryBase.cs" />
-    <Compile Include="RedisNameConstants.cs" />
-    <Compile Include="RedisNewsfeedResponseRepository.cs" />
-    <Compile Include="RedisUserFollowerRepository.cs" />
-    <Compile Include="RedisWallPostRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

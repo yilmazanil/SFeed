@@ -54,7 +54,6 @@
     <Compile Include="GroupFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="GroupFollowerRepository.cs" />
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
@@ -79,7 +78,6 @@
       <DependentUpon>SFeedEntities.edmx</DependentUpon>
     </Compile>
     <Compile Include="SqlRepositoryBase.cs" />
-    <Compile Include="CommentRepository.cs" />
     <Compile Include="UserComment.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
@@ -89,16 +87,12 @@
     <Compile Include="UserFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserFollowerRepository.cs" />
     <Compile Include="UserWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WallPostLike.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="UserCommentLikeRepository.cs" />
-    <Compile Include="WallPostLikeRepository.cs" />
-    <Compile Include="WallPostRepository.cs" />
     <Compile Include="WallPost.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
