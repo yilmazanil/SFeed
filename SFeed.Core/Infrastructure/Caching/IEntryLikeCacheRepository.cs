@@ -1,4 +1,4 @@
-﻿namespace SFeed.Core.Infrastructure.Repository.Caching
+﻿namespace SFeed.Core.Infrastructure.Caching
 {
     public interface IEntryLikeCacheRepository
     {

@@ -5,9 +5,9 @@ using SFeed.Core.Models;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.RedisRepository.Implementation;
-using SFeed.Core.Infrastructure.Repository.Sql;
 using SFeed.SqlRepository.Implementation;
 using System;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.Business.Providers
 {

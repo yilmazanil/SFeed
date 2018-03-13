@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructure.Repository.Sql
+namespace SFeed.Core.Infrastructure.Repository
 {
     public interface IEntryLikeRepository
     {

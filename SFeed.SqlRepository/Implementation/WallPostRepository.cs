@@ -1,9 +1,9 @@
 ﻿using System;
-using SFeed.Core.Infrastructure.Repository.Sql;
 using SFeed.Core.Models.WallPost;
 using SFeed.Core.Models;
 using System.Linq;
 using System.Collections.Generic;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.SqlRepository.Implementation
 {

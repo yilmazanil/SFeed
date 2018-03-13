@@ -1,7 +1,7 @@
-﻿using SFeed.Core.Infrastructure.Repository.Sql;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.SqlRepository.Implementation
 {

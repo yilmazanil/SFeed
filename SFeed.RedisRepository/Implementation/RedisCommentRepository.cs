@@ -1,10 +1,10 @@
 ﻿using System;
-using SFeed.Core.Infrastructure.Repository.Caching;
 using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Comments;
 using SFeed.RedisRepository.Base;
 using System.Linq;
 using System.Collections.Generic;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -15,7 +15,7 @@ namespace SFeed.RedisRepository.Implementation
 
         public int ListSize => RedisNameConstants.CommentRepoSize;
 
-        public void AddItem(CommentCacheModel model)
+        public void AddComment(CommentCacheModel model)
         {
             var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
             var listKey = GetEntryKey(ListRepoPrefix, model.PostId);
@@ -37,7 +37,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveAll(int maxRemovalSize)
+        public void RemoveAllComments(int maxRemovalSize)
         {
             var searchPattern= GetEntrySearchPattern(RepoPrefix);
             var searchPatternLists = GetEntrySearchPattern(ListRepoPrefix);
@@ -68,7 +68,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public bool UpdateItem(CommentUpdateRequest model, DateTime modificationDate)
+        public bool UpdateComment(CommentUpdateRequest model, DateTime modificationDate)
         {
             var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
 

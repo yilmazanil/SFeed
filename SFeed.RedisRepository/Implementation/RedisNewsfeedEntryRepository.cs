@@ -1,15 +1,13 @@
-﻿using SFeed.Core.Infrastructure.Repository.Caching;
-using SFeed.Core.Models.Newsfeed;
-using SFeed.RedisRepository.Base;
+﻿using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
 using System;
 using SFeed.Core.Models.Caching;
-using SFeed.Core.Infrastructure.Repository;
 using System.Linq;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.RedisRepository.Implementation
 {
-   
+
 
     public class RedisNewsfeedEntryRepository : RedisRepositoryBase, INewsfeedCacheRepository
     {
@@ -27,7 +25,7 @@ namespace SFeed.RedisRepository.Implementation
             this.entryLikeRepo = new RedisEntryLikeRepository();
             this.wallPostRepo = new RedisWallPostRepository();
         }
-        public void AddEntry(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        public void PublishEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = ConvertToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
@@ -47,7 +45,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveEntry(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        public void RemoveEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = ConvertToActivity(entry);
 

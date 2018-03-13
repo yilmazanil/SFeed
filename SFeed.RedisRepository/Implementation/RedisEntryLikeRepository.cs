@@ -1,4 +1,4 @@
-﻿using SFeed.Core.Infrastructure.Repository.Caching;
+﻿using SFeed.Core.Infrastructure.Caching;
 using SFeed.RedisRepository.Base;
 using System;
 

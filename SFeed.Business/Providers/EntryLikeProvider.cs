@@ -1,6 +1,6 @@
-﻿using SFeed.Core.Infrastructure.Providers;
-using SFeed.Core.Infrastructure.Repository.Caching;
-using SFeed.Core.Infrastructure.Repository.Sql;
+﻿using SFeed.Core.Infrastructure.Caching;
+using SFeed.Core.Infrastructure.Providers;
+using SFeed.Core.Infrastructure.Repository;
 using SFeed.RedisRepository.Implementation;
 using SFeed.SqlRepository.Implementation;
 using System.Collections.Generic;

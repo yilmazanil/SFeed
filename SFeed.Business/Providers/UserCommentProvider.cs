@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.Comments;
 using SFeed.Core.Models.Caching;
-using SFeed.Core.Infrastructure.Repository.Caching;
-using SFeed.Core.Infrastructure.Repository.Sql;
 using SFeed.RedisRepository.Implementation;
 using SFeed.SqlRepository.Implementation;
+using SFeed.Core.Infrastructure.Repository;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.Business.Providers
 {
@@ -42,7 +42,7 @@ namespace SFeed.Business.Providers
                     PostId = request.WallPostId
                 };
 
-                commentCacheRepo.AddItem(cacheModel);
+                commentCacheRepo.AddComment(cacheModel);
 
                 return result.Id;
             }
@@ -55,7 +55,7 @@ namespace SFeed.Business.Providers
             var result = commentRepo.UpdateItem(request);
             if (result.HasValue)
             {
-                commentCacheRepo.UpdateItem(request, result.Value);
+                commentCacheRepo.UpdateComment(request, result.Value);
             }
         }
 

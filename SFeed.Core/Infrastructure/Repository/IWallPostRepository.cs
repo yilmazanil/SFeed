@@ -1,9 +1,8 @@
 ﻿using SFeed.Core.Models.WallPost;
 using System;
-using SFeed.Core.Models;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructure.Repository.Sql
+namespace SFeed.Core.Infrastructure.Repository
 {
     public interface IWallPostRepository
     {

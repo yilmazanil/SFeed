@@ -1,8 +1,8 @@
-﻿using SFeed.Core.Infrastructure.Repository.Sql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFeed.Core.Models.Comments;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.SqlRepository.Implementation
 {

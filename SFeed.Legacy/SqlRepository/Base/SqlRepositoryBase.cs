@@ -1,4 +1,4 @@
-﻿using SFeed.Core.Infrastructue.Repository;
+﻿using SFeed.Core.Infrastructue.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

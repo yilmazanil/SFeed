@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.RedisRepository.Base;
 using System.Linq;
 using SFeed.Core.Models.WallPost;
 using System;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.RedisRepository.Implementation
 {

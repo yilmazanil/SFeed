@@ -3,7 +3,7 @@ using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructure.Repository
+namespace SFeed.Core.Infrastructure.Caching
 {
     public interface IWallPostCacheRepository
     {

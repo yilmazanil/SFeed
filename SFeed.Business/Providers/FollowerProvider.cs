@@ -1,9 +1,9 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
 using System.Collections.Generic;
-using SFeed.Core.Infrastructure.Repository.Caching;
-using SFeed.Core.Infrastructure.Repository.Sql;
 using SFeed.SqlRepository.Implementation;
 using SFeed.RedisRepository.Implementation;
+using SFeed.Core.Infrastructure.Caching;
+using SFeed.Core.Infrastructure.Repository;
 
 namespace SFeed.Business.Providers
 {

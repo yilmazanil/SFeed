@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Models;
-using System;
-using SFeed.Core.Infrastructure.Repository.Caching;
 using SFeed.RedisRepository.Implementation;
 using System.Linq;
 using SFeed.Core.Models.Caching;
+using SFeed.Core.Infrastructure.Caching;
 
 namespace SFeed.Business.Providers
 {
@@ -48,7 +47,7 @@ namespace SFeed.Business.Providers
                     FeedType = newsFeedEntry.FeedType,
                     ReferencePostId = newsFeedEntry.ReferencePostId
                 };
-                feedCacheRepo.AddEntry(cacheModel, followers);
+                feedCacheRepo.PublishEvent(cacheModel, followers);
             }
         }
 
@@ -75,7 +74,7 @@ namespace SFeed.Business.Providers
                         FeedType = newsFeedEntry.FeedType,
                         ReferencePostId = newsFeedEntry.ReferencePostId
                     };
-                    feedCacheRepo.RemoveEntry(cacheModel, followers);
+                    feedCacheRepo.RemoveEvent(cacheModel, followers);
                 }
             }
         }
