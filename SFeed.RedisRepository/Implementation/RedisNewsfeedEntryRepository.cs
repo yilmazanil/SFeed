@@ -179,7 +179,7 @@ namespace SFeed.RedisRepository.Implementation
                 postIds = client.GetRangeFromList(userFeedKey, skip, take);
                 foreach (var postId in postIds)
                 {
-                    var post = wallPostRepo.GetItem(postId);
+                    var post = wallPostRepo.GetPost(postId);
                     if (post != null)
                     {
                         var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
@@ -197,7 +197,7 @@ namespace SFeed.RedisRepository.Implementation
                                 ModifiedDate = post.ModifiedDate,
                                 PostedBy = post.PostedBy,
                                 PostType = post.PostType,
-                                WallOwner = post.WallOwner,
+                                TargetWall = post.TargetWall,
                                 FeedDescription = actions.ToList(),
                                 LikeCount = likeCount,
                                 CommentCount = commentCount,

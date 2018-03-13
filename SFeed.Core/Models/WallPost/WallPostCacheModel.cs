@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFeed.Core.Models.Wall;
+using System;
 
 namespace SFeed.Core.Models.Newsfeed
 {
@@ -12,7 +13,7 @@ namespace SFeed.Core.Models.Newsfeed
 
         public short PostType { get; set; }
 
-        public WallOwnerCacheModel WallOwner { get; set; }
+        public WallCacheModel TargetWall { get; set; }
 
         public DateTime CreatedDate { get; set; }
         

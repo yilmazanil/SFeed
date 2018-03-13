@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.MapperConfig;
 using SFeed.Core.Models;
+using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace SFeed.Tests
             });
         }
 
-        protected WallPostCreateRequest GetSampleWallCreateRequest(string postedBy, WallOwner targetWall)
+        protected WallPostCreateRequest GetSampleWallCreateRequest(string postedBy, WallModel targetWall)
         {
             var body = TestUtils.GenerateLoremIpsumText();
 
@@ -44,7 +45,7 @@ namespace SFeed.Tests
                 Body = body,
                 PostedBy = postedBy,
                 PostType = WallPostType.text,
-                WallOwner = targetWall,
+                TargetWall = targetWall,
             };
         }
 
@@ -60,16 +61,16 @@ namespace SFeed.Tests
             return RandomGroupNames[index];
         }
 
-        protected WallOwner GetRandomUserWallOwner(bool isPublic)
+        protected WallModel GetRandomUserWallOwner(bool isPublic)
         {
             var name = GetRandomUserName();
-            return new WallOwner { IsPublic = isPublic, Id = name, WallOwnerType = WallOwnerType.user };
+            return new WallModel { IsPublic = isPublic, OwnerId = name, WallOwnerType = WallType.user };
         }
 
-        protected WallOwner GetRandomGroupWallOwner(bool isPublic)
+        protected WallModel GetRandomGroupWallOwner(bool isPublic)
         {
             var name = GetRandomGroupName();
-            return new WallOwner { IsPublic = isPublic, Id = name, WallOwnerType = WallOwnerType.group };
+            return new WallModel { IsPublic = isPublic, OwnerId = name, WallOwnerType = WallType.group };
         }
     }
 }

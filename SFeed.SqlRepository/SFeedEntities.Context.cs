@@ -12,6 +12,8 @@ namespace SFeed.SqlRepository
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class SocialFeedEntities : DbContext
     {
@@ -34,5 +36,23 @@ namespace SFeed.SqlRepository
         public virtual DbSet<WallPost> WallPost { get; set; }
         public virtual DbSet<WallPostLike> WallPostLike { get; set; }
         public virtual DbSet<WallPostType> WallPostType { get; set; }
+    
+        public virtual ObjectResult<GetWallPost_Result> GetWallPost(string postId)
+        {
+            var postIdParameter = postId != null ?
+                new ObjectParameter("PostId", postId) :
+                new ObjectParameter("PostId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetWallPost_Result>("GetWallPost", postIdParameter);
+        }
+    
+        public virtual ObjectResult<GetLatestComments_Result> GetLatestComments(string postId)
+        {
+            var postIdParameter = postId != null ?
+                new ObjectParameter("PostId", postId) :
+                new ObjectParameter("PostId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetLatestComments_Result>("GetLatestComments", postIdParameter);
+        }
     }
 }

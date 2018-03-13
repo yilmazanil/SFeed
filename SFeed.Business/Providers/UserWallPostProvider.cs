@@ -1,13 +1,13 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
 using System.Collections.Generic;
 using SFeed.Core.Models.WallPost;
-using SFeed.Core.Models;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.RedisRepository.Implementation;
 using SFeed.SqlRepository.Implementation;
 using System;
 using SFeed.Core.Infrastructure.Caching;
+using SFeed.Core.Models.Wall;
 
 namespace SFeed.Business.Providers
 {
@@ -33,13 +33,13 @@ namespace SFeed.Business.Providers
 
         public string AddPost(WallPostCreateRequest request)
         {
-            var result = wallPostRepo.SaveItem(request);
+            var result = wallPostRepo.SavePost(request);
 
             if (result != null && !string.IsNullOrWhiteSpace(result.PostId))
             {
                 var cacheEntry = MapRequestToCacheModel(request, result);
 
-                wallPostCacheRepo.AddItem(cacheEntry);
+                wallPostCacheRepo.SavePost(cacheEntry);
 
                 return result.PostId;
             }
@@ -48,25 +48,25 @@ namespace SFeed.Business.Providers
 
         public void UpdatePost(WallPostUpdateRequest model)
         {
-            var modificationDate = wallPostRepo.UpdateItem(model);
+            var modificationDate = wallPostRepo.UpdatePost(model);
             if (modificationDate.HasValue)
             {
-                wallPostCacheRepo.UpdateItem(model, modificationDate.Value);
+                wallPostCacheRepo.UpdatePost(model, modificationDate.Value);
             }
         }
 
         public void DeletePost(string postId)
         {
-            var deleted = wallPostRepo.RemoveItem(postId);
+            var deleted = wallPostRepo.RemovePost(postId);
             if (deleted)
             {
-                wallPostCacheRepo.RemoveItem(postId);
+                wallPostCacheRepo.RemovePost(postId);
             }
         }
 
         public WallPostModel GetPost(string postId)
         {
-            return wallPostRepo.GetItem(postId);
+            return wallPostRepo.GetPost(postId);
         }
 
         public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
@@ -86,7 +86,7 @@ namespace SFeed.Business.Providers
                 Body = request.Body,
                 PostedBy = request.PostedBy,
                 PostType = (short)request.PostType,
-                WallOwner = new WallOwnerCacheModel { Id = request.WallOwner.Id, WallOwnerTypeId = (short)request.WallOwner.WallOwnerType },
+                TargetWall = new WallCacheModel { Id = request.TargetWall.OwnerId, WallOwnerTypeId = (short)request.TargetWall.WallOwnerType },
                 CreatedDate = response.CreatedDate
             };
         }

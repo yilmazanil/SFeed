@@ -1,6 +1,6 @@
-﻿namespace SFeed.Core.Models
+﻿namespace SFeed.Core.Models.Wall
 {
-    public class WallOwnerCacheModel
+    public class WallCacheModel
     {
         public string Id { get; set; }
 

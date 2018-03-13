@@ -24,7 +24,7 @@ namespace SFeed.Tests.BusinessProviderTests
         public void Newsfeed_Should_Insert_NewWallPost_To_UserFeed_And_Check_Duplicate()
         {
             var sampleUserWall = GetRandomUserWallOwner(true);
-            var sampleUser = sampleUserWall.Id;
+            var sampleUser = sampleUserWall.OwnerId;
             foreach (var user in RandomUserNames)
             {
                 followerProvider.FollowUser(user, sampleUser);

@@ -1,5 +1,5 @@
-﻿using SFeed.Core.Models;
-using SFeed.Core.Models.Follower;
+﻿using SFeed.Core.Models.Follower;
+using SFeed.Core.Models.Wall;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Repository
@@ -74,7 +74,7 @@ namespace SFeed.Core.Infrastructure.Repository
         /// </summary>
         /// <param name="userId">UserId</param>
         /// <returns></returns>
-        IEnumerable<WallOwner> GetFollowingGroups(string userId);
+        IEnumerable<WallModel> GetFollowingGroups(string userId);
         /// <summary>
         /// Returns the groups that provided user follows paged
         /// </summary>

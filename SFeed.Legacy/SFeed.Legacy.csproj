@@ -86,7 +86,6 @@
     <Compile Include="RedisRepository\Implementation\RedisCommentRepository.cs" />
     <Compile Include="RedisRepository\Implementation\RedisFeedRepository.cs" />
     <Compile Include="RedisRepository\Implementation\RedisGroupFollowerRepository.cs" />
-    <Compile Include="RedisRepository\Implementation\RedisNameConstants.cs" />
     <Compile Include="RedisRepository\Implementation\RedisNewsfeedResponseRepository.cs" />
     <Compile Include="RedisRepository\Implementation\RedisPostLikeCounter.cs" />
     <Compile Include="RedisRepository\Implementation\RedisUserFollowerRepository.cs" />

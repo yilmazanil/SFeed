@@ -1,4 +1,6 @@
-﻿namespace SFeed.Core.Models.Newsfeed
+﻿using SFeed.Core.Models.Wall;
+
+namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedItem
     {
@@ -8,6 +10,6 @@
 
         public NewsfeedType FeedType { get; set; }
 
-        public WallOwner WallOwner { get; set; }
+        public WallModel WallOwner { get; set; }
     }
 }

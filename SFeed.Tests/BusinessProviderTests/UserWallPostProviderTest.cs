@@ -109,7 +109,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             userWallPostProvider.DeletePost(deleteId);
 
-            var posts = userWallPostProvider.GetUserWall(sampleUserWall.Id , DateTime.Now, 100);
+            var posts = userWallPostProvider.GetUserWall(sampleUserWall.OwnerId , DateTime.Now, 100);
 
             bool shouldExist = posts.Any(p => p.Id == keepId);
             bool shouldNotExist = posts.Any(p => p.Id == deleteId);

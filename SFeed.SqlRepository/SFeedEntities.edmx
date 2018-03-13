@@ -156,6 +156,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="GetLatestComments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PostId" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="GetWallPost" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PostId" Type="nvarchar" Mode="In" />
+        </Function>
         <EntityContainer Name="SocialFeedDataModelStoreContainer">
           <EntitySet Name="GroupFollower" EntityType="Self.GroupFollower" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupWall" EntityType="Self.GroupWall" Schema="dbo" store:Type="Tables" />
@@ -229,6 +235,12 @@
             <End Role="WallPost" EntitySet="WallPost" />
             <End Role="WallPostLike" EntitySet="WallPostLike" />
           </AssociationSet>
+          <FunctionImport Name="GetWallPost" ReturnType="Collection(SocialFeedDataModel.GetWallPost_Result)">
+          <Parameter Name="PostId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetLatestComments" ReturnType="Collection(SocialFeedDataModel.GetLatestComments_Result)">
+            <Parameter Name="PostId" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="GroupFollower">
           <Key>
@@ -393,6 +405,29 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="GetWallPost_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="Byte" Name="PostType" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="CommentCount" Nullable="true" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+          <Property Type="String" Name="UserId" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="GroupId" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetLatestComments_Result">
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -483,6 +518,37 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetWallPost" FunctionName="SocialFeedDataModel.Store.GetWallPost">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SocialFeedDataModel.GetWallPost_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="PostType" ColumnName="PostType" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CommentCount" ColumnName="CommentCount" />
+                <ScalarProperty Name="LikeCount" ColumnName="LikeCount" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetLatestComments" FunctionName="SocialFeedDataModel.Store.GetLatestComments">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SocialFeedDataModel.GetLatestComments_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="LikeCount" ColumnName="LikeCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

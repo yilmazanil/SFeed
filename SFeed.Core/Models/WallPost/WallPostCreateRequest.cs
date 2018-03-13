@@ -1,4 +1,6 @@
-﻿namespace SFeed.Core.Models.WallPost
+﻿using SFeed.Core.Models.Wall;
+
+namespace SFeed.Core.Models.WallPost
 {
     public class WallPostCreateRequest
     {
@@ -8,6 +10,6 @@
 
         public WallPostType PostType { get; set; }
 
-        public WallOwner WallOwner { get; set; }
+        public WallModel TargetWall { get; set; }
     }
 }

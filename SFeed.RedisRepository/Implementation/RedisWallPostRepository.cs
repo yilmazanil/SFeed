@@ -12,7 +12,7 @@ namespace SFeed.RedisRepository.Implementation
     {
         public string CacheEntryPrefix => RedisNameConstants.WallPostRepoPrefix;
 
-        public void AddItem(WallPostCacheModel model)
+        public void SavePost(WallPostCacheModel model)
         {
             var entryKey = GetEntryKey(CacheEntryPrefix, model.Id);
             using (var redisClient = GetClientInstance())
@@ -22,7 +22,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public WallPostCacheModel GetItem(string postId)
+        public WallPostCacheModel GetPost(string postId)
         {
             var entryKey = GetEntryKey(CacheEntryPrefix, postId);
             using (var redisClient = GetClientInstance())
@@ -32,7 +32,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void UpdateItem(WallPostUpdateRequest model, DateTime modificationDate)
+        public void UpdatePost(WallPostUpdateRequest model, DateTime modificationDate)
         {
             var entryKey = GetEntryKey(CacheEntryPrefix, model.PostId);
             using (var redisClient = GetClientInstance())
@@ -60,7 +60,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveAll(int maxRemovalSize = 1000)
+        public void RemoveAllPosts(int maxRemovalSize = 1000)
         {
             var searchPattern = GetEntrySearchPattern(CacheEntryPrefix);
             using (var redisClient = GetClientInstance())
@@ -70,7 +70,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveItem(string postId)
+        public void RemovePost(string postId)
         {
             var entryKey = GetEntryKey(CacheEntryPrefix,postId);
             using (var redisClient = GetClientInstance())
@@ -79,7 +79,7 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveItems(IEnumerable<string> postIds)
+        public void RemovePosts(IEnumerable<string> postIds)
         {
             var keyList = new List<string>();
             foreach (var postId in postIds)

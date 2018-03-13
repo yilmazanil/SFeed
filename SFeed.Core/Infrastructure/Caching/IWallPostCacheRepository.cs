@@ -7,12 +7,12 @@ namespace SFeed.Core.Infrastructure.Caching
 {
     public interface IWallPostCacheRepository
     {
-        void AddItem(WallPostCacheModel model);
-        void UpdateItem(WallPostUpdateRequest model, DateTime modificationDate);
-        WallPostCacheModel GetItem(string postId);
-        void RemoveItem(string postId);
-        void RemoveItems(IEnumerable<string> postIds);
-        void RemoveAll(int maxRemovalSize);
+        void SavePost(WallPostCacheModel model);
+        void UpdatePost(WallPostUpdateRequest model, DateTime modificationDate);
+        WallPostCacheModel GetPost(string postId);
+        void RemovePost(string postId);
+        void RemovePosts(IEnumerable<string> postIds);
+        void RemoveAllPosts(int maxRemovalSize);
         IEnumerable<WallPostCacheModel> GetItems(IEnumerable<string> postIds);
     }
 }

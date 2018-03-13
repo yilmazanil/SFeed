@@ -1,11 +1,11 @@
 ﻿using SFeed.Core.Infrastructure.Providers;
 using System.Collections.Generic;
 using SFeed.Core.Models.Newsfeed;
-using SFeed.Core.Models;
 using SFeed.RedisRepository.Implementation;
 using System.Linq;
 using SFeed.Core.Models.Caching;
 using SFeed.Core.Infrastructure.Caching;
+using SFeed.Core.Models.Wall;
 
 namespace SFeed.Business.Providers
 {
@@ -101,15 +101,15 @@ namespace SFeed.Business.Providers
         //}
 
 
-        private IEnumerable<string> GetFollowers(string entryBy, WallOwner targetWall)
+        private IEnumerable<string> GetFollowers(string entryBy, WallModel targetWall)
         {
             IEnumerable<string> followers;
             //user posts to another user wall
-            if (targetWall.WallOwnerType == WallOwnerType.user)
+            if (targetWall.WallOwnerType == WallType.user)
             {
                 followers = followerProvider.GetUserFollowers(entryBy);
 
-                if (string.Equals(entryBy, targetWall.Id))
+                if (string.Equals(entryBy, targetWall.OwnerId))
                 {
                     //user posted to his/her own wall no action required
                 }
@@ -126,13 +126,13 @@ namespace SFeed.Business.Providers
                 if (!targetWall.IsPublic)
                 {
                     //For private group posts, only users that can follow target group gets newsfeed item
-                    followers = followerProvider.GetGroupFollowers(targetWall.Id);
+                    followers = followerProvider.GetGroupFollowers(targetWall.OwnerId);
                 }
                 else
                 {
                     //for public groups notify both
                     followers = followerProvider.GetUserFollowers(entryBy);
-                    var groupFollowers = followerProvider.GetGroupFollowers(targetWall.Id);
+                    var groupFollowers = followerProvider.GetGroupFollowers(targetWall.OwnerId);
                     followers = followers.Union(groupFollowers);
                 }
             }

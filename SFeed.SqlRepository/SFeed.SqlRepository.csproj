@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetLatestComments_Result.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetWallPost_Result.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="GroupFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Follower;
 using SFeed.Core.Models;
+using SFeed.Core.Models.Wall;
+using System;
 
 namespace SFeed.SqlRepository.Implementation
 {
@@ -130,16 +132,16 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public IEnumerable<WallOwner> GetFollowingGroups(string userId)
+        public IEnumerable<WallModel> GetFollowingGroups(string userId)
         {
             //TODO:Update Private/Public condition
             using (var entities = new SocialFeedEntities())
             {
-                return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => new WallOwner
+                return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => new WallModel
                 {
-                    Id = p.GroupId,
+                    OwnerId = p.GroupId,
                     IsPublic = true,
-                    WallOwnerType = WallOwnerType.group
+                    WallOwnerType = WallType.group
                 }).ToList();
             }
         }
@@ -160,5 +162,6 @@ namespace SFeed.SqlRepository.Implementation
                 };
             }
         }
+
     }
 }

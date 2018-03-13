@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFeed.Core.Models.WallPost
+﻿namespace SFeed.Core.Models.WallPost
 {
     public class WallPostUpdateRequest
     {
