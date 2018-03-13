@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFeed.Core.Models.Follower;
+using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Caching
 {

@@ -56,6 +56,7 @@
     <Compile Include="Models\Comments\CommentCreateRequest.cs" />
     <Compile Include="Models\Comments\CommentCreateResponse.cs" />
     <Compile Include="Models\Comments\CommentUpdateRequest.cs" />
+    <Compile Include="Models\Follower\FollowerPagedModel.cs" />
     <Compile Include="Models\WallOwnerCacheModel.cs" />
     <Compile Include="Models\WallOwnerType.cs" />
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />

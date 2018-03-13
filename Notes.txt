@@ -1,7 +1,3 @@
-Self-Notes
---Redesign Controllers --OK
---Update Business Layer --Semi OK
---Simplify Data Layer Abstraction --OK
---Create Views (AngularJs) -- Use Postman For Requests no views necessary
---Update Redis Storage Structure --Semi OK
---Upate Authorization -- User Auth as Service
+A group cannot follow another group or trigger an event (Wallpost, Like, etc)
+A user profile cannot be marked private
+Group private conditions and queries will be updated

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository;
+using SFeed.Core.Models.Follower;
+using SFeed.Core.Models;
 
 namespace SFeed.SqlRepository.Implementation
 {
@@ -30,22 +32,6 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public IEnumerable<string> GetGroupFollowers(string groupId)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                return entities.GroupFollower.Where(t => t.GroupId == groupId).Select(t => t.FollowerId).ToList();
-            }
-        }
-
-        public IEnumerable<string> GetUserFollowers(string userId)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                return entities.UserFollower.Where(t => t.UserId == userId).Select(t => t.FollowerId).ToList();
-            }
-        }
-
         public void UnfollowGroup(string groupId, string followerId)
         {
             using (var entities = new SocialFeedEntities())
@@ -69,6 +55,109 @@ namespace SFeed.SqlRepository.Implementation
                     entities.UserFollower.Remove(record);
                     entities.SaveChanges();
                 }
+            }
+        }
+
+        public IEnumerable<string> GetFollowersUser(string userId)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                return entities.UserFollower.Where(t => t.UserId == userId).Select(t => t.FollowerId).ToList();
+            }
+        }
+
+        public FollowerPagedModel GetFollowersUserPaged(string userId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var followers = entities.UserFollower.Where(p => p.UserId == userId).Select(p => p.FollowerId);
+                var resultSet = followers.OrderBy(p => p).Skip(skip).Take(size).ToList();
+                var totalCount = followers.Count();
+
+                return new FollowerPagedModel
+                {
+                    Records = resultSet,
+                    TotalCount = totalCount
+                };
+            }
+        }
+
+        public IEnumerable<string> GetFollowersGroup(string groupId)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                return entities.GroupFollower.Where(t => t.GroupId == groupId).Select(t => t.FollowerId).ToList();
+            }
+        }
+
+        public FollowerPagedModel GetFollowersGroupPaged(string groupId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var followers = entities.GroupFollower.Where(p => p.GroupId == groupId).Select(p => p.FollowerId);
+                var resultSet = followers.OrderBy(p => p).Skip(skip).Take(size).ToList();
+                var totalCount = followers.Count();
+
+                return new FollowerPagedModel
+                {
+                    Records = resultSet,
+                    TotalCount = totalCount
+                };
+            }
+        }
+
+        public IEnumerable<string> GetFollowingUsers(string userId)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                return entities.UserFollower.Where(p => p.FollowerId == userId).Select(p => p.UserId).ToList();
+            }
+        }
+
+        public FollowerPagedModel GetFollowingUsersPaged(string userId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var users = entities.UserFollower.Where(p => p.FollowerId == userId);
+                var resultSet = users.OrderBy(p => p.UserId).Skip(skip).Take(size).Select(p=>p.UserId).ToList();
+                var totalCount = users.Count();
+
+                return new FollowerPagedModel
+                {
+                    Records = resultSet,
+                    TotalCount = totalCount
+                };
+            }
+        }
+
+        public IEnumerable<WallOwner> GetFollowingGroups(string userId)
+        {
+            //TODO:Update Private/Public condition
+            using (var entities = new SocialFeedEntities())
+            {
+                return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => new WallOwner
+                {
+                    Id = p.GroupId,
+                    IsPublic = true,
+                    WallOwnerType = WallOwnerType.group
+                }).ToList();
+            }
+        }
+
+        public FollowerPagedModel GetFollowingGroupsPaged(string userId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var groups = entities.GroupFollower.Where(p => p.FollowerId == userId);
+                var resultSet = groups.OrderBy(p => p.GroupId).Skip(skip).Take(size).Select(p => p.GroupId).ToList();
+
+                var totalCount = groups.Count();
+
+                return new FollowerPagedModel
+                {
+                    Records = resultSet,
+                    TotalCount = totalCount
+                };
             }
         }
     }
