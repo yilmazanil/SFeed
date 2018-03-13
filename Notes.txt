@@ -1,3 +1,4 @@
 A group cannot follow another group or trigger an event (Wallpost, Like, etc)
 A user profile cannot be marked private
-Group private conditions and queries will be updated
+Group private/public condition will be provided via service layer (External component)
+Follower Test completed

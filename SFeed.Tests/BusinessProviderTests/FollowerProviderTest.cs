@@ -3,6 +3,7 @@ using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using System.Linq;
 using SFeed.Core.Models;
+using System.Collections.Generic;
 
 namespace SFeed.Tests.BusinessProviderTests
 {
@@ -79,6 +80,94 @@ namespace SFeed.Tests.BusinessProviderTests
             var shouldNotExist = followers.Any(f => f == follower);
 
             Assert.IsFalse(shouldNotExist);
+        }
+
+        [TestMethod]
+        public void Should_Return_Equal()
+        {
+            var targetUser = GetRandomUserName();
+            var targetGroup = GetRandomGroupName();
+
+            foreach (var user in RandomUserNames)
+            {
+                followerProvider.FollowUser(user, targetUser);
+                followerProvider.FollowGroup(user, targetGroup);
+            }
+
+            var groupFollowersCount = followerProvider.GetGroupFollowers(targetGroup).Count();
+            var userFollowersCount = followerProvider.GetUserFollowers(targetUser).Count();
+            var cachedGroupFollowersCount = followerProvider.GetGroupFollowersCached(targetGroup).Count();
+            var cachedUserFollowersCount = followerProvider.GetUserFollowersCached(targetUser).Count();
+            var userFollowerPagedCount = followerProvider.GetUserFollowersPaged(targetUser, 20, 20).TotalCount;
+            var groupFollowerPagedCount = followerProvider.GetGroupFollowersPaged(targetGroup, 20, 20).TotalCount;
+
+            var shouldGroupFollowerCountBeEqual = groupFollowersCount == cachedGroupFollowersCount;
+            var shouldUserFollowerCountBeEqual = userFollowersCount == cachedUserFollowersCount;
+            
+
+            Assert.IsTrue(shouldGroupFollowerCountBeEqual && shouldUserFollowerCountBeEqual);
+
+            shouldGroupFollowerCountBeEqual = groupFollowersCount == groupFollowerPagedCount;
+            shouldGroupFollowerCountBeEqual = userFollowersCount == userFollowerPagedCount;
+
+            Assert.IsTrue(shouldGroupFollowerCountBeEqual && shouldUserFollowerCountBeEqual);
+
+        }
+
+        [TestMethod]
+        public void Should_Return_Paged()
+        {
+            int pagingSize = 20;
+            int skip = 0;
+            List<string> fetchedRecords = new List<string>();
+
+            var targetUser = GetRandomUserName();
+            var targetGroup = GetRandomGroupName();
+
+            foreach (var user in RandomUserNames)
+            {
+                followerProvider.FollowUser(user, targetUser);
+                followerProvider.FollowGroup(user, targetGroup);
+            }
+
+            var groupFollowers = followerProvider.GetGroupFollowers(targetGroup);
+            var userFollowers = followerProvider.GetUserFollowers(targetUser);
+
+            while (true)
+            {
+                var result =  followerProvider.GetGroupFollowersPaged(targetGroup, skip, pagingSize);
+                fetchedRecords.AddRange(result.Records);
+                skip += pagingSize;
+                if (skip > result.TotalCount)
+                {
+                    break;
+                }
+            }
+    
+            foreach (var item in groupFollowers)
+            {
+                Assert.IsTrue(fetchedRecords.Contains(item));
+            }
+
+            fetchedRecords.Clear();
+            skip = 0;
+
+            while (true)
+            {
+                var result = followerProvider.GetUserFollowersPaged(targetUser, skip, pagingSize);
+                fetchedRecords.AddRange(result.Records);
+                skip += pagingSize;
+                if (skip > result.TotalCount)
+                {
+                    break;
+                }
+            }
+
+            foreach (var item in userFollowers)
+            {
+                Assert.IsTrue(fetchedRecords.Contains(item));
+            }
+
         }
     }
 }
