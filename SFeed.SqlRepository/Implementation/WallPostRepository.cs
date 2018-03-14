@@ -127,7 +127,7 @@ namespace SFeed.SqlRepository.Implementation
             {
                 procedureResult = entities.GetUserWall(userId, olderThan, size).ToList();
             }
-            return MapWall(procedureResult, new WallModel { IsPublic = true, OwnerId = userId, WallOwnerType = WallType.user });
+            return MapWall(procedureResult, new WallModel { OwnerId = userId, WallOwnerType = WallType.user });
         }
 
         public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
@@ -153,7 +153,7 @@ namespace SFeed.SqlRepository.Implementation
             {
                 procedureResult = entities.GetGroupWall(groupId, olderThan, size).ToList();
             }
-            return MapWall(procedureResult, new WallModel { IsPublic = true, OwnerId = groupId, WallOwnerType = WallType.group });
+            return MapWall(procedureResult, new WallModel { OwnerId = groupId, WallOwnerType = WallType.group });
         }
 
         public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
@@ -188,11 +188,11 @@ namespace SFeed.SqlRepository.Implementation
                 };
                 if (model.UserWall != null)
                 {
-                    result.WallOwner = new WallModel { IsPublic = true, OwnerId = model.UserWall.UserId, WallOwnerType = WallType.user };
+                    result.WallOwner = new WallModel { OwnerId = model.UserWall.UserId, WallOwnerType = WallType.user };
                 }
                 else if (model.GroupWall != null)
                 {
-                    result.WallOwner = new WallModel { IsPublic = true, OwnerId = model.GroupWall.GroupId, WallOwnerType = WallType.group };
+                    result.WallOwner = new WallModel { OwnerId = model.GroupWall.GroupId, WallOwnerType = WallType.group };
                 }
                 return result;
             }
@@ -214,7 +214,7 @@ namespace SFeed.SqlRepository.Implementation
                 PostedBy = postResult.CreatedBy,
                 PostType = postResult.PostType
             };
-            var wallModel = new WallModel { IsPublic = true };
+            var wallModel = new WallModel();
             if (!string.IsNullOrWhiteSpace(postResult.GroupId))
             {
                 wallModel.OwnerId = postResult.GroupId;

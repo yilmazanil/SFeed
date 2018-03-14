@@ -140,7 +140,6 @@ namespace SFeed.SqlRepository.Implementation
                 return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => new WallModel
                 {
                     OwnerId = p.GroupId,
-                    IsPublic = true,
                     WallOwnerType = WallType.group
                 }).ToList();
             }

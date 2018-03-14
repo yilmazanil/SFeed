@@ -64,13 +64,13 @@ namespace SFeed.Tests
         protected WallModel GetRandomUserWallOwner(bool isPublic)
         {
             var name = GetRandomUserName();
-            return new WallModel { IsPublic = isPublic, OwnerId = name, WallOwnerType = WallType.user };
+            return new WallModel { OwnerId = name, WallOwnerType = WallType.user };
         }
 
         protected WallModel GetRandomGroupWallOwner(bool isPublic)
         {
             var name = GetRandomGroupName();
-            return new WallModel { IsPublic = isPublic, OwnerId = name, WallOwnerType = WallType.group };
+            return new WallModel { OwnerId = name, WallOwnerType = WallType.group };
         }
     }
 }

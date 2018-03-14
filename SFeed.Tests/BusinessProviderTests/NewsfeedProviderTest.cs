@@ -38,7 +38,7 @@ namespace SFeed.Tests.BusinessProviderTests
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
                 FeedType = NewsfeedType.wallpost,
-                WallOwner = sampleUserWall
+                WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
 
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);

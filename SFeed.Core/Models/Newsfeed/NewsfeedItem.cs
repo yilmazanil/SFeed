@@ -10,6 +10,6 @@ namespace SFeed.Core.Models.Newsfeed
 
         public NewsfeedType FeedType { get; set; }
 
-        public WallModel WallOwner { get; set; }
+        public NewsfeedWallModel WallOwner { get; set; }
     }
 }

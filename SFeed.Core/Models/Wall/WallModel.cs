@@ -5,7 +5,5 @@
         public string OwnerId { get; set; }
 
         public WallType WallOwnerType { get; set; }
-
-        public bool IsPublic { get; set; }
     }
 }

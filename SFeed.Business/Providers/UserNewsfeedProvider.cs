@@ -101,7 +101,7 @@ namespace SFeed.Business.Providers
         //}
 
 
-        private IEnumerable<string> GetFollowers(string entryBy, WallModel targetWall)
+        private IEnumerable<string> GetFollowers(string entryBy, NewsfeedWallModel targetWall)
         {
             IEnumerable<string> followers;
             //user posts to another user wall
