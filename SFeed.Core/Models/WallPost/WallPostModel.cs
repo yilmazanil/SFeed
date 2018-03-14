@@ -1,14 +1,22 @@
-﻿using SFeed.Core.Models.Comments;
-using System.Collections.Generic;
+﻿using SFeed.Core.Models.Wall;
+using System;
 
 namespace SFeed.Core.Models.WallPost
 {
-    public class WallPostDetailedModel : WallPostModel
+    public class WallPostModel
     {
-        public int LikeCount { get; set; }
+        public string Id { get; set; }
 
-        public int CommentCount { get; set; }
+        public string Body { get; set; }
 
-        public IEnumerable<CommentModel> LatestComments { get; set; }
+        public string PostedBy { get; set; }
+
+        public short PostType { get; set; }
+
+        public WallModel WallOwner { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
     }
 }

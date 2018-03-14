@@ -51,26 +51,5 @@ namespace SFeed.RedisRepository.Implementation
                 return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
             }
         }
-
-        private void Increment(string key)
-        {
-            using (var client = GetClientInstance())
-            {
-                client.Increment(key, 1);
-            }
-        }
-
-        private void Decrement(string key)
-        {
-            using (var client = GetClientInstance())
-            {
-                var value = client.GetValue(key);
-                if (!string.IsNullOrWhiteSpace(value) && Convert.ToInt32(value) > 0)
-                {
-                    client.Decrement(key, 1);
-                }
-            }
-        }
-
     }
 }

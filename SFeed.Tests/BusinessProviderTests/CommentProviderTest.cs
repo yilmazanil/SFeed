@@ -11,7 +11,7 @@ namespace SFeed.Tests.BusinessProviderTests
     public class CommentProviderTest : ProviderTestBase
     {
         IWallPostProvider wallPostProvider;
-        IUserCommentProvider commentProvider;
+        ICommentProvider commentProvider;
 
         [TestInitialize]
         public void Initialize()
@@ -39,7 +39,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var commentId = commentProvider.AddComment(commentCreateRequest);
 
-            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            var postComments = commentProvider.GetComments(samplePostId, 0, 100);
 
             var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
 
@@ -65,14 +65,14 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var commentId = commentProvider.AddComment(commentCreateRequest);
 
-            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            var postComments = commentProvider.GetComments(samplePostId, 0, 100);
 
             var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
 
             Assert.IsTrue(shouldExist);
 
             commentProvider.DeleteComment(samplePostId, commentId);
-            postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            postComments = commentProvider.GetComments(samplePostId, 0, 100);
             var shouldNotExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
 
             Assert.IsFalse(shouldNotExist);
@@ -108,7 +108,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             commentProvider.UpdateComment(commentUpdateRequest);
 
-            var postComments = commentProvider.GetComments(samplePostId, DateTime.Now, 100);
+            var postComments = commentProvider.GetComments(samplePostId, 0, 100);
             var spesificComment = commentProvider.GetComment(samplePostId, commentId);
             var shouldBeEqual = string.Equals(spesificComment.Body, commentUpdateRequest.Body, StringComparison.OrdinalIgnoreCase);
             var shouldExist = postComments.Any(c => c.Id == commentId && c.ModifiedDate.HasValue && c.Body == commentUpdateRequest.Body);

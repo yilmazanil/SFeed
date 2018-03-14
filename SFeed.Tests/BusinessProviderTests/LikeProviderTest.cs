@@ -11,7 +11,7 @@ namespace SFeed.Tests.BusinessProviderTests
     {
         IWallPostProvider wallPostProvider;
         IEntryLikeProvider entryLikeProvider;
-        IUserCommentProvider commentProvider;
+        ICommentProvider commentProvider;
 
         [TestInitialize]
         public void Initialize()

@@ -227,12 +227,12 @@ namespace SFeed.SqlRepository.Implementation
             }
             mapped.WallOwner = wallModel;
 
-            var commentList = new List<CommentModel>();
+            var commentList = new List<CommentDetailedModel>();
             if (commentResult != null && commentResult.Any())
             {
                 foreach (var comment in commentResult)
                 {
-                    commentList.Add(new CommentModel
+                    commentList.Add(new CommentDetailedModel
                     {
                         Body = comment.Body,
                         CreatedBy = comment.CreatedBy,
@@ -269,7 +269,7 @@ namespace SFeed.SqlRepository.Implementation
                             PostedBy = record.CreatedBy,
                             PostType = record.PostType,
                             WallOwner = wallOwner,
-                            LatestComments = new List<CommentModel>()
+                            LatestComments = new List<CommentDetailedModel>()
                         };
                         existingRecord = relatedPost;
                         result.Add(relatedPost);
@@ -283,11 +283,11 @@ namespace SFeed.SqlRepository.Implementation
             return result;
         }
 
-        private CommentModel MapComment(GetWall_Result record)
+        private CommentDetailedModel MapComment(GetWall_Result record)
         {
             if (record.CommentId.HasValue)
             {
-                var comment = new CommentModel
+                var comment = new CommentDetailedModel
                 {
                     Body = record.CommentBody,
                     CreatedBy = record.CommentCreatedBy,

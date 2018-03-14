@@ -14,7 +14,5 @@ namespace SFeed.Core.Models.Comments
 
         public DateTime? ModifiedDate { get; set; }
 
-        public int LikeCount { get; set; }
-
     }
 }

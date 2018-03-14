@@ -6,10 +6,45 @@ namespace SFeed.Core.Infrastructure.Repository
 {
     public interface ICommentRepository
     {
-        CommentCreateResponse SaveItem(CommentCreateRequest model);
-        DateTime? UpdateItem(CommentUpdateRequest model);
+        /// <summary>
+        /// Saves a new comment
+        /// </summary>
+        /// <param name="model">Comment details</param>
+        /// <returns></returns>
+        CommentCreateResponse SaveComment(CommentCreateRequest model);
+        /// <summary>
+        /// Updates an existing comment, returns modified date if succeds
+        /// </summary>
+        /// <param name="model">Comment details</param>
+        /// <returns></returns>
+        DateTime? UpdateComment(CommentUpdateRequest model);
+        /// <summary>
+        /// Returns comment with extra properties
+        /// </summary>
+        /// <param name="postId">Id of associated post</param>
+        /// <param name="commentId">Id of comment</param>
+        /// <returns></returns>
+        CommentDetailedModel GetCommentWithDetails(string postId, long commentId);
+        /// <summary>
+        /// Returns comments
+        /// </summary>
+        /// <param name="postId">Id of associated post</param>
+        /// <param name="commentId">Id of comment</param>
+        /// <returns></returns>
         CommentModel GetComment(string postId, long commentId);
-        void RemoveItem(string postId, long commentId);
-        IEnumerable<CommentModel> GetComments(string postId, DateTime olderThan, int size);
+        /// <summary>
+        /// Removes a comment with specified id
+        /// </summary>
+        /// <param name="commentId">Id of comment</param>
+        /// <returns></returns>
+        void RemoveComment(long commentId);
+        /// <summary>
+        /// Returns all comments of a given post paged
+        /// </summary>
+        /// <param name="postId">Id of post</param>
+        /// <param name="skip">Number of comments to skip</param>
+        /// <param name="size">Number of comments to return</param>
+        /// <returns></returns>
+        IEnumerable<CommentDetailedModel> GetPagedComments(string postId, int skip, int size);
     }
 }

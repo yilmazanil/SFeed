@@ -88,5 +88,22 @@ namespace SFeed.SqlRepository
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetWall_Result>("GetGroupWall", groupIdParameter, olderThanParameter, sizeParameter);
         }
+    
+        public virtual ObjectResult<GetComments_Result> GetComments(string postId, Nullable<int> skip, Nullable<int> size)
+        {
+            var postIdParameter = postId != null ?
+                new ObjectParameter("PostId", postId) :
+                new ObjectParameter("PostId", typeof(string));
+    
+            var skipParameter = skip.HasValue ?
+                new ObjectParameter("Skip", skip) :
+                new ObjectParameter("Skip", typeof(int));
+    
+            var sizeParameter = size.HasValue ?
+                new ObjectParameter("Size", size) :
+                new ObjectParameter("Size", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetComments_Result>("GetComments", postIdParameter, skipParameter, sizeParameter);
+        }
     }
 }

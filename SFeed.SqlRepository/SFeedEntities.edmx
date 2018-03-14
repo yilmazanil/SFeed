@@ -156,6 +156,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="GetComments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PostId" Type="nvarchar" Mode="In" />
+          <Parameter Name="Skip" Type="int" Mode="In" />
+          <Parameter Name="Size" Type="int" Mode="In" />
+        </Function>
         <Function Name="GetGroupWall" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="GroupId" Type="nvarchar" Mode="In" />
           <Parameter Name="OlderThan" Type="datetime" Mode="In" />
@@ -259,6 +264,11 @@
           <FunctionImport Name="GetGroupWall" ReturnType="Collection(SocialFeedDataModel.GetWall_Result)">
             <Parameter Name="GroupId" Mode="In" Type="String" />
             <Parameter Name="OlderThan" Mode="In" Type="DateTime" />
+            <Parameter Name="Size" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetComments" ReturnType="Collection(SocialFeedDataModel.GetComments_Result)">
+            <Parameter Name="PostId" Mode="In" Type="String" />
+            <Parameter Name="Skip" Mode="In" Type="Int32" />
             <Parameter Name="Size" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
@@ -467,6 +477,17 @@
           <Property Type="Int32" Name="CommentCount" Nullable="true" />
           <Property Type="Int32" Name="LikeCount" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="GetComments_Result">
+          <Property Type="Int64" Name="RowNumber" Nullable="true" />
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -630,6 +651,21 @@
                 <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
                 <ScalarProperty Name="CommentLikeCount" ColumnName="CommentLikeCount" />
                 <ScalarProperty Name="CommentCount" ColumnName="CommentCount" />
+                <ScalarProperty Name="LikeCount" ColumnName="LikeCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetComments" FunctionName="SocialFeedDataModel.Store.GetComments">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SocialFeedDataModel.GetComments_Result">
+                <ScalarProperty Name="RowNumber" ColumnName="RowNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="LikeCount" ColumnName="LikeCount" />
               </ComplexTypeMapping>
             </ResultMapping>

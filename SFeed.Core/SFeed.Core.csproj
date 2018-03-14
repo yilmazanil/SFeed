@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
-    <Compile Include="Infrastructure\Providers\IUserCommentProvider.cs" />
+    <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
     <Compile Include="Infrastructure\Caching\ICommentCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\IEntryLikeCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\IFollowerCacheRepository.cs" />
@@ -55,10 +55,11 @@
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\Comments\CommentCreateRequest.cs" />
     <Compile Include="Models\Comments\CommentCreateResponse.cs" />
+    <Compile Include="Models\Comments\CommentDetailedModel.cs" />
     <Compile Include="Models\Comments\CommentUpdateRequest.cs" />
     <Compile Include="Models\EntryLike\EntryLikePagedModel.cs" />
     <Compile Include="Models\Follower\FollowerPagedModel.cs" />
-    <Compile Include="Models\WallPost\WallPostBaseModel.cs" />
+    <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\Wall\NewsfeedWallModel.cs" />
     <Compile Include="Models\Wall\WallCacheModel.cs" />
     <Compile Include="Models\Wall\WallModel.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="Models\WallPost\WallPostCacheModel.cs" />
     <Compile Include="Models\WallPost\WallPostCreateRequest.cs" />
     <Compile Include="Models\WallPost\WallPostCreateResponse.cs" />
-    <Compile Include="Models\WallPost\WallPostModel.cs" />
+    <Compile Include="Models\WallPost\WallPostDetailedModel.cs" />
     <Compile Include="Models\WallPost\WallPostType.cs" />
     <Compile Include="Models\WallPost\WallPostUpdateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

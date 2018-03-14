@@ -17,64 +17,36 @@ namespace SFeed.RedisRepository.Implementation
 
         public void AddComment(CommentCacheModel model)
         {
-            var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
-            var listKey = GetEntryKey(ListRepoPrefix, model.PostId);
+            var commentId = model.CommentId.ToString();
+            var entryKey = GetEntryKey(RepoPrefix, commentId);
+            var latestCommentsListKey = GetEntryKey(ListRepoPrefix, model.PostId);
             var postCommentCount = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, model.PostId);
 
             using (var redisClient = GetClientInstance())
             {
+                //Save comment
                 var clientApi = GetTypedClientApi<CommentCacheModel>(redisClient);
                 clientApi.SetValue(entryKey, model);
+
+                //Increment post comment count
                 redisClient.Increment(postCommentCount, 1);
-                var list = redisClient.Lists[listKey];
-                if (list.Count >= ListSize)
+
+                //Update latest comments
+                var list = redisClient.Lists[latestCommentsListKey];
+                list.Prepend(commentId);
+
+                if (list.Count > ListSize)
                 {
-                    list.Trim(0, ListSize - 1);
-                }
-                list.Append(model.CommentId.ToString());
-
-
-            }
-        }
-
-        public void RemoveAllComments(int maxRemovalSize)
-        {
-            var searchPattern= GetEntrySearchPattern(RepoPrefix);
-            var searchPatternLists = GetEntrySearchPattern(ListRepoPrefix);
-            using (var redisClient = GetClientInstance())
-            {
-                var commentKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-                var postListKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-                redisClient.RemoveAll(commentKeys.Union(postListKeys));
-            }
-        }
-
-        public void RemoveComment(string postId, long commentId)
-        {
-            var entryKey = GetEntryKey(RepoPrefix, commentId.ToString());
-            var listKey = GetEntryKey(ListRepoPrefix, postId);
-            var postCommentCount = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
-
-            using (var redisClient = GetClientInstance())
-            {
-                redisClient.Remove(entryKey);
-                redisClient.Lists[listKey].Remove(commentId.ToString());
-
-                var commentCount = redisClient.GetValue(postCommentCount);
-                if (!string.IsNullOrWhiteSpace(commentCount) && Convert.ToInt32(commentCount) > 0)
-                {
-                    redisClient.Decrement(postCommentCount, 1);
+                    list.Trim(1, ListSize);
                 }
             }
         }
-
         public bool UpdateComment(CommentUpdateRequest model, DateTime modificationDate)
         {
             var entryKey = GetEntryKey(RepoPrefix, model.CommentId.ToString());
 
             using (var redisClient = GetClientInstance())
             {
-
                 var clientApi = GetTypedClientApi<CommentCacheModel>(redisClient);
                 var existingItem = clientApi.GetValue(entryKey);
                 if (existingItem != null)
@@ -88,10 +60,39 @@ namespace SFeed.RedisRepository.Implementation
             return false;
         }
 
+        public void RemoveComment(string postId, long commentId)
+        {
+            var entryKey = GetEntryKey(RepoPrefix, commentId.ToString());
+            var listKey = GetEntryKey(ListRepoPrefix, postId);
+            var postCommentCount = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
+
+            using (var redisClient = GetClientInstance())
+            {
+                //remove comment
+                redisClient.Remove(entryKey);
+                //remove comment from latest comments list
+                redisClient.Lists[listKey].Remove(commentId.ToString());
+                //decrement total comment count
+                var commentCount = redisClient.GetValue(postCommentCount);
+                if (!string.IsNullOrWhiteSpace(commentCount) && Convert.ToInt32(commentCount) > 0)
+                {
+                    redisClient.Decrement(postCommentCount, 1);
+                }
+            }
+        }
+
+        public int GetCommentCount(string postId)
+        {
+            var entryKey = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
+            using (var client = GetClientInstance())
+            {
+                var value = client.GetValue(entryKey);
+                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            }
+        }
         public IEnumerable<CommentCacheModel> GetLatestComments(string postId)
         {
             var result = new List<CommentCacheModel>();
-
             var listKey = GetEntryKey(ListRepoPrefix, postId);
 
             using (var client = GetClientInstance())
@@ -109,19 +110,18 @@ namespace SFeed.RedisRepository.Implementation
                 }
             }
             return result;
-
         }
-
-        public int GetCommentCount(string postId)
-        {
-            var entryKey = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
-            using (var client = GetClientInstance())
-            {
-                var value = client.GetValue(entryKey);
-                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
-            }
-        }
-
+        //public void RemoveAllComments(int maxRemovalSize)
+        //{
+        //    var searchPattern= GetEntrySearchPattern(RepoPrefix);
+        //    var searchPatternLists = GetEntrySearchPattern(ListRepoPrefix);
+        //    using (var redisClient = GetClientInstance())
+        //    {
+        //        var commentKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
+        //        var postListKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
+        //        redisClient.RemoveAll(commentKeys.Union(postListKeys));
+        //    }
+        //}
         private void IncrementCommentCount(string postId)
         {
             var entryKey = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
@@ -134,24 +134,5 @@ namespace SFeed.RedisRepository.Implementation
             Increment(entryKey);
         }
 
-        private void Increment(string key)
-        {
-            using (var client = GetClientInstance())
-            {
-                client.Increment(key, 1);
-            }
-        }
-
-        private void Decrement(string key)
-        {
-            using (var client = GetClientInstance())
-            {
-                var value = client.GetValue(key);
-                if (!string.IsNullOrWhiteSpace(value) && Convert.ToInt32(value) > 0)
-                {
-                    client.Decrement(key, 1);
-                }
-            }
-        }
     }
 }

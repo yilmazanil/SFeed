@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetComments_Result.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetLatestComments_Result.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
@@ -66,7 +69,7 @@
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Implementation\CommentProvider.cs" />
+    <Compile Include="Implementation\CommentRepository.cs" />
     <Compile Include="Implementation\EntryLikeRepository.cs" />
     <Compile Include="Implementation\FollowerRepository.cs" />
     <Compile Include="Implementation\WallPostRepository.cs" />
