@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Caching\INewsfeedResponceCacheRepository.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
@@ -71,9 +72,8 @@
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />
-    <Compile Include="Models\Caching\CommentCacheModel.cs" />
-    <Compile Include="Models\Caching\LikeCacheModel.cs" />
-    <Compile Include="Models\Caching\NewsfeedCacheModel.cs" />
+    <Compile Include="Models\Comments\CommentCacheModel.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedCacheModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedWallPostModel.cs" />
     <Compile Include="Models\Comments\CommentModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedItem.cs" />

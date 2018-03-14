@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Providers
 {
-    public interface INewsfeedResponseProvider : IDisposable
+    public interface INewsfeedResponseProvider
     {
         IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId);
     }

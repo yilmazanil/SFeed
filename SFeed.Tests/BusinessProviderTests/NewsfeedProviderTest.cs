@@ -37,7 +37,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-                FeedType = NewsfeedType.wallpost,
+               // FeedType = NewsfeedType.wallpost,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
 

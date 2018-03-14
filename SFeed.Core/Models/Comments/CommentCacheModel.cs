@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFeed.Core.Models.Caching
+namespace SFeed.Core.Models.Comments
 {
     public class CommentCacheModel 
     { 

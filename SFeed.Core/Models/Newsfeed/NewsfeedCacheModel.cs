@@ -1,6 +1,6 @@
 ﻿using SFeed.Core.Models.Newsfeed;
 
-namespace SFeed.Core.Models.Caching
+namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedCacheModel
     {

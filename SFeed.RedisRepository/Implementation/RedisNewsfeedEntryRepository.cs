@@ -1,14 +1,11 @@
 ﻿using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
 using System;
-using SFeed.Core.Models.Caching;
-using System.Linq;
 using SFeed.Core.Infrastructure.Caching;
+using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.RedisRepository.Implementation
 {
-
-
     public class RedisNewsfeedEntryRepository : RedisRepositoryBase, INewsfeedCacheRepository
     {
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
@@ -19,15 +16,22 @@ namespace SFeed.RedisRepository.Implementation
         IEntryLikeCacheRepository entryLikeRepo;
         IWallPostCacheRepository wallPostRepo;
 
-        public RedisNewsfeedEntryRepository()
+        public RedisNewsfeedEntryRepository() : this(new RedisCommentRepository()
+            ,new RedisEntryLikeRepository(), new RedisWallPostRepository())
         {
-            this.commentRepo = new RedisCommentRepository();
-            this.entryLikeRepo = new RedisEntryLikeRepository();
-            this.wallPostRepo = new RedisWallPostRepository();
+
         }
-        public void PublishEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        public RedisNewsfeedEntryRepository(ICommentCacheRepository commentRepo, 
+             IEntryLikeCacheRepository entryLikeRepo,
+             IWallPostCacheRepository wallPostRepo)
         {
-            var activityEntry = ConvertToActivity(entry);
+            this.commentRepo = commentRepo;
+            this.entryLikeRepo = entryLikeRepo;
+            this.wallPostRepo = wallPostRepo;
+        }
+        public void AddEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        {
+            var activityEntry = MapToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
 
             using (var client = GetClientInstance())
@@ -36,8 +40,11 @@ namespace SFeed.RedisRepository.Implementation
                 {
                     foreach (var key in keys)
                     {
-                        trans.QueueCommand(r => r.AddItemToList(key.PostFeedKey, entry.ReferencePostId));
-                        //uses zincr adds if not exists
+                        //Add post id to user feed, overwrites if exists
+                        trans.QueueCommand(r => r.PrependItemToList(key.PostFeedKey, entry.ReferencePostId));
+                        //keep only last 100 newsfeed items
+                        trans.QueueCommand(r => r.TrimList(key.PostFeedKey, 0, 100));
+                        //Increment rank of feed item by 1 uses zincr adds if not exists
                         trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, 1));
                     }
                     trans.Commit();
@@ -47,54 +54,38 @@ namespace SFeed.RedisRepository.Implementation
 
         public void RemoveEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
-            var activityEntry = ConvertToActivity(entry);
-
+            var activityEntry = MapToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
+            var isPostRemoval = entry.FeedType == NewsfeedType.wallpost;
 
             using (var client = GetClientInstance())
             {
                 using (var trans = client.CreateTransaction())
                 {
-                    //List<Action<IRedisClient>> removalCommands = new List<Action<IRedisClient>>();
-                    foreach (var key in keys)
+                    if (isPostRemoval)
                     {
-                        //Decrement user activity rank in associated post details of a follower feed
-                        //If user commented twice and deleted one of them
-                        //Post should still be displayed
-                        trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, -1));
-                        //remove the details of a post if it has a rank below 0, 10 could be any negative value
-                        trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostActionsKey, -10, 0));
-                        //trans.QueueCommand(r => r.GetSetCount(key.PostActionsKey), r=>
-                        //{
-                        //    if (r < 1)
-                        //    {
-                        //        removalCommands.Add(c => c.RemoveItemFromSet(key.PostFeedKey, key.PostId));
-                        //    }
-
-                        //});
-
-                        trans.Commit();
+                        foreach (var key in keys)
+                        {
+                            //Add post id to user feed, overwrites if exists
+                            trans.QueueCommand(r => r.RemoveItemFromList(key.PostFeedKey, entry.ReferencePostId));
+                            //Increment rank of feed item by 1 uses zincr adds if not exists
+                            trans.QueueCommand(r => r.Remove(key.PostActionsKey));
+                        }
                     }
-
-                    //cleanup
-                    //foreach (var command in removalCommands)
-                    //{
-                    //    trans.QueueCommand(command);
-                    //}
-                    //trans.Commit();
-                }
-            }
-        }
-
-        public void RemovePost(string postId, IEnumerable<string> followers)
-        {
-            var keys = MapKeys(postId, followers);
-            using (var client = GetClientInstance())
-            {
-                foreach (var key in keys)
-                {
-                    client.RemoveItemFromList(key.PostFeedKey, postId);
-                    client.RemoveEntry(key.PostActionsKey);
+                    else
+                    {
+                        foreach (var key in keys)
+                        {
+                            //Decrement user activity rank in associated post details of a follower feed
+                            //If user commented twice and deleted one of them
+                            //Post should still be displayed
+                            trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, -1));
+                            //remove the details of a post if it has a rank below 0, 10 could be any negative value
+                            trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostActionsKey, -10, 0));
+                            //10000 can be any value for a random max score
+                            trans.Commit();
+                        }
+                    }
                 }
             }
         }
@@ -142,7 +133,7 @@ namespace SFeed.RedisRepository.Implementation
             };
         }
 
-        private string ConvertToActivity(NewsfeedCacheModel newsFeedEntry)
+        private string MapToActivity(NewsfeedCacheModel newsFeedEntry)
         {
             return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
         }
@@ -158,7 +149,7 @@ namespace SFeed.RedisRepository.Implementation
                     //newsfeed:user      
                     PostFeedKey = GetEntryKey(FeedPrefix, follower),
                     //userfeed:postId
-                    PostActionsKey = GetEntryKey(FeedPrefix, string.Concat(follower,":", postId)),
+                    PostActionsKey = GetEntryKey(FeedPrefix, string.Concat(follower, ":", postId)),
                     PostId = postId
                 };
 
@@ -168,55 +159,55 @@ namespace SFeed.RedisRepository.Implementation
 
         }
 
-        public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
-        {
-            var userFeedKey = GetEntryKey(FeedPrefix, userId);
-            List<string> postIds;
-            List<NewsfeedWallPostModel> responseItems = new List<NewsfeedWallPostModel>();
+        //public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
+        //{
+        //    var userFeedKey = GetEntryKey(FeedPrefix, userId);
+        //    List<string> postIds;
+        //    List<NewsfeedWallPostModel> responseItems = new List<NewsfeedWallPostModel>();
 
-            using (var client = GetClientInstance())
-            {
-                postIds = client.GetRangeFromList(userFeedKey, skip, take);
-                foreach (var postId in postIds)
-                {
-                    var post = wallPostRepo.GetPost(postId);
-                    if (post != null)
-                    {
-                        var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
-                        var actions = client.GetAllItemsFromSortedSet(postFeedReasonKey);
-                        if (actions != null)
-                        {
-                            var latestComments = commentRepo.GetLatestComments(post.Id);
-                            var commentCount = commentRepo.GetCommentCount(post.Id);
-                            var likeCount = entryLikeRepo.GetPostLikeCount(post.Id);
-                            var model = new NewsfeedWallPostModel
-                            {
-                                Body = post.Body,
-                                CreatedDate = post.CreatedDate,
-                                Id = post.Id,
-                                ModifiedDate = post.ModifiedDate,
-                                PostedBy = post.PostedBy,
-                                PostType = post.PostType,
-                                TargetWall = post.TargetWall,
-                                FeedDescription = actions.ToList(),
-                                LikeCount = likeCount,
-                                CommentCount = commentCount,
-                                LatestComments = latestComments
-                            };
-                            responseItems.Add(model);
-                        }
-                        else
-                        {
-                            client.RemoveEntry(postFeedReasonKey);
-                        }
-                    }
-                    else
-                    {
-                        client.RemoveItemFromList(userFeedKey, postId);
-                    }
-                }
-                return responseItems;
-            }
-        }
+        //    using (var client = GetClientInstance())
+        //    {
+        //        postIds = client.GetRangeFromList(userFeedKey, skip, take);
+        //        foreach (var postId in postIds)
+        //        {
+        //            var post = wallPostRepo.GetPost(postId);
+        //            if (post != null)
+        //            {
+        //                var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
+        //                var actions = client.GetAllItemsFromSortedSet(postFeedReasonKey);
+        //                if (actions != null)
+        //                {
+        //                    var latestComments = commentRepo.GetLatestComments(post.Id);
+        //                    var commentCount = commentRepo.GetCommentCount(post.Id);
+        //                    var likeCount = entryLikeRepo.GetPostLikeCount(post.Id);
+        //                    var model = new NewsfeedWallPostModel
+        //                    {
+        //                        Body = post.Body,
+        //                        CreatedDate = post.CreatedDate,
+        //                        Id = post.Id,
+        //                        ModifiedDate = post.ModifiedDate,
+        //                        PostedBy = post.PostedBy,
+        //                        PostType = post.PostType,
+        //                        TargetWall = post.TargetWall,
+        //                        FeedDescription = actions.ToList(),
+        //                        LikeCount = likeCount,
+        //                        CommentCount = commentCount,
+        //                        LatestComments = latestComments
+        //                    };
+        //                    responseItems.Add(model);
+        //                }
+        //                else
+        //                {
+        //                    client.RemoveEntry(postFeedReasonKey);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                client.RemoveItemFromList(userFeedKey, postId);
+        //            }
+        //        }
+        //        return responseItems;
+        //    }
+        //}
     }
 }

@@ -47,7 +47,7 @@ namespace SFeed.Business.Providers
                     FeedType = newsFeedEntry.FeedType,
                     ReferencePostId = newsFeedEntry.ReferencePostId
                 };
-                feedCacheRepo.PublishEvent(cacheModel, followers);
+                feedCacheRepo.AddPost(cacheModel, followers);
             }
         }
 

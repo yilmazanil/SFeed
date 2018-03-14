@@ -1,4 +1,5 @@
-﻿using SFeed.Core.Models.Newsfeed;
+﻿using SFeed.Core.Models.Comments;
+using SFeed.Core.Models.Newsfeed;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Models.Caching
