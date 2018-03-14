@@ -12,7 +12,6 @@ namespace SFeed.Core.Infrastructure.Caching
         WallPostCacheModel GetPost(string postId);
         void RemovePost(string postId);
         void RemovePosts(IEnumerable<string> postIds);
-        void RemoveAllPosts(int maxRemovalSize);
         IEnumerable<WallPostCacheModel> GetItems(IEnumerable<string> postIds);
     }
 }

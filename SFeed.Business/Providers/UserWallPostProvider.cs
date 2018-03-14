@@ -8,22 +8,25 @@ using SFeed.SqlRepository.Implementation;
 using System;
 using SFeed.Core.Infrastructure.Caching;
 using SFeed.Core.Models.Wall;
+using log4net;
 
 namespace SFeed.Business.Providers
 {
-    public class UserWallPostProvider : IWallPostProvider
+    public class WallPostProvider : IWallPostProvider
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(WallPostProvider));
+
         private IWallPostRepository wallPostRepo;
         private IWallPostCacheRepository wallPostCacheRepo;
 
-        public UserWallPostProvider() : this(
+        public WallPostProvider() : this(
             new WallPostRepository(),
             new RedisWallPostRepository())
         {
 
         }
 
-        public UserWallPostProvider(
+        public WallPostProvider(
             IWallPostRepository wallPostRepo,
             IWallPostCacheRepository wallPostCacheRepo)
         {
@@ -37,10 +40,16 @@ namespace SFeed.Business.Providers
 
             if (result != null && !string.IsNullOrWhiteSpace(result.PostId))
             {
-                var cacheEntry = MapRequestToCacheModel(request, result);
-
-                wallPostCacheRepo.SavePost(cacheEntry);
-
+                try
+                {
+                    var cacheEntry = MapRequestToCacheModel(request, result);
+                    wallPostCacheRepo.SavePost(cacheEntry);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(string.Format(
+                    "[AddPost] Error updating wallPost cache for postId : {0}", result), ex);
+                }
                 return result.PostId;
             }
             return null;
@@ -51,7 +60,15 @@ namespace SFeed.Business.Providers
             var modificationDate = wallPostRepo.UpdatePost(model);
             if (modificationDate.HasValue)
             {
-                wallPostCacheRepo.UpdatePost(model, modificationDate.Value);
+                try
+                {
+                    wallPostCacheRepo.UpdatePost(model, modificationDate.Value);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(string.Format(
+                        "[UpdatePost] Error updating wallPost cache for postId : {0}", model.PostId), ex);
+                }
             }
         }
 
@@ -60,13 +77,25 @@ namespace SFeed.Business.Providers
             var deleted = wallPostRepo.RemovePost(postId);
             if (deleted)
             {
-                wallPostCacheRepo.RemovePost(postId);
+                try
+                {
+                    wallPostCacheRepo.RemovePost(postId);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(string.Format(
+                        "[DeletePost] Error updating wallPost cache for postId : {0}", postId), ex);
+                }
             }
         }
-
         public WallPostModel GetPost(string postId)
         {
             return wallPostRepo.GetPost(postId);
+        }
+
+        public WallPostDetailedModel GetPostDetailed(string postId)
+        {
+            return wallPostRepo.GetPostDetailed(postId);
         }
 
         public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
@@ -74,10 +103,21 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetUserWall(userId, olderThan, size);
         }
 
+        public IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
+        {
+            return wallPostRepo.GetUserWallDetailed(userId, olderThan, size);
+        }
+
         public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
         {
             return wallPostRepo.GetGroupWall(groupId, olderThan, size);
         }
+
+        public IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
+        {
+            return wallPostRepo.GetGroupWallDetailed(groupId, olderThan, size);
+        }
+
         private WallPostCacheModel MapRequestToCacheModel(WallPostCreateRequest request, WallPostCreateResponse response)
         {
             return new WallPostCacheModel
@@ -90,6 +130,5 @@ namespace SFeed.Business.Providers
                 CreatedDate = response.CreatedDate
             };
         }
-
     }
 }

@@ -52,27 +52,26 @@ namespace SFeed.RedisRepository.Implementation
 
         public IEnumerable<WallPostCacheModel> GetItems(IEnumerable<string> postIds)
         {
-
-            var entryKeys = postIds.Select(t => GetEntryKey(CacheEntryPrefix,t));
+            var entryKeys = postIds.Select(t => GetEntryKey(CacheEntryPrefix, t));
             using (var redisClient = GetClientInstance())
             {
                 return redisClient.GetAll<WallPostCacheModel>(entryKeys).Values;
             }
         }
 
-        public void RemoveAllPosts(int maxRemovalSize = 1000)
-        {
-            var searchPattern = GetEntrySearchPattern(CacheEntryPrefix);
-            using (var redisClient = GetClientInstance())
-            {
-                var keys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-                redisClient.RemoveAll(keys);
-            }
-        }
+        //public void RemoveAllPosts(int maxRemovalSize = 1000)
+        //{
+        //    var searchPattern = GetEntrySearchPattern(CacheEntryPrefix);
+        //    using (var redisClient = GetClientInstance())
+        //    {
+        //        var keys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
+        //        redisClient.RemoveAll(keys);
+        //    }
+        //}
 
         public void RemovePost(string postId)
         {
-            var entryKey = GetEntryKey(CacheEntryPrefix,postId);
+            var entryKey = GetEntryKey(CacheEntryPrefix, postId);
             using (var redisClient = GetClientInstance())
             {
                 redisClient.Remove(entryKey);

@@ -10,40 +10,26 @@ namespace SFeed.Tests.BusinessProviderTests
     [TestClass]
     public class UserWallPostProviderTest : ProviderTestBase
     {
-        private IWallPostProvider userWallPostProvider;
+        private IWallPostProvider wallPostProvider;
 
         [TestInitialize]
         public void Initialize()
         {
-            this.userWallPostProvider = new UserWallPostProvider();
+            this.wallPostProvider = new WallPostProvider();
         }
 
         [TestMethod]
         public void Should_Create_Post()
         {
-            for (int i = 0; i < 1000; i++)
-            {
-                var sampleUser = GetRandomUserName();
-                var sampleUserWall = GetRandomUserWallOwner(true);
-
-                var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-                var id = userWallPostProvider.AddPost(request);
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            }
-        }
-
-        [TestMethod]
-        public void Should_Create_More_Posts()
-        {
+            var sampleUser = GetRandomUserName();
             var sampleUserWall = GetRandomUserWallOwner(true);
+            var sampleGroupWall = GetRandomGroupWallOwner(true);
 
-            foreach (var user in RandomUserNames)
-            {
-                var request = GetSampleWallCreateRequest(user, sampleUserWall);
-                var id = userWallPostProvider.AddPost(request);
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            }
-            
+            var userWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var groupWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleGroupWall);
+            var userPostId = wallPostProvider.AddPost(userWallPostRequest);
+            var groupPostId = wallPostProvider.AddPost(groupWallPostRequest);
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(userPostId) && !string.IsNullOrWhiteSpace(groupPostId));
         }
 
         [TestMethod]
@@ -51,15 +37,41 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleUser = GetRandomUserName();
             var sampleUserWall = GetRandomUserWallOwner(true);
+            var sampleGroupWall = GetRandomGroupWallOwner(true);
 
-            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var userWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var groupWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleGroupWall);
+            var userPostId = wallPostProvider.AddPost(userWallPostRequest);
+            var groupPostId = wallPostProvider.AddPost(groupWallPostRequest);
 
-            var id = userWallPostProvider.AddPost(request);
-            var model = userWallPostProvider.GetPost(id);
-            Assert.AreEqual(model.Id, id);
-            Assert.AreEqual(model.Body, request.Body);
-            Assert.AreEqual(model.PostedBy, request.PostedBy);
-            Assert.AreEqual(model.PostType, (short)request.PostType);
+            var userPostDetailedModel = wallPostProvider.GetPostDetailed(userPostId);
+            var groupPostDetailedModel = wallPostProvider.GetPostDetailed(groupPostId);
+
+            Assert.AreEqual(userPostId, userPostDetailedModel.Id);
+            Assert.AreEqual(groupPostId, groupPostDetailedModel.Id);
+
+            Assert.AreEqual(userPostDetailedModel.Body, userWallPostRequest.Body);
+            Assert.AreEqual(userPostDetailedModel.PostedBy, userWallPostRequest.PostedBy);
+            Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userWallPostRequest.TargetWall.OwnerId);
+
+            Assert.AreEqual(groupPostDetailedModel.Body, groupWallPostRequest.Body);
+            Assert.AreEqual(groupPostDetailedModel.PostedBy, groupWallPostRequest.PostedBy);
+            Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupWallPostRequest.TargetWall.OwnerId);
+
+            var userPostModel = wallPostProvider.GetPost(userPostId);
+            var groupPostModel = wallPostProvider.GetPost(groupPostId);
+
+            Assert.AreEqual(userPostModel.Id, userPostDetailedModel.Id);
+            Assert.AreEqual(groupPostModel.Id, groupPostDetailedModel.Id);
+
+            Assert.AreEqual(userPostDetailedModel.Body, userPostModel.Body);
+            Assert.AreEqual(userPostDetailedModel.PostedBy, userPostModel.PostedBy);
+            Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userPostModel.WallOwner.OwnerId);
+
+            Assert.AreEqual(groupPostDetailedModel.Body, groupPostModel.Body);
+            Assert.AreEqual(groupPostDetailedModel.PostedBy, groupPostModel.PostedBy);
+            Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupPostModel.WallOwner.OwnerId);
+
         }
 
         [TestMethod]
@@ -67,8 +79,10 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             var sampleUser = GetRandomUserName();
             var sampleUserWall = GetRandomUserWallOwner(true);
-            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-            var id = userWallPostProvider.AddPost(request);
+
+            var userWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+
+            var id = wallPostProvider.AddPost(userWallPostRequest);
 
             var updateRequest = new WallPostUpdateRequest
             {
@@ -77,9 +91,9 @@ namespace SFeed.Tests.BusinessProviderTests
                 PostType = WallPostType.text
             };
 
-            userWallPostProvider.UpdatePost(updateRequest);
-            var model = userWallPostProvider.GetPost(id);
 
+            wallPostProvider.UpdatePost(updateRequest);
+            var model = wallPostProvider.GetPost(id);
             Assert.AreEqual(model.Body, updateRequest.Body);
         }
 
@@ -89,13 +103,35 @@ namespace SFeed.Tests.BusinessProviderTests
             var sampleUser = GetRandomUserName();
             var sampleUserWall = GetRandomUserWallOwner(true);
             var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-            var id = userWallPostProvider.AddPost(request);
+            var id = wallPostProvider.AddPost(request);
 
-            userWallPostProvider.DeletePost(id);
+            wallPostProvider.DeletePost(id);
 
-            var deletedPost = userWallPostProvider.GetPost(id);
+            var deletedPost = wallPostProvider.GetPost(id);
             Assert.IsNull(deletedPost);
         }
+        [TestMethod]
+        public void Should_Get_UserWall_Detailed()
+        {
+            var sampleUser = GetRandomUserName();
+            var sampleUserWall = GetRandomUserWallOwner(true);
+            var keep = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+            var delete = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+
+            var keepId = wallPostProvider.AddPost(keep);
+            var deleteId = wallPostProvider.AddPost(delete);
+
+            wallPostProvider.DeletePost(deleteId);
+
+            var posts = wallPostProvider.GetUserWallDetailed(sampleUserWall.OwnerId, DateTime.Now, 100);
+
+            bool shouldExist = posts.Any(p => p.Id == keepId);
+            bool shouldNotExist = posts.Any(p => p.Id == deleteId);
+
+            Assert.IsTrue(shouldExist && !shouldNotExist);
+
+        }
+
         [TestMethod]
         public void Should_Get_UserWall()
         {
@@ -104,12 +140,12 @@ namespace SFeed.Tests.BusinessProviderTests
             var keep = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
             var delete = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
 
-            var keepId = userWallPostProvider.AddPost(keep);
-            var deleteId = userWallPostProvider.AddPost(delete);
+            var keepId = wallPostProvider.AddPost(keep);
+            var deleteId = wallPostProvider.AddPost(delete);
 
-            userWallPostProvider.DeletePost(deleteId);
+            wallPostProvider.DeletePost(deleteId);
 
-            var posts = userWallPostProvider.GetUserWall(sampleUserWall.OwnerId , DateTime.Now, 100);
+            var posts = wallPostProvider.GetUserWall(sampleUserWall.OwnerId, DateTime.Now, 100);
 
             bool shouldExist = posts.Any(p => p.Id == keepId);
             bool shouldNotExist = posts.Any(p => p.Id == deleteId);

@@ -22,7 +22,6 @@ namespace SFeed.SqlRepository.Implementation
                 PostType = (byte)model.PostType,
                 IsDeleted = false
             };
-
             if (model.TargetWall.WallOwnerType == WallType.user)
             {
                 entry.UserWall = new UserWall { UserId = model.TargetWall.OwnerId, WallPostId = newEntryId };
@@ -60,6 +59,15 @@ namespace SFeed.SqlRepository.Implementation
 
         public WallPostModel GetPost(string postId)
         {
+            using (var entities = new SocialFeedEntities())
+            {
+                var result = entities.WallPost.Include("UserWall").Include("GroupWall").FirstOrDefault(p => p.Id == postId && p.IsDeleted == false);
+                return MapWallPost(result);
+            }
+        }
+
+        public WallPostDetailedModel GetPostDetailed(string postId)
+        {
             GetWallPost_Result postResult;
             IEnumerable<GetLatestComments_Result> commentResult;
             using (var entities = new SocialFeedEntities())
@@ -68,58 +76,10 @@ namespace SFeed.SqlRepository.Implementation
                 if (postResult != null)
                 {
                     commentResult = entities.GetLatestComments(postId).ToList();
-                }
-                else
-                {
-                    return null;
+                    return MapWallPost(postResult, commentResult);
                 }
             }
-            return MapGetPostProcedureResult(postResult, commentResult);
-
-        }
-
-        private WallPostModel MapGetPostProcedureResult(GetWallPost_Result postResult, IEnumerable<GetLatestComments_Result> commentResult)
-        {
-            var relatedPost = new WallPostModel
-            {
-                Body = postResult.Body,
-                CommentCount = postResult.CommentCount.Value,
-                CreatedDate = postResult.CreatedDate,
-                Id = postResult.Id,
-                LikeCount = postResult.LikeCount.Value,
-                ModifiedDate = postResult.ModifiedDate,
-                PostedBy = postResult.CreatedBy,
-                PostType = postResult.PostType,
-                WallOwner = !string.IsNullOrWhiteSpace(postResult.GroupId) ? new WallModel
-                {
-                    IsPublic = true,
-                    OwnerId = postResult.GroupId,
-                    WallOwnerType = WallType.group
-                } : new WallModel
-                {
-                    IsPublic = true,
-                    OwnerId = postResult.UserId,
-                    WallOwnerType = WallType.user
-                }
-            };
-            var commentList = new List<CommentModel>();
-            if (commentResult != null && commentResult.Any())
-            {
-                foreach (var comment in commentResult)
-                {
-                    commentList.Add(new CommentModel
-                    {
-                        Body = comment.Body,
-                        CreatedBy = comment.CreatedBy,
-                        CreatedDate = comment.CreatedDate,
-                        Id = comment.Id,
-                        LikeCount = comment.LikeCount.Value,
-                        ModifiedDate = comment.ModifiedDate
-                    });
-                }
-            }
-            relatedPost.LatestComments = commentList;
-            return relatedPost;
+            return null;
         }
 
         public bool RemovePost(string postId)
@@ -145,38 +105,160 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
+        public IEnumerable<string> GetWallPostIds(WallModel targetWall)
         {
-            IEnumerable<GetWall_Result> userWallEntries;
             using (var entities = new SocialFeedEntities())
             {
-                userWallEntries = entities.GetUserWall(userId, olderThan, size);
+                if (targetWall.WallOwnerType == WallType.group)
+                {
+                    return entities.GroupWall.Where(p => p.GroupId == targetWall.OwnerId && p.WallPost.IsDeleted == false).Select(p => p.WallPostId).ToList();
+                }
+                else
+                {
+                    return entities.UserWall.Where(p => p.UserId == targetWall.OwnerId && p.WallPost.IsDeleted == false).Select(p => p.WallPostId).ToList();
+                }
             }
-            return MapWallResult(userWallEntries, new WallModel { IsPublic = true, OwnerId = userId, WallOwnerType = WallType.user  });
+        }
+
+        public IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
+        {
+            IEnumerable<GetWall_Result> procedureResult;
+            using (var entities = new SocialFeedEntities())
+            {
+                procedureResult = entities.GetUserWall(userId, olderThan, size).ToList();
+            }
+            return MapWall(procedureResult, new WallModel { IsPublic = true, OwnerId = userId, WallOwnerType = WallType.user });
+        }
+
+        public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
+        {
+            List<UserWall> posts;
+            using (var entities = new SocialFeedEntities())
+            {
+                posts = entities.UserWall.Include("WallPost")
+                    .Where(p => p.UserId == userId && p.WallPost.CreatedDate < olderThan && p.WallPost.IsDeleted == false)
+                    .OrderByDescending(p => p.WallPost.CreatedDate).Take(size).ToList();
+            }
+
+            foreach (var post in posts)
+            {
+                yield return MapWallPost(post.WallPost);
+            }
+        }
+
+        public IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
+        {
+            IEnumerable<GetWall_Result> procedureResult;
+            using (var entities = new SocialFeedEntities())
+            {
+                procedureResult = entities.GetGroupWall(groupId, olderThan, size).ToList();
+            }
+            return MapWall(procedureResult, new WallModel { IsPublic = true, OwnerId = groupId, WallOwnerType = WallType.group });
         }
 
         public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
         {
-
-            IEnumerable<GetWall_Result> userWallEntries;
+            List<GroupWall> posts;
             using (var entities = new SocialFeedEntities())
             {
-                userWallEntries = entities.GetGroupWall(groupId, olderThan, size);
+                posts = entities.GroupWall.Include("WallPost")
+                    .Where(p => p.GroupId == groupId && p.WallPost.CreatedDate < olderThan && p.WallPost.IsDeleted == false)
+                    .OrderByDescending(p => p.WallPost.CreatedDate).Take(size).ToList();
             }
-            return MapWallResult(userWallEntries, new WallModel { IsPublic = true, OwnerId = groupId, WallOwnerType = WallType.group });
+
+            foreach (var post in posts)
+            {
+                yield return MapWallPost(post.WallPost);
+            }
         }
 
-        private IEnumerable<WallPostModel> MapWallResult(IEnumerable<GetWall_Result> wallPostResult, WallModel wallOwner)
+        #region Mapping
+        private WallPostModel MapWallPost(WallPost model)
         {
-            List<WallPostModel> result = new List<WallPostModel>();
-            if (wallPostResult != null && wallPostResult.Any())
+            if (model != null)
             {
-                foreach (var record in wallPostResult)
+                var result = new WallPostModel
                 {
+                    Body = model.Body,
+                    CreatedDate = model.CreatedDate,
+                    Id = model.Id,
+                    ModifiedDate = model.ModifiedDate,
+                    PostedBy = model.CreatedBy,
+                    PostType = model.PostType
+                };
+                if (model.UserWall != null)
+                {
+                    result.WallOwner = new WallModel { IsPublic = true, OwnerId = model.UserWall.UserId, WallOwnerType = WallType.user };
+                }
+                else if (model.GroupWall != null)
+                {
+                    result.WallOwner = new WallModel { IsPublic = true, OwnerId = model.GroupWall.GroupId, WallOwnerType = WallType.group };
+                }
+                return result;
+            }
+            return null;
+        }
+
+        private WallPostDetailedModel MapWallPost(GetWallPost_Result postResult,
+          IEnumerable<GetLatestComments_Result> commentResult)
+        {
+
+            var mapped = new WallPostDetailedModel
+            {
+                Body = postResult.Body,
+                CommentCount = postResult.CommentCount.Value,
+                CreatedDate = postResult.CreatedDate,
+                Id = postResult.Id,
+                LikeCount = postResult.LikeCount.Value,
+                ModifiedDate = postResult.ModifiedDate,
+                PostedBy = postResult.CreatedBy,
+                PostType = postResult.PostType
+            };
+            var wallModel = new WallModel { IsPublic = true };
+            if (!string.IsNullOrWhiteSpace(postResult.GroupId))
+            {
+                wallModel.OwnerId = postResult.GroupId;
+                wallModel.WallOwnerType = WallType.group;
+            }
+            else
+            {
+                wallModel.OwnerId = postResult.UserId;
+                wallModel.WallOwnerType = WallType.user;
+            }
+            mapped.WallOwner = wallModel;
+
+            var commentList = new List<CommentModel>();
+            if (commentResult != null && commentResult.Any())
+            {
+                foreach (var comment in commentResult)
+                {
+                    commentList.Add(new CommentModel
+                    {
+                        Body = comment.Body,
+                        CreatedBy = comment.CreatedBy,
+                        CreatedDate = comment.CreatedDate,
+                        Id = comment.Id,
+                        LikeCount = comment.LikeCount.Value,
+                        ModifiedDate = comment.ModifiedDate
+                    });
+                }
+            }
+            mapped.LatestComments = commentList;
+            return mapped;
+        }
+
+        private IEnumerable<WallPostDetailedModel> MapWall(IEnumerable<GetWall_Result> procedureResult, WallModel wallOwner)
+        {
+            var result = new List<WallPostDetailedModel>();
+            if (procedureResult != null)
+            {
+                foreach (var record in procedureResult)
+                {
+                    var comment = MapComment(record);
                     var existingRecord = result.FirstOrDefault(p => p.Id == record.Id);
                     if (existingRecord == null)
                     {
-                        var relatedPost = new WallPostModel
+                        var relatedPost = new WallPostDetailedModel
                         {
                             Body = record.Body,
                             CommentCount = record.CommentCount.Value,
@@ -186,16 +268,12 @@ namespace SFeed.SqlRepository.Implementation
                             ModifiedDate = record.ModifiedDate,
                             PostedBy = record.CreatedBy,
                             PostType = record.PostType,
-                            WallOwner = wallOwner
+                            WallOwner = wallOwner,
+                            LatestComments = new List<CommentModel>()
                         };
-
-                        relatedPost.LatestComments = new List<CommentModel>();
+                        existingRecord = relatedPost;
                         result.Add(relatedPost);
-
                     }
-                    existingRecord = result.FirstOrDefault(p => p.Id == record.Id);
-
-                    var comment = MapWallResultToComment(record);
                     if (comment != null)
                     {
                         (existingRecord.LatestComments as List<CommentModel>).Add(comment);
@@ -205,7 +283,7 @@ namespace SFeed.SqlRepository.Implementation
             return result;
         }
 
-        private CommentModel MapWallResultToComment(GetWall_Result record)
+        private CommentModel MapComment(GetWall_Result record)
         {
             if (record.CommentId.HasValue)
             {
@@ -222,6 +300,8 @@ namespace SFeed.SqlRepository.Implementation
             }
             return null;
         }
+        #endregion
+
     }
 }
 

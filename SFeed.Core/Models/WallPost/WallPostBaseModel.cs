@@ -3,7 +3,7 @@ using System;
 
 namespace SFeed.Core.Models.WallPost
 {
-    public class WallPostBaseModel
+    public class WallPostModel
     {
         public string Id { get; set; }
 
