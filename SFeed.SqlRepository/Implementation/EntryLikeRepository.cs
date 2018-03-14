@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository;
+using SFeed.Core.Models.EntryLike;
 
 namespace SFeed.SqlRepository.Implementation
 {
@@ -80,6 +81,42 @@ namespace SFeed.SqlRepository.Implementation
             using (var entities = new SocialFeedEntities())
             {
                 return entities.UserCommentLike.Where(t => t.CommentId == commentId).Select(t => t.CreatedBy).ToList();
+            }
+        }
+
+        public EntryLikePagedModel GetPostLikesPaged(string postId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var totalCount = entities.WallPostLike.Where(p => p.WallPostId == postId).Count();
+
+                var records = entities.WallPostLike.Where(p => p.WallPostId == postId)
+                    .OrderByDescending(p => p.CreatedDate)
+                    .Skip(skip).Take(size).Select(p=>p.CreatedBy).ToList();
+
+                return new EntryLikePagedModel
+                {
+                    Records = records,
+                    TotalCount = totalCount
+                };
+            }
+        }
+
+        public EntryLikePagedModel GetCommentLikesPaged(long commentId, int skip, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var totalCount = entities.UserCommentLike.Where(p => p.CommentId == commentId).Count();
+
+                var records = entities.UserCommentLike.Where(p => p.CommentId == commentId)
+                    .OrderByDescending(p => p.CreatedDate)
+                    .Skip(skip).Take(size).Select(p => p.CreatedBy).ToList();
+
+                return new EntryLikePagedModel
+                {
+                    Records = records,
+                    TotalCount = totalCount
+                };
             }
         }
     }

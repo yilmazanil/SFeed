@@ -32,6 +32,25 @@ namespace SFeed.RedisRepository.Implementation
             var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
             Increment(entryKey);
         }
+        public int GetPostLikeCount(string postId)
+        {
+            var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
+            using (var client = GetClientInstance())
+            {
+                var value = client.GetValue(entryKey);
+                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            }
+        }
+
+        public int GetCommentLikeCount(long commentId)
+        {
+            var entryKey = GetEntryKey(commentLikeCounterPrefix, commentId.ToString());
+            using (var client = GetClientInstance())
+            {
+                var value = client.GetValue(entryKey);
+                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            }
+        }
 
         private void Increment(string key)
         {
@@ -53,24 +72,5 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public int GetPostLikeCount(string postId)
-        {
-            var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
-            using (var client = GetClientInstance())
-            {
-                var value = client.GetValue(entryKey);
-                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
-            }
-        }
-
-        public int GetCommentLikeCount(long commentId)
-        {
-            var entryKey = GetEntryKey(commentLikeCounterPrefix, commentId.ToString());
-            using (var client = GetClientInstance())
-            {
-                var value = client.GetValue(entryKey);
-                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
-            }
-        }
     }
 }

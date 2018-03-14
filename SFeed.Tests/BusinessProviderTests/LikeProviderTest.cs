@@ -41,12 +41,21 @@ namespace SFeed.Tests.BusinessProviderTests
 
             Assert.IsTrue(shouldExist && shouldExistOnce);
 
+            var shouldBeEqual = entryLikeProvider.GetPostLikeCountCached(samplePostId) == 1;
+            var shouldAlsoBeEqual = entryLikeProvider.GetPostLikesPaged(samplePostId, 0 , 100 ).TotalCount == 1;
+
+            Assert.IsTrue(shouldBeEqual && shouldAlsoBeEqual);
+
             entryLikeProvider.UnlikePost(samplePostId, sampleLikeUser);
 
             likes = entryLikeProvider.GetPostLikes(samplePostId);
             var shouldNotExist = likes.Contains(sampleLikeUser);
 
             Assert.IsFalse(shouldNotExist);
+
+            shouldBeEqual = entryLikeProvider.GetPostLikeCountCached(samplePostId) == 0;
+            shouldAlsoBeEqual = entryLikeProvider.GetPostLikesPaged(samplePostId, 0, 100).TotalCount == 0;
+            Assert.IsTrue(shouldBeEqual && shouldAlsoBeEqual);
         }
 
         [TestMethod]
