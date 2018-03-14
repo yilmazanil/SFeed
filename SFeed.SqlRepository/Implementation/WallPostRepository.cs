@@ -276,7 +276,7 @@ namespace SFeed.SqlRepository.Implementation
                     }
                     if (comment != null)
                     {
-                        (existingRecord.LatestComments as List<CommentModel>).Add(comment);
+                        (existingRecord.LatestComments as List<CommentDetailedModel>).Add(comment);
                     }
                 }
             }
