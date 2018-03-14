@@ -4,6 +4,7 @@ using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using System.Linq;
 using SFeed.Core.Infrastructure.Repository;
+using SFeed.RedisRepository.Base;
 
 namespace SFeed.RedisRepository
 {

@@ -1,4 +1,4 @@
-﻿namespace SFeed.RedisRepository
+﻿namespace SFeed.RedisRepository.Base
 {
     public static class RedisNameConstants
     {

@@ -2,6 +2,7 @@
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Newsfeed;
+using SFeed.RedisRepository.Base;
 using System;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
 ﻿using ServiceStack.Redis;
 using System.Configuration;
 
-namespace SFeed.RedisRepository
+namespace SFeed.RedisRepository.Base
 {
     public static class RedisConnectionProvider
     {
