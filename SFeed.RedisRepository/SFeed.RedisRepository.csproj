@@ -65,7 +65,6 @@
     <Compile Include="Implementation\RedisEntryLikeRepository.cs" />
     <Compile Include="Implementation\RedisFollowerRepository.cs" />
     <Compile Include="Implementation\RedisNewsfeedEntryRepository.cs" />
-    <Compile Include="Implementation\RedisNewsfeedResponseRepository.cs" />
     <Compile Include="Implementation\RedisWallPostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Base\RedisConnectionProvider.cs" />
