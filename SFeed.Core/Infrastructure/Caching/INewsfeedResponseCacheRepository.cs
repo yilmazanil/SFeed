@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Caching
 {
-    public interface INewsfeedResponceCacheRepository
+    public interface INewsfeedResponseCacheRepository
     {
         IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take);
     }

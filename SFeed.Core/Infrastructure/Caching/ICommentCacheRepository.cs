@@ -33,6 +33,12 @@ namespace SFeed.Core.Infrastructure.Caching
         /// <returns></returns>
         IEnumerable<CommentCacheModel> GetLatestComments(string postId);
         /// <summary>
+        /// Returns comments for a given post id
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
+        IEnumerable<CommentCacheModel> GetLatestCommentsDetailed(string postId);
+        /// <summary>
         /// Returns total number of comments for a given post
         /// </summary>
         /// <param name="postId"></param>

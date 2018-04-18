@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\Caching\INewsfeedResponceCacheRepository.cs" />
+    <Compile Include="Infrastructure\Caching\INewsfeedResponseCacheRepository.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
