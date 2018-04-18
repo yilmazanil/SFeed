@@ -3,8 +3,6 @@
     public static class RedisNameConstants
     {
         public static readonly string FeedRepoPrefix = "feed";
-        public static readonly string ActivityIdPrefix = "activityId";
-        public static readonly string ActivityPrefix = "activities";
         public static readonly int FeedRepoSize = 100;
         public static readonly string GroupFollowerRepoPrefix = "groupFollower";
         public static readonly string UserFollowerRepoPrefix = "userFollower";

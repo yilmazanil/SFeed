@@ -9,26 +9,7 @@ namespace SFeed.RedisRepository.Implementation
     public class RedisNewsfeedEntryRepository : RedisRepositoryBase, INewsfeedCacheRepository
     {
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
-        public string ActivityIdPrefix => RedisNameConstants.ActivityIdPrefix;
-        public string ActivityPrefix => RedisNameConstants.ActivityPrefix;
 
-        ICommentCacheRepository commentRepo;
-        IEntryLikeCacheRepository entryLikeRepo;
-        IWallPostCacheRepository wallPostRepo;
-
-        public RedisNewsfeedEntryRepository() : this(new RedisCommentRepository()
-            ,new RedisEntryLikeRepository(), new RedisWallPostRepository())
-        {
-
-        }
-        public RedisNewsfeedEntryRepository(ICommentCacheRepository commentRepo, 
-             IEntryLikeCacheRepository entryLikeRepo,
-             IWallPostCacheRepository wallPostRepo)
-        {
-            this.commentRepo = commentRepo;
-            this.entryLikeRepo = entryLikeRepo;
-            this.wallPostRepo = wallPostRepo;
-        }
         public void AddEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
         {
             var activityEntry = MapToActivity(entry);
@@ -66,7 +47,7 @@ namespace SFeed.RedisRepository.Implementation
                     {
                         foreach (var key in keys)
                         {
-                            //Add post id to user feed, overwrites if exists
+                            //Remove post id from user feed
                             trans.QueueCommand(r => r.RemoveItemFromList(key.PostFeedKey, entry.ReferencePostId));
                             //Increment rank of feed item by 1 uses zincr adds if not exists
                             trans.QueueCommand(r => r.Remove(key.PostActionsKey));
@@ -83,9 +64,9 @@ namespace SFeed.RedisRepository.Implementation
                             //remove the details of a post if it has a rank below 0, 10 could be any negative value
                             trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostActionsKey, -10, 0));
                             //10000 can be any value for a random max score
-                            trans.Commit();
                         }
                     }
+                    trans.Commit();
                 }
             }
         }
@@ -118,26 +99,8 @@ namespace SFeed.RedisRepository.Implementation
                     }
                     trans.Commit();
                 }
-
-
             }
         }
-
-        private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
-        {
-            var activity = activityStringRepresentation.Split(':');
-            return new ActivityEntry
-            {
-                By = activity[0],
-                ActivityId = Convert.ToInt16(activity[1])
-            };
-        }
-
-        private string MapToActivity(NewsfeedCacheModel newsFeedEntry)
-        {
-            return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
-        }
-
         private IEnumerable<FollowerRedisKeys> MapKeys(string postId, IEnumerable<string> followers)
         {
             var retVal = new List<FollowerRedisKeys>();
@@ -156,58 +119,21 @@ namespace SFeed.RedisRepository.Implementation
                 retVal.Add(item);
             }
             return retVal;
-
         }
 
-        //public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
-        //{
-        //    var userFeedKey = GetEntryKey(FeedPrefix, userId);
-        //    List<string> postIds;
-        //    List<NewsfeedWallPostModel> responseItems = new List<NewsfeedWallPostModel>();
+        private string MapToActivity(NewsfeedCacheModel newsFeedEntry)
+        {
+            return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
+        }
 
-        //    using (var client = GetClientInstance())
-        //    {
-        //        postIds = client.GetRangeFromList(userFeedKey, skip, take);
-        //        foreach (var postId in postIds)
-        //        {
-        //            var post = wallPostRepo.GetPost(postId);
-        //            if (post != null)
-        //            {
-        //                var postFeedReasonKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
-        //                var actions = client.GetAllItemsFromSortedSet(postFeedReasonKey);
-        //                if (actions != null)
-        //                {
-        //                    var latestComments = commentRepo.GetLatestComments(post.Id);
-        //                    var commentCount = commentRepo.GetCommentCount(post.Id);
-        //                    var likeCount = entryLikeRepo.GetPostLikeCount(post.Id);
-        //                    var model = new NewsfeedWallPostModel
-        //                    {
-        //                        Body = post.Body,
-        //                        CreatedDate = post.CreatedDate,
-        //                        Id = post.Id,
-        //                        ModifiedDate = post.ModifiedDate,
-        //                        PostedBy = post.PostedBy,
-        //                        PostType = post.PostType,
-        //                        TargetWall = post.TargetWall,
-        //                        FeedDescription = actions.ToList(),
-        //                        LikeCount = likeCount,
-        //                        CommentCount = commentCount,
-        //                        LatestComments = latestComments
-        //                    };
-        //                    responseItems.Add(model);
-        //                }
-        //                else
-        //                {
-        //                    client.RemoveEntry(postFeedReasonKey);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                client.RemoveItemFromList(userFeedKey, postId);
-        //            }
-        //        }
-        //        return responseItems;
-        //    }
-        //}
+        private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
+        {
+            var activity = activityStringRepresentation.Split(':');
+            return new ActivityEntry
+            {
+                By = activity[0],
+                ActivityId = Convert.ToInt16(activity[1])
+            };
+        }
     }
 }
