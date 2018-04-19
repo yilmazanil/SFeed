@@ -61,7 +61,7 @@
     <Compile Include="Base\RedisNameConstants.cs" />
     <Compile Include="Base\RedisRepositoryBase.cs" />
     <Compile Include="Implementation\FollowerRedisKeys.cs" />
-    <Compile Include="Implementation\RedisCommentRepository.cs" />
+    <Compile Include="Implementation\RedisCommentCountRepository.cs" />
     <Compile Include="Implementation\RedisEntryLikeRepository.cs" />
     <Compile Include="Implementation\RedisFollowerRepository.cs" />
     <Compile Include="Implementation\RedisNewsfeedEntryRepository.cs" />

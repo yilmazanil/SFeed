@@ -18,7 +18,7 @@ namespace SFeed.Tests.BusinessProviderTests
         {
             this.wallPostProvider = new WallPostProvider();
             this.entryLikeProvider = new EntryLikeProvider();
-            this.commentProvider = new UserCommentProvider();
+            this.commentProvider = new CommentProvider();
         }
 
         [TestMethod]

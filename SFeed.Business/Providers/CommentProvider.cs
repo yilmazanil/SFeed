@@ -10,27 +10,27 @@ using log4net;
 
 namespace SFeed.Business.Providers
 {
-    public class UserCommentProvider : ICommentProvider
+    public class CommentProvider : ICommentProvider
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(WallPostProvider));
 
         ICommentRepository commentRepo;
-        ICommentCacheRepository commentCacheRepo;
+        ICommentCountCacheRepository commentCounterCacheRepo;
         IEntryLikeCacheRepository entryLikeCacheRepo;
 
-        public UserCommentProvider() :
+        public CommentProvider() :
             this(new CommentRepository(),
-            new RedisCommentRepository(),
+                new RedisCommentCountRepository(),
             new RedisEntryLikeRepository())
         {
 
         }
-        public UserCommentProvider(ICommentRepository commentRepo,
-              ICommentCacheRepository commentCacheRepo,
+        public CommentProvider(ICommentRepository commentRepo,
+              ICommentCountCacheRepository commentCounterCacheRepo,
               IEntryLikeCacheRepository entryLikeCacheRepo)
         {
             this.commentRepo = commentRepo;
-            this.commentCacheRepo = commentCacheRepo;
+            this.commentCounterCacheRepo = commentCounterCacheRepo;
             this.entryLikeCacheRepo = entryLikeCacheRepo;
         }
 
@@ -49,12 +49,12 @@ namespace SFeed.Business.Providers
                 };
                 try
                 {
-                    commentCacheRepo.AddComment(cacheModel);
+                    commentCounterCacheRepo.Increment(cacheModel.PostId);
                 }
                 catch (Exception ex)
                 {
                     logger.Error(string.Format(
-                    "[AddComment] Error updating cache for comment: {0}", result.Id), ex);
+                    "[AddComment] Error incrementing comment count for postId : {0}", cacheModel.PostId), ex);
                 }
 
                 return result.Id;
@@ -65,19 +65,7 @@ namespace SFeed.Business.Providers
 
         public void UpdateComment(CommentUpdateRequest request)
         {
-            var result = commentRepo.UpdateComment(request);
-            if (result.HasValue)
-            {
-                try
-                {
-                    commentCacheRepo.UpdateComment(request, result.Value);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(string.Format(
-                    "[UpdateComment] Error updating cache for comment: {0}", request.CommentId), ex);
-                }
-            }
+            commentRepo.UpdateComment(request);
         }
 
         public void DeleteComment(string postId, long commentId)
@@ -85,12 +73,11 @@ namespace SFeed.Business.Providers
             commentRepo.RemoveComment(commentId);
             try
             {
-                commentCacheRepo.RemoveComment(postId, commentId);
+                commentCounterCacheRepo.Remove(postId);
             }
             catch (Exception ex)
             {
-                logger.Error(string.Format(
-                "[DeleteComment] Error updating cache for comment: {0}", commentId), ex);
+                logger.Error(string.Format("[DeleteComment] Error removing comment counter for postId: {0}", postId), ex);
             }
         }
 

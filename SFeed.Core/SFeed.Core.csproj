@@ -40,11 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Caching\ICommentCountCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\INewsfeedResponseCacheRepository.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedResponseProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
-    <Compile Include="Infrastructure\Caching\ICommentCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\IEntryLikeCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\IFollowerCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\INewsfeedCacheRepository.cs" />

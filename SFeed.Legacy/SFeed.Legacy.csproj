@@ -139,6 +139,8 @@
     <Compile Include="SqlRepository\WallPostType.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="v2\ICommentCacheRepository.cs" />
+    <Compile Include="v2\RedisCommentRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

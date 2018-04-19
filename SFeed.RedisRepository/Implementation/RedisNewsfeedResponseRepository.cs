@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using SFeed.Core.Models.Caching;
 using SFeed.RedisRepository.Base;
 using SFeed.Core.Models.Wall;
-using SFeed.Core.Models.Comments;
-using System.Linq;
 using SFeed.Core.Models.Newsfeed;
 
 namespace SFeed.RedisRepository.Implementation
@@ -14,22 +12,22 @@ namespace SFeed.RedisRepository.Implementation
     {
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
 
-        ICommentCacheRepository commentRepo;
+        ICommentCountCacheRepository commentCountRepo;
         IEntryLikeCacheRepository entryLikeRepo;
         IWallPostCacheRepository wallPostRepo;
 
         public RedisNewsfeedResponseRepository() : this(
-            new RedisCommentRepository()
+            new RedisCommentCountRepository()
             , new RedisEntryLikeRepository(),
             new RedisWallPostRepository())
         {
 
         }
-        public RedisNewsfeedResponseRepository(ICommentCacheRepository commentRepo,
+        public RedisNewsfeedResponseRepository(ICommentCountCacheRepository commentCountRepo,
              IEntryLikeCacheRepository entryLikeRepo,
              IWallPostCacheRepository wallPostRepo)
         {
-            this.commentRepo = commentRepo;
+            this.commentCountRepo = commentCountRepo;
             this.entryLikeRepo = entryLikeRepo;
             this.wallPostRepo = wallPostRepo;
         }
@@ -63,26 +61,8 @@ namespace SFeed.RedisRepository.Implementation
                                     var values = action.Split(':');
                                     mappedActions.Add(new NewsfeedAction { Action = (NewsfeedType)Convert.ToInt16(values[1]), By = values[0] });
                                 }
-                                var totalCommentCount = commentRepo.GetCommentCount(currentPost.Id);
+                                var totalCommentCount = commentCountRepo.GetCommentCount(currentPost.Id);
                                 var totalLikeCount = entryLikeRepo.GetPostLikeCount(currentPost.Id);
-                                //var latestCommentsCache = commentRepo.GetLatestComments(currentPost.Id);
-                                //var latestComments = new List<CommentDetailedModel>();
-                                //if (latestCommentsCache != null)
-                                //{
-                                //    foreach (var comment in latestCommentsCache)
-                                //    {
-                                //        var likeCount = entryLikeRepo.GetCommentLikeCount(comment.CommentId);
-                                //        latestComments.Add(new CommentDetailedModel
-                                //        {
-                                //            Body = comment.Body,
-                                //            CreatedBy = comment.CreatedBy,
-                                //            CreatedDate = comment.CreatedDate,
-                                //            Id = comment.CommentId,
-                                //            LikeCount = likeCount,
-                                //            ModifiedDate = comment.ModifiedDate,
-                                //        });
-                                //    }
-                                //}
 
                                 var model = new NewsfeedWallPostModel
                                 {
@@ -95,8 +75,7 @@ namespace SFeed.RedisRepository.Implementation
                                     WallOwner = new WallModel { OwnerId = currentPost.TargetWall.Id, WallOwnerType = (WallType)currentPost.TargetWall.WallOwnerTypeId},
                                     FeedDescription = mappedActions,
                                     LikeCount = totalLikeCount,
-                                    CommentCount = totalCommentCount,
-                                    //LatestComments = latestComments
+                                    CommentCount = totalCommentCount
                                 };
                                 responseItems.Add(model);
 
