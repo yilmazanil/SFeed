@@ -42,7 +42,7 @@ namespace SFeed.Tests.BusinessProviderTests
             Assert.IsTrue(shouldExist && shouldExistOnce);
 
             var shouldBeEqual = entryLikeProvider.GetPostLikeCountCached(samplePostId) == 1;
-            var shouldAlsoBeEqual = entryLikeProvider.GetPostLikesPaged(samplePostId, 0 , 100 ).TotalCount == 1;
+            var shouldAlsoBeEqual = entryLikeProvider.GetPostLikesPaged(samplePostId, 0, 100).TotalCount == 1;
 
             Assert.IsTrue(shouldBeEqual && shouldAlsoBeEqual);
 
@@ -117,41 +117,6 @@ namespace SFeed.Tests.BusinessProviderTests
             var shouldNotExist = likes.Contains(sampleLikeUser);
 
             Assert.IsFalse(shouldNotExist);
-        }
-
-
-        [TestMethod]
-        public void Should_Comment_Like_Count_Be_Equal_With_Cache()
-        {
-            var sampleUser = GetRandomUserName();
-            var sampleUserWall = GetRandomUserWallOwner(true);
-
-            var request = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-            var samplePostId = wallPostProvider.AddPost(request);
-
-            var commentCreateRequest = new CommentCreateRequest
-            {
-                Body = "TestComment",
-                CreatedBy = sampleUser,
-                WallPostId = samplePostId
-            };
-
-            var commentId = commentProvider.AddComment(commentCreateRequest);
-
-
-            foreach (var user in RandomUserNames)
-            {
-                entryLikeProvider.LikeComment(commentId, user);
-            }
-
-            entryLikeProvider.UnlikeComment(commentId, GetRandomUserName());
-
-            var likeCount = entryLikeProvider.GetCommentLikes(commentId).Count();
-            var cachedLikeCount = entryLikeProvider.GetCommentLikeCountCached(commentId);
-
-            var shouldBeEqual = likeCount == cachedLikeCount;
-
-            Assert.IsTrue(shouldBeEqual);
         }
     }
 }

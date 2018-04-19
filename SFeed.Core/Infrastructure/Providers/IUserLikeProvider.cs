@@ -38,14 +38,6 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <returns></returns>
         EntryLikePagedModel GetPostLikesPaged(string postId, int skip, int size);
         /// <summary>
-        /// Returns users that liked a given comment paged
-        /// </summary>
-        /// <param name="commentId">Id of comment</param>
-        /// <param name="skip">Number of records to skip</param>
-        /// <param name="size">Number of records to return</param>
-        /// <returns></returns>
-        EntryLikePagedModel GetCommentLikesPaged(long commentId, int skip, int size);
-        /// <summary>
         /// Add a record indicating that a user likes a comment
         /// </summary>
         /// <param name="commentId">Id of comment </param>
@@ -63,11 +55,5 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="postId">Id of post</param>
         /// <returns></returns>
         int GetPostLikeCountCached(string postId);
-        /// <summary>
-        /// Returns number of users that liked a given comment
-        /// </summary>
-        /// <param name="commentId">Id of post</param>
-        /// <returns></returns>
-        int GetCommentLikeCountCached(long commentId);
     }
 }

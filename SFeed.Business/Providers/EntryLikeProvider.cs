@@ -32,35 +32,11 @@ namespace SFeed.Business.Providers
         }
         public void LikeComment(long commentId, string userId)
         {
-            var success = entryLikeRepo.LikeComment(commentId, userId);
-            if (success)
-            {
-                try
-                {
-                    entryLikeCacheRepo.IncrementCommentLikeCount(commentId);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(string.Format(
-                        "[LikeComment] Error incrementing comment like count for comment: {0}, By user : {1}", commentId, userId), ex);
-                }
-            }
+             entryLikeRepo.LikeComment(commentId, userId);
         }
         public void UnlikeComment(long commentId, string userId)
         {
-            var success = entryLikeRepo.UnlikeComment(commentId, userId);
-            if (success)
-            {
-                try
-                {
-                    entryLikeCacheRepo.DecrementCommentLikeCount(commentId);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(string.Format(
-                        "[UnlikeComment] Error decrementing comment like count for comment: {0}, By user : {1}", commentId, userId), ex);
-                }
-            }
+            entryLikeRepo.UnlikeComment(commentId, userId);
         }
 
         public void LikePost(string postId, string userId)
@@ -112,12 +88,6 @@ namespace SFeed.Business.Providers
         {
             return entryLikeCacheRepo.GetPostLikeCount(postId);
         }
-
-        public int GetCommentLikeCountCached(long commentId)
-        {
-            return entryLikeCacheRepo.GetCommentLikeCount(commentId);
-        }
-
         public EntryLikePagedModel GetPostLikesPaged(string postId, int skip, int size)
         {
             return entryLikeRepo.GetPostLikesPaged(postId, skip, size);
