@@ -16,7 +16,7 @@ namespace SFeed.Business.Providers
 
         ICommentRepository commentRepo;
         ICommentCountCacheRepository commentCounterCacheRepo;
-        IEntryLikeCacheRepository entryLikeCacheRepo;
+        ILikeCountCacheRepository entryLikeCacheRepo;
 
         public CommentProvider() :
             this(new CommentRepository(),
@@ -27,7 +27,7 @@ namespace SFeed.Business.Providers
         }
         public CommentProvider(ICommentRepository commentRepo,
               ICommentCountCacheRepository commentCounterCacheRepo,
-              IEntryLikeCacheRepository entryLikeCacheRepo)
+              ILikeCountCacheRepository entryLikeCacheRepo)
         {
             this.commentRepo = commentRepo;
             this.commentCounterCacheRepo = commentCounterCacheRepo;

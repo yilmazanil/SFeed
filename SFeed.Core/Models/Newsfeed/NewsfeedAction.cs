@@ -10,6 +10,6 @@ namespace SFeed.Core.Models.Newsfeed
     {
         public string By { get; set; }
 
-        public NewsfeedType Action { get; set; }
+        public NewsfeedEventType Action { get; set; }
     }
 }

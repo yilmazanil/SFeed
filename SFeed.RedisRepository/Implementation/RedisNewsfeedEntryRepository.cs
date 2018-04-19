@@ -10,7 +10,7 @@ namespace SFeed.RedisRepository.Implementation
     {
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
 
-        public void AddEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        public void AddEvent(NewsfeedEventModel entry, IEnumerable<string> followers)
         {
             var activityEntry = MapToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
@@ -34,11 +34,11 @@ namespace SFeed.RedisRepository.Implementation
             }
         }
 
-        public void RemoveEvent(NewsfeedCacheModel entry, IEnumerable<string> followers)
+        public void RemoveEvent(NewsfeedEventModel entry, IEnumerable<string> followers)
         {
             var activityEntry = MapToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
-            var isPostRemoval = entry.FeedType == NewsfeedType.wallpost;
+            var isPostRemoval = entry.FeedType == NewsfeedEventType.wallpost;
 
             using (var client = GetClientInstance())
             {
@@ -122,7 +122,7 @@ namespace SFeed.RedisRepository.Implementation
             return retVal;
         }
 
-        private string MapToActivity(NewsfeedCacheModel newsFeedEntry)
+        private string MapToActivity(NewsfeedEventModel newsFeedEntry)
         {
             return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
         }

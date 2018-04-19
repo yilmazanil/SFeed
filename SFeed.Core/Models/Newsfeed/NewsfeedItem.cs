@@ -8,7 +8,7 @@ namespace SFeed.Core.Models.Newsfeed
 
         public string By { get; set; }
 
-        public NewsfeedType FeedType { get; set; }
+        public NewsfeedEventType FeedType { get; set; }
 
         public NewsfeedWallModel WallOwner { get; set; }
     }

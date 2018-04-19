@@ -1,6 +1,6 @@
 ﻿namespace SFeed.Core.Infrastructure.Caching
 {
-    public interface IEntryLikeCacheRepository
+    public interface ILikeCountCacheRepository
     {
         /// <summary>
         /// Increments number of users that likes a post

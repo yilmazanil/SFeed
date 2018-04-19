@@ -42,7 +42,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-                FeedType = NewsfeedType.wallpost,
+                FeedType = NewsfeedEventType.wallpost,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
 
@@ -53,7 +53,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-                FeedType = NewsfeedType.like,
+                FeedType = NewsfeedEventType.like,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);

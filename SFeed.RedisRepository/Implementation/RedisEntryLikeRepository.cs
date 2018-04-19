@@ -4,7 +4,7 @@ using System;
 
 namespace SFeed.RedisRepository.Implementation
 {
-    public class RedisEntryLikeRepository : RedisRepositoryBase, IEntryLikeCacheRepository
+    public class RedisEntryLikeRepository : RedisRepositoryBase, ILikeCountCacheRepository
     {
         public string postLikeCounterPrefix => RedisNameConstants.PostLikeCounterNamePrefix;
         public string commentLikeCounterPrefix => RedisNameConstants.CommentLikeCounterNamePrefix;

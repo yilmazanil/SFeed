@@ -10,13 +10,13 @@ namespace SFeed.Core.Infrastructure.Caching
         /// </summary>
         /// <param name="entry">Event details</param>
         /// <param name="followers">Followers</param>
-        void AddEvent(NewsfeedCacheModel entry, IEnumerable<string> followers);
+        void AddEvent(NewsfeedEventModel entry, IEnumerable<string> followers);
         /// <summary>
         /// Removes an event from newsfeed of followers
         /// </summary>
         /// <param name="entry">Event details</param>
         /// <param name="followers">Followers</param>
-        void RemoveEvent(NewsfeedCacheModel entry, IEnumerable<string> followers);
+        void RemoveEvent(NewsfeedEventModel entry, IEnumerable<string> followers);
         /// <summary>
         /// Removes all posts with provided ids from a user newsfeed
         /// </summary>

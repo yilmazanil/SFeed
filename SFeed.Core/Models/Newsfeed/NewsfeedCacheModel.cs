@@ -2,12 +2,12 @@
 
 namespace SFeed.Core.Models.Newsfeed
 {
-    public class NewsfeedCacheModel
+    public class NewsfeedEventModel
     {
         public string ReferencePostId { get; set; }
 
         public string By { get; set; }
 
-        public NewsfeedType FeedType { get; set; }
+        public NewsfeedEventType FeedType { get; set; }
     }
 }

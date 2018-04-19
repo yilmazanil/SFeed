@@ -41,7 +41,7 @@ namespace SFeed.Business.Providers
 
             if (followers.Any())
             {
-                var cacheModel = new NewsfeedCacheModel
+                var cacheModel = new NewsfeedEventModel
                 {
                     By = newsFeedEntry.By,
                     FeedType = newsFeedEntry.FeedType,
@@ -58,7 +58,7 @@ namespace SFeed.Business.Providers
 
         public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
-            if (newsFeedEntry.FeedType == NewsfeedType.wallpost)
+            if (newsFeedEntry.FeedType == NewsfeedEventType.wallpost)
             {
                 RemovePost(newsFeedEntry);
             }
@@ -68,7 +68,7 @@ namespace SFeed.Business.Providers
 
                 if (followers.Any())
                 {
-                    var cacheModel = new NewsfeedCacheModel
+                    var cacheModel = new NewsfeedEventModel
                     {
                         By = newsFeedEntry.By,
                         FeedType = newsFeedEntry.FeedType,
@@ -86,7 +86,7 @@ namespace SFeed.Business.Providers
 
             if (followers.Any())
             {
-                var newsFeedCacheModel = new NewsfeedCacheModel
+                var newsFeedCacheModel = new NewsfeedEventModel
                 {
                     By = newsFeedEntry.By,
                     FeedType = newsFeedEntry.FeedType,

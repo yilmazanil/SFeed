@@ -15,7 +15,7 @@ namespace SFeed.Business.Providers
         private static readonly ILog logger = LogManager.GetLogger(typeof(EntryLikeProvider));
 
         IEntryLikeRepository entryLikeRepo;
-        IEntryLikeCacheRepository entryLikeCacheRepo;
+        ILikeCountCacheRepository entryLikeCacheRepo;
 
         public EntryLikeProvider() : this(
             new EntryLikeRepository(),
@@ -25,7 +25,7 @@ namespace SFeed.Business.Providers
         }
         public EntryLikeProvider(
             IEntryLikeRepository entryLikeRepo,
-            IEntryLikeCacheRepository entryLikeCacheRepo)
+            ILikeCountCacheRepository entryLikeCacheRepo)
         {
             this.entryLikeRepo = entryLikeRepo;
             this.entryLikeCacheRepo = entryLikeCacheRepo;

@@ -13,7 +13,7 @@ namespace SFeed.RedisRepository.Implementation
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
 
         ICommentCountCacheRepository commentCountRepo;
-        IEntryLikeCacheRepository entryLikeRepo;
+        ILikeCountCacheRepository entryLikeRepo;
         IWallPostCacheRepository wallPostRepo;
 
         public RedisNewsfeedResponseRepository() : this(
@@ -24,7 +24,7 @@ namespace SFeed.RedisRepository.Implementation
 
         }
         public RedisNewsfeedResponseRepository(ICommentCountCacheRepository commentCountRepo,
-             IEntryLikeCacheRepository entryLikeRepo,
+             ILikeCountCacheRepository entryLikeRepo,
              IWallPostCacheRepository wallPostRepo)
         {
             this.commentCountRepo = commentCountRepo;
@@ -59,7 +59,7 @@ namespace SFeed.RedisRepository.Implementation
                                 foreach (var action in userActionsOnPost)
                                 {
                                     var values = action.Split(':');
-                                    mappedActions.Add(new NewsfeedAction { Action = (NewsfeedType)Convert.ToInt16(values[1]), By = values[0] });
+                                    mappedActions.Add(new NewsfeedAction { Action = (NewsfeedEventType)Convert.ToInt16(values[1]), By = values[0] });
                                 }
                                 var totalCommentCount = commentCountRepo.GetCommentCount(currentPost.Id);
                                 var totalLikeCount = entryLikeRepo.GetPostLikeCount(currentPost.Id);
