@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.Comments;
-using SFeed.Core.Models.Caching;
 using SFeed.RedisRepository.Implementation;
 using SFeed.SqlRepository.Implementation;
 using SFeed.Core.Infrastructure.Repository;
@@ -103,30 +102,6 @@ namespace SFeed.Business.Providers
         public IEnumerable<CommentModel> GetLatestComments(string postId)
         {
             return commentRepo.GetPagedComments(postId, 0, 3);
-        }
-
-        public IEnumerable<CommentModel> GetLatestCommentsCached(string postId)
-        {
-            var latestComments = commentCacheRepo.GetLatestComments(postId);
-            if (latestComments != null)
-            {
-                var result = new List<CommentModel>();
-                foreach (var comment in latestComments)
-                {
-                    var item = new CommentModel
-                    {
-                        Body = comment.Body,
-                        CreatedBy = comment.CreatedBy,
-                        CreatedDate = comment.CreatedDate,
-                        Id = comment.CommentId,
-                        ModifiedDate = comment.ModifiedDate
-                    };
-                    item.LikeCount = entryLikeCacheRepo.GetCommentLikeCount(item.Id);
-                    result.Add(item);
-                }
-                return result;
-            }
-            return null;
         }
 
         public CommentModel GetComment(string postId, long commentId)

@@ -39,14 +39,6 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <returns></returns>
         IEnumerable<CommentModel> GetLatestComments(string postId);
         /// <summary>
-        /// Returns comments for a spesific post from cache
-        /// </summary>
-        /// <param name="postId">Id of post</param>
-        /// <param name="skip">Number of comments to skip</param>
-        /// <param name="size">Number of comments to return</param>
-        /// <returns></returns>
-        IEnumerable<CommentModel> GetLatestCommentsCached(string postId);
-        /// <summary>
         /// Returns a comment with extra properties
         /// </summary>
         /// <param name="postId">Id of associated post</param>

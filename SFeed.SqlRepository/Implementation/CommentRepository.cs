@@ -52,7 +52,7 @@ namespace SFeed.SqlRepository.Implementation
                 if (result != null)
                 {
                     var likeCount = context.UserCommentLike.Count(t => t.CommentId == commentId);
-                    return MapCommentWithDetails(result, likeCount);
+                    return MapComment(result, likeCount);
                 }
             }
             return null;
@@ -79,20 +79,7 @@ namespace SFeed.SqlRepository.Implementation
         }
 
         #region Mapping
-        private CommentModel MapComment(UserComment userComment)
-        {
-            var result = new CommentModel()
-            {
-                Body = userComment.Body,
-                CreatedBy = userComment.CreatedBy,
-                CreatedDate = userComment.CreatedDate,
-                ModifiedDate = userComment.ModifiedDate,
-                Id = userComment.Id,
-            };
-            return result;
-        }
-
-        private CommentModel MapCommentWithDetails(UserComment userComment, int likeCount)
+        private CommentModel MapComment(UserComment userComment, int likeCount)
         {
             var result = new CommentModel()
             {

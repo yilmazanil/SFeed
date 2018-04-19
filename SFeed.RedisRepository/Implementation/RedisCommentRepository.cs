@@ -1,5 +1,4 @@
 ﻿using System;
-using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Comments;
 using SFeed.RedisRepository.Base;
 using System.Linq;
@@ -19,8 +18,8 @@ namespace SFeed.RedisRepository.Implementation
         {
             var commentId = model.CommentId.ToString();
             var entryKey = GetEntryKey(RepoPrefix, commentId);
-            var latestCommentsListKey = GetEntryKey(ListRepoPrefix, model.PostId);
             var postCommentCount = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, model.PostId);
+            //var latestCommentsListKey = GetEntryKey(ListRepoPrefix, model.PostId);
 
             using (var redisClient = GetClientInstance())
             {
@@ -30,15 +29,6 @@ namespace SFeed.RedisRepository.Implementation
 
                 //Increment post comment count
                 redisClient.Increment(postCommentCount, 1);
-
-                //Update latest comments
-                var list = redisClient.Lists[latestCommentsListKey];
-                list.Prepend(commentId);
-
-                if (list.Count > ListSize)
-                {
-                    list.Trim(1, ListSize);
-                }
             }
         }
         public bool UpdateComment(CommentUpdateRequest model, DateTime modificationDate)
@@ -68,11 +58,9 @@ namespace SFeed.RedisRepository.Implementation
 
             using (var redisClient = GetClientInstance())
             {
-                //remove comment
+
                 redisClient.Remove(entryKey);
-                //remove comment from latest comments list
-                redisClient.Lists[listKey].Remove(commentId.ToString());
-                //decrement total comment count
+
                 var commentCount = redisClient.GetValue(postCommentCount);
                 if (!string.IsNullOrWhiteSpace(commentCount) && Convert.ToInt32(commentCount) > 0)
                 {
@@ -90,38 +78,7 @@ namespace SFeed.RedisRepository.Implementation
                 return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
             }
         }
-        public IEnumerable<CommentCacheModel> GetLatestComments(string postId)
-        {
-            var result = new List<CommentCacheModel>();
-            var listKey = GetEntryKey(ListRepoPrefix, postId);
 
-            using (var client = GetClientInstance())
-            {
-                var comments = client.Lists[listKey].GetAll();
-                if (comments != null && comments.Any())
-                {
-                    var clientApi = GetTypedClientApi<CommentCacheModel>(client);
-
-                    foreach (var comment in comments)
-                    {
-                        var repoPrefix = GetEntryKey(RepoPrefix, comment);
-                        result.Add(clientApi.GetValue(repoPrefix));
-                    }
-                }
-            }
-            return result;
-        }
-        //public void RemoveAllComments(int maxRemovalSize)
-        //{
-        //    var searchPattern= GetEntrySearchPattern(RepoPrefix);
-        //    var searchPatternLists = GetEntrySearchPattern(ListRepoPrefix);
-        //    using (var redisClient = GetClientInstance())
-        //    {
-        //        var commentKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-        //        var postListKeys = redisClient.ScanAllKeys(searchPattern, maxRemovalSize);
-        //        redisClient.RemoveAll(commentKeys.Union(postListKeys));
-        //    }
-        //}
         private void IncrementCommentCount(string postId)
         {
             var entryKey = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
@@ -132,11 +89,6 @@ namespace SFeed.RedisRepository.Implementation
         {
             var entryKey = GetEntryKey(RedisNameConstants.CommentCounterNamePrefix, postId);
             Increment(entryKey);
-        }
-
-        public IEnumerable<CommentCacheModel> GetLatestCommentsDetailed(string postId)
-        {
-            throw new NotImplementedException();
         }
     }
 }
