@@ -19,13 +19,6 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <returns></returns>
         DateTime? UpdateComment(CommentUpdateRequest model);
         /// <summary>
-        /// Returns comment with extra properties
-        /// </summary>
-        /// <param name="postId">Id of associated post</param>
-        /// <param name="commentId">Id of comment</param>
-        /// <returns></returns>
-        CommentDetailedModel GetCommentWithDetails(string postId, long commentId);
-        /// <summary>
         /// Returns comments
         /// </summary>
         /// <param name="postId">Id of associated post</param>
@@ -45,6 +38,6 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <param name="skip">Number of comments to skip</param>
         /// <param name="size">Number of comments to return</param>
         /// <returns></returns>
-        IEnumerable<CommentDetailedModel> GetPagedComments(string postId, int skip, int size);
+        IEnumerable<CommentModel> GetPagedComments(string postId, int skip, int size);
     }
 }

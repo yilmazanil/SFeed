@@ -95,25 +95,25 @@ namespace SFeed.Business.Providers
             }
         }
 
-        public IEnumerable<CommentDetailedModel> GetComments(string postId, int skip, int size)
+        public IEnumerable<CommentModel> GetComments(string postId, int skip, int size)
         {
              return commentRepo.GetPagedComments(postId, skip, size);
         }
 
-        public IEnumerable<CommentDetailedModel> GetLatestComments(string postId)
+        public IEnumerable<CommentModel> GetLatestComments(string postId)
         {
             return commentRepo.GetPagedComments(postId, 0, 3);
         }
 
-        public IEnumerable<CommentDetailedModel> GetLatestCommentsCached(string postId)
+        public IEnumerable<CommentModel> GetLatestCommentsCached(string postId)
         {
             var latestComments = commentCacheRepo.GetLatestComments(postId);
             if (latestComments != null)
             {
-                var result = new List<CommentDetailedModel>();
+                var result = new List<CommentModel>();
                 foreach (var comment in latestComments)
                 {
-                    var item = new CommentDetailedModel
+                    var item = new CommentModel
                     {
                         Body = comment.Body,
                         CreatedBy = comment.CreatedBy,
@@ -133,12 +133,5 @@ namespace SFeed.Business.Providers
         {
             return commentRepo.GetComment(postId, commentId);
         }
-
-        public CommentDetailedModel GetCommentDetailed(string postId, long commentId)
-        {
-            return commentRepo.GetCommentWithDetails(postId, commentId);
-        }
-
-        
     }
 }

@@ -9,6 +9,6 @@ namespace SFeed.Core.Models.WallPost
 
         public int CommentCount { get; set; }
 
-        public IEnumerable<CommentDetailedModel> LatestComments { get; set; }
+        public IEnumerable<CommentModel> LatestComments { get; set; }
     }
 }

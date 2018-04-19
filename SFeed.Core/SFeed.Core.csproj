@@ -56,7 +56,6 @@
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\Comments\CommentCreateRequest.cs" />
     <Compile Include="Models\Comments\CommentCreateResponse.cs" />
-    <Compile Include="Models\Comments\CommentDetailedModel.cs" />
     <Compile Include="Models\Comments\CommentUpdateRequest.cs" />
     <Compile Include="Models\EntryLike\EntryLikePagedModel.cs" />
     <Compile Include="Models\Follower\FollowerPagedModel.cs" />

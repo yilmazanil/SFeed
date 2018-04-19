@@ -51,19 +51,6 @@ namespace SFeed.SqlRepository.Implementation
                 var result = context.UserComment.FirstOrDefault(t => t.WallPostId == postId && t.Id == commentId && t.IsDeleted == false);
                 if (result != null)
                 {
-                    return MapComment(result);
-                }
-            }
-            return null;
-        }
-
-        public CommentDetailedModel GetCommentWithDetails(string postId, long commentId)
-        {
-            using (var context = new SocialFeedEntities())
-            {
-                var result = context.UserComment.FirstOrDefault(t => t.WallPostId == postId && t.Id == commentId && t.IsDeleted == false);
-                if (result != null)
-                {
                     var likeCount = context.UserCommentLike.Count(t => t.CommentId == commentId);
                     return MapCommentWithDetails(result, likeCount);
                 }
@@ -81,13 +68,13 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public IEnumerable<CommentDetailedModel> GetPagedComments(string postId, int skip, int size)
+        public IEnumerable<CommentModel> GetPagedComments(string postId, int skip, int size)
         {
             var result = new List<CommentModel>();
             using (var context = new SocialFeedEntities())
             {
                 var comments = context.GetComments(postId, skip, size).ToList();
-                return MapProcedureResult(comments);
+                return MapCommentProcedureResult(comments);
             }
         }
 
@@ -105,9 +92,9 @@ namespace SFeed.SqlRepository.Implementation
             return result;
         }
 
-        private CommentDetailedModel MapCommentWithDetails(UserComment userComment, int likeCount)
+        private CommentModel MapCommentWithDetails(UserComment userComment, int likeCount)
         {
-            var result = new CommentDetailedModel()
+            var result = new CommentModel()
             {
                 Body = userComment.Body,
                 CreatedBy = userComment.CreatedBy,
@@ -119,12 +106,12 @@ namespace SFeed.SqlRepository.Implementation
             return result;
         }
 
-        private IEnumerable<CommentDetailedModel> MapProcedureResult(IEnumerable<GetComments_Result> procedureResult)
+        private IEnumerable<CommentModel> MapCommentProcedureResult(IEnumerable<GetComments_Result> procedureResult)
         {
-            var returnList = new List<CommentDetailedModel>();
+            var returnList = new List<CommentModel>();
             foreach (var comment in procedureResult)
             {
-                var model = new CommentDetailedModel
+                var model = new CommentModel
                 {
                     Body = comment.Body,
                     CreatedBy = comment.CreatedBy,
