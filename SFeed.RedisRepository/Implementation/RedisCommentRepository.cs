@@ -134,5 +134,9 @@ namespace SFeed.RedisRepository.Implementation
             Increment(entryKey);
         }
 
+        public IEnumerable<CommentCacheModel> GetLatestCommentsDetailed(string postId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

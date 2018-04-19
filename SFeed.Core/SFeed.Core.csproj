@@ -60,6 +60,7 @@
     <Compile Include="Models\Comments\CommentUpdateRequest.cs" />
     <Compile Include="Models\EntryLike\EntryLikePagedModel.cs" />
     <Compile Include="Models\Follower\FollowerPagedModel.cs" />
+    <Compile Include="Models\Newsfeed\NewsfeedAction.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\Wall\NewsfeedWallModel.cs" />
     <Compile Include="Models\Wall\WallCacheModel.cs" />

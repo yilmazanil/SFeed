@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFeed.Business.Providers;
 using SFeed.Core.Infrastructure.Providers;
+using SFeed.Core.Models.Caching;
 using SFeed.Core.Models.Newsfeed;
+using System.Collections.Generic;
 
 namespace SFeed.Tests.BusinessProviderTests
 {
@@ -11,6 +13,8 @@ namespace SFeed.Tests.BusinessProviderTests
         IWallPostProvider userWallPostProvider;
         INewsfeedProvider userNewsfeedProvider;
         IFollowerProvider followerProvider;
+        INewsfeedResponseProvider newsFeedResponseProvider;
+
 
         [TestInitialize]
         public void Initialize()
@@ -18,6 +22,7 @@ namespace SFeed.Tests.BusinessProviderTests
             this.userWallPostProvider = new WallPostProvider();
             this.userNewsfeedProvider = new UserNewsfeedProvider();
             this.followerProvider = new FollowerProvider();
+            this.newsFeedResponseProvider = new NewsfeedResponseProvider();
         }
 
         [TestMethod]
@@ -37,25 +42,36 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-               // FeedType = NewsfeedType.wallpost,
+                FeedType = NewsfeedType.wallpost,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
 
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
 
-            //userNewsfeedProvider.RemovePost(newsFeedEntry);
+            newsFeedEntry = new NewsfeedItem
+            {
+                By = request.PostedBy,
+                ReferencePostId = samplePostId,
+                FeedType = NewsfeedType.like,
+                WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
+            };
+            userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
+
+            var feeds = new List<IEnumerable<NewsfeedWallPostModel>>();
 
             foreach (var user in RandomUserNames)
             {
-                userNewsfeedProvider.GetUserFeed(user, 0, 30);
+                feeds.Add(newsFeedResponseProvider.GetUserNewsfeed(user, 0, 30));
             }
-            //var wallOwnerFeeds = userNewsfeedProvider.GetUserNewsfeed(testWallOwnerId);
 
-                //var shouldExist = wallOwnerFeeds.Any(p=>p.ReferencedPost.Id == postId
-                //&& p.UserActions.Any(t=>t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
 
-                //Assert.IsTrue(shouldExist);
+
+            userNewsfeedProvider.RemovePost(newsFeedEntry);
+            //var shouldExist = wallOwnerFeeds.Any(p => p.ReferencedPost.Id == postId
+            //&& p.UserActions.Any(t => t.FeedType == newsFeedEntry.FeedType && t.By == newsFeedEntry.By));
+
+            //Assert.IsTrue(shouldExist);
         }
 
         //[TestMethod]
@@ -76,7 +92,7 @@ namespace SFeed.Tests.BusinessProviderTests
         //    userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
         //    userNewsfeedProvider.RemoveNewsfeedItem(
         //        newsFeedEntry.By,
-        //        p=>p.FeedType == newsFeedEntry.FeedType 
+        //        p => p.FeedType == newsFeedEntry.FeedType
         //        && p.ReferencePostId == newsFeedEntry.ReferencePostId
         //        && p.By == newsFeedEntry.By);
 
@@ -115,7 +131,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
         //    var wallPost = wallPostProvider.GetPost(model.Id);
 
-        //    //Update and refetch again
+        //    Update and refetch again
         //    wallPost.Body = "UpdatedBody";
         //    wallPostProvider.UpdatePost(wallPost);
 

@@ -1,4 +1,5 @@
-﻿using SFeed.Core.Models.Newsfeed;
+﻿using SFeed.Core.Models.Caching;
+using SFeed.Core.Models.Newsfeed;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,6 @@ namespace SFeed.Core.Infrastructure.Providers
 {
     public interface INewsfeedResponseProvider
     {
-        IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId);
+        IEnumerable<NewsfeedWallPostModel> GetUserNewsfeed(string userId, int skip, int take);
     }
 }

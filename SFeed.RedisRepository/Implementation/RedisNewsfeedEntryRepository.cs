@@ -17,14 +17,15 @@ namespace SFeed.RedisRepository.Implementation
 
             using (var client = GetClientInstance())
             {
+               
                 using (var trans = client.CreateTransaction())
                 {
                     foreach (var key in keys)
-                    {
+                    { 
                         //Add post id to user feed, overwrites if exists
-                        trans.QueueCommand(r => r.PrependItemToList(key.PostFeedKey, entry.ReferencePostId));
+                        trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostFeedKey, entry.ReferencePostId, 1));
                         //keep only last 100 newsfeed items
-                        trans.QueueCommand(r => r.TrimList(key.PostFeedKey, 0, 100));
+                        //trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostFeedKey, 0, 100));
                         //Increment rank of feed item by 1 uses zincr adds if not exists
                         trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostActionsKey, activityEntry, 1));
                     }
@@ -48,7 +49,7 @@ namespace SFeed.RedisRepository.Implementation
                         foreach (var key in keys)
                         {
                             //Remove post id from user feed
-                            trans.QueueCommand(r => r.RemoveItemFromList(key.PostFeedKey, entry.ReferencePostId));
+                            trans.QueueCommand(r => r.RemoveItemFromSortedSet(key.PostFeedKey, entry.ReferencePostId));
                             //Increment rank of feed item by 1 uses zincr adds if not exists
                             trans.QueueCommand(r => r.Remove(key.PostActionsKey));
                         }

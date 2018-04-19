@@ -47,14 +47,14 @@ namespace SFeed.Business.Providers
                     FeedType = newsFeedEntry.FeedType,
                     ReferencePostId = newsFeedEntry.ReferencePostId
                 };
-                feedCacheRepo.AddPost(cacheModel, followers);
+                feedCacheRepo.AddEvent(cacheModel, followers);
             }
         }
 
-        public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
-        {
-            return feedCacheRepo.GetUserFeed(userId, skip, take);
-        }
+        //public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
+        //{
+        //    return feedCacheRepo.GetUserFeed(userId, skip, take);
+        //}
 
         public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
@@ -86,7 +86,13 @@ namespace SFeed.Business.Providers
 
             if (followers.Any())
             {
-                feedCacheRepo.RemovePost(newsFeedEntry.ReferencePostId, followers);
+                var newsFeedCacheModel = new NewsfeedCacheModel
+                {
+                    By = newsFeedEntry.By,
+                    FeedType = newsFeedEntry.FeedType,
+                    ReferencePostId = newsFeedEntry.ReferencePostId
+                };
+                feedCacheRepo.RemoveEvent(newsFeedCacheModel, followers);
             }
         }
 
@@ -138,142 +144,5 @@ namespace SFeed.Business.Providers
             }
             return followers.Distinct();
         }
-
-
-
-
-
-
-        //private int latestCommentCount = 3;
-
-        //public void UpdateComment(string postId, CommentCacheModel comment)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    var latestComments = existingRecord.LatestComments;
-        //    if (latestComments != null)
-        //    {
-        //        var commentIndex = latestComments.FindIndex(c => c.Id == comment.Id);
-        //        if (commentIndex >= 0)
-        //        {
-        //            latestComments[commentIndex] = comment;
-        //        }
-        //    }
-        //    latestComments.Add(comment);
-        //    existingRecord.LatestComments = latestComments;
-        //    wallPostCacheRepo.UpdateItem(postId, existingRecord);
-        //}
-
-        //public void DeleteComment(string postId, long commentId, string commentBy)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    var latestComments = existingRecord.LatestComments;
-        //    if (latestComments != null)
-        //    {
-        //        var commentIndex = latestComments.FindIndex(c => c.Id == commentId);
-        //        if (commentIndex >= 0)
-        //        {
-        //            //if (latestComments.Count < latestCommentCount)
-        //            //{
-        //            latestComments.RemoveAt(commentIndex);
-
-        //            //}
-        //            //else
-        //            //{
-        //            //    //missing comments can be reset here
-        //            //}
-        //        }
-        //    }
-        //    DeleteNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.comment,
-        //        ReferencePostId = postId,
-        //        By = commentBy
-        //    });
-        //}
-
-        //public void LikePost(string postId, string likedBy)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    existingRecord.Likes = existingRecord.Likes ?? new List<string>();
-        //    existingRecord.Likes.Add(likedBy);
-        //    wallPostCacheRepo.UpdateItem(postId, existingRecord);
-        //    AddNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.like,
-        //        By = likedBy,
-        //        EventDate = DateTime.Now,
-        //        ReferencePostId = postId
-        //    });
-        //}
-
-        //public void UnlikePost(string postId, string unlikedBy)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    existingRecord.Likes.Remove(unlikedBy);
-        //    wallPostCacheRepo.UpdateItem(postId, existingRecord);
-        //    DeleteNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.like,
-        //        By = unlikedBy,
-        //        ReferencePostId = postId
-        //    });
-        //}
-
-        //public void AddPost(WallPostCacheModel wallPost)
-        //{
-        //    wallPostCacheRepo.AddItem(wallPost);
-        //    AddNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.wallpost,
-        //        By = wallPost.PostedBy,
-        //        EventDate = DateTime.Now,
-        //        ReferencePostId = wallPost.Id
-        //    });
-        //}
-
-        //public void UpdatePost(string postId, string body, WallPostType postType)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    existingRecord.Body = body;
-        //    existingRecord.PostType = (short)postType;
-        //    wallPostCacheRepo.UpdateItem(postId, existingRecord);
-        //}
-        //public void DeletePost(string postId)
-        //{
-        //    wallPostCacheRepo.RemoveItem(postId);
-        //    DeleteNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.wallpost,
-        //        ReferencePostId = postId
-        //    });
-        //}
-
-        //public void AddComment(string postId, CommentCacheModel comment)
-        //{
-        //    var existingRecord = wallPostCacheRepo.GetItem(postId);
-        //    var latestComments = existingRecord.LatestComments;
-        //    if (latestComments == null)
-        //    {
-        //        latestComments = new List<CommentCacheModel>();
-        //    }
-        //    else if (latestComments.Count > latestCommentCount)
-        //    {
-        //        latestComments.RemoveAt(0);
-        //    }
-        //    latestComments.Add(comment);
-        //    existingRecord.LatestComments = latestComments;
-        //    existingRecord.CommentCount++;
-        //    wallPostCacheRepo.UpdateItem(postId, existingRecord);
-
-        //    AddNewsfeedItem(new NewsfeedEntry
-        //    {
-        //        EntryTypeId = (short)NewsfeedEntryType.comment,
-        //        By = comment.Body,
-        //        EventDate = DateTime.Now,
-        //        ReferencePostId = postId
-        //    });
-        //}
-
-
     }
 }
