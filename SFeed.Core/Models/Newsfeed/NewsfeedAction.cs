@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFeed.Core.Models.Newsfeed
+﻿namespace SFeed.Core.Models.Newsfeed
 {
     public class NewsfeedAction
     {
         public string By { get; set; }
 
-        public NewsfeedEventType Action { get; set; }
+        public NewsfeedActionType Action { get; set; }
     }
 }

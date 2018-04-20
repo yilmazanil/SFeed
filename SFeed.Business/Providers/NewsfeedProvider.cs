@@ -3,37 +3,35 @@ using System.Collections.Generic;
 using SFeed.Core.Models.Newsfeed;
 using SFeed.RedisRepository.Implementation;
 using System.Linq;
-using SFeed.Core.Models.Caching;
 using SFeed.Core.Infrastructure.Caching;
 using SFeed.Core.Models.Wall;
+using SFeed.Core.Models.Caching;
+using System;
 
 namespace SFeed.Business.Providers
 {
-    //TODO: Include wallpost owner followers for wallpost
-    public class UserNewsfeedProvider : INewsfeedProvider
+    public class NewsfeedProvider : INewsfeedProvider
     {
         INewsfeedCacheRepository feedCacheRepo;
         IFollowerProvider followerProvider;
+        INewsfeedResponseCacheRepository newsFeedResponseRepo;
 
-        public UserNewsfeedProvider() : this(
+        public NewsfeedProvider() : this(
             new RedisNewsfeedEntryRepository(),
-            new FollowerProvider())
+            new FollowerProvider(),
+            new RedisNewsfeedResponseRepository())
         {
 
         }
-        public UserNewsfeedProvider(
+        public NewsfeedProvider(
             INewsfeedCacheRepository feedCacheRepo,
-            IFollowerProvider followerProvider)
+            IFollowerProvider followerProvider,
+            INewsfeedResponseCacheRepository newsFeedResponseRepo)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.followerProvider = followerProvider;
+            this.newsFeedResponseRepo = newsFeedResponseRepo;
         }
-
-        //public IEnumerable<NewsfeedResponseItem> GetUserNewsfeed(string userId)
-        //{
-        //    throw new NotImplementedException();
-        //    return newsFeedResponseProvider.GetUserNewsfeed(userId);
-        //}
 
         public void AddNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
@@ -44,21 +42,16 @@ namespace SFeed.Business.Providers
                 var cacheModel = new NewsfeedEventModel
                 {
                     By = newsFeedEntry.By,
-                    FeedType = newsFeedEntry.FeedType,
+                    ActionType = newsFeedEntry.FeedType,
                     ReferencePostId = newsFeedEntry.ReferencePostId
                 };
                 feedCacheRepo.AddEvent(cacheModel, followers);
             }
         }
 
-        //public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
-        //{
-        //    return feedCacheRepo.GetUserFeed(userId, skip, take);
-        //}
-
         public void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry)
         {
-            if (newsFeedEntry.FeedType == NewsfeedEventType.wallpost)
+            if (newsFeedEntry.FeedType == NewsfeedActionType.wallpost)
             {
                 RemovePost(newsFeedEntry);
             }
@@ -71,7 +64,7 @@ namespace SFeed.Business.Providers
                     var cacheModel = new NewsfeedEventModel
                     {
                         By = newsFeedEntry.By,
-                        FeedType = newsFeedEntry.FeedType,
+                        ActionType = newsFeedEntry.FeedType,
                         ReferencePostId = newsFeedEntry.ReferencePostId
                     };
                     feedCacheRepo.RemoveEvent(cacheModel, followers);
@@ -89,23 +82,12 @@ namespace SFeed.Business.Providers
                 var newsFeedCacheModel = new NewsfeedEventModel
                 {
                     By = newsFeedEntry.By,
-                    FeedType = newsFeedEntry.FeedType,
+                    ActionType = newsFeedEntry.FeedType,
                     ReferencePostId = newsFeedEntry.ReferencePostId
                 };
                 feedCacheRepo.RemoveEvent(newsFeedCacheModel, followers);
             }
         }
-
-        //public void RemoveFeedsFromUser(string fromUser, string byUser)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void RemoveFeedsFromGroup(string fromUser, string byGroup)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
 
         private IEnumerable<string> GetFollowers(string entryBy, NewsfeedWallModel targetWall)
         {
@@ -143,6 +125,11 @@ namespace SFeed.Business.Providers
                 }
             }
             return followers.Distinct();
+        }
+
+        public IEnumerable<NewsfeedResponseModel> GetUserNewsfeed(string userId, int skip, int take)
+        {
+            return newsFeedResponseRepo.GetUserFeed(userId, skip, take);
         }
     }
 }

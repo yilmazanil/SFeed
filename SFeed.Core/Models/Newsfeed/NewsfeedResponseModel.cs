@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Models.Caching
 {
-    public class NewsfeedWallPostModel : WallPostModel
+    public class NewsfeedResponseModel : WallPostModel
     {
         public List<NewsfeedAction> FeedDescription { get; set; }
 

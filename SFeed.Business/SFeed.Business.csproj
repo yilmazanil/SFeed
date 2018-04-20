@@ -67,11 +67,10 @@
   <ItemGroup>
     <Compile Include="MapperConfig\RegisterEntityToViewModelMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\NewsfeedResponseProvider.cs" />
     <Compile Include="Providers\CommentProvider.cs" />
     <Compile Include="Providers\FollowerProvider.cs" />
     <Compile Include="Providers\EntryLikeProvider.cs" />
-    <Compile Include="Providers\UserNewsfeedProvider.cs" />
+    <Compile Include="Providers\NewsfeedProvider.cs" />
     <Compile Include="Providers\UserWallPostProvider.cs" />
   </ItemGroup>
   <ItemGroup>

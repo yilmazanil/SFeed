@@ -13,16 +13,14 @@ namespace SFeed.Tests.BusinessProviderTests
         IWallPostProvider userWallPostProvider;
         INewsfeedProvider userNewsfeedProvider;
         IFollowerProvider followerProvider;
-        INewsfeedResponseProvider newsFeedResponseProvider;
 
 
         [TestInitialize]
         public void Initialize()
         {
             this.userWallPostProvider = new WallPostProvider();
-            this.userNewsfeedProvider = new UserNewsfeedProvider();
+            this.userNewsfeedProvider = new NewsfeedProvider();
             this.followerProvider = new FollowerProvider();
-            this.newsFeedResponseProvider = new NewsfeedResponseProvider();
         }
 
         [TestMethod]
@@ -42,7 +40,7 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-                FeedType = NewsfeedEventType.wallpost,
+                FeedType = NewsfeedActionType.wallpost,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
 
@@ -53,16 +51,16 @@ namespace SFeed.Tests.BusinessProviderTests
             {
                 By = request.PostedBy,
                 ReferencePostId = samplePostId,
-                FeedType = NewsfeedEventType.like,
+                FeedType = NewsfeedActionType.like,
                 WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = sampleUserWall.OwnerId, WallOwnerType = sampleUserWall.WallOwnerType }
             };
             userNewsfeedProvider.AddNewsfeedItem(newsFeedEntry);
 
-            var feeds = new List<IEnumerable<NewsfeedWallPostModel>>();
+            var feeds = new List<IEnumerable<NewsfeedResponseModel>>();
 
             foreach (var user in RandomUserNames)
             {
-                feeds.Add(newsFeedResponseProvider.GetUserNewsfeed(user, 0, 30));
+                feeds.Add(userNewsfeedProvider.GetUserNewsfeed(user, 0, 30));
             }
             userNewsfeedProvider.RemovePost(newsFeedEntry);
         }

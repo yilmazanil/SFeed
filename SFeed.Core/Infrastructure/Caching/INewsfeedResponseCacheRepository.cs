@@ -5,6 +5,6 @@ namespace SFeed.Core.Infrastructure.Caching
 {
     public interface INewsfeedResponseCacheRepository
     {
-        IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take);
+        IEnumerable<NewsfeedResponseModel> GetUserFeed(string userId, int skip, int take);
     }
 }

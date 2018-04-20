@@ -12,7 +12,6 @@ namespace SFeed.Business.MapperConfig
         {
             cfg.CreateMap<WallPost, WallPostModel>();
             cfg.CreateMap<WallPostCreateRequest, WallPostModel>();
-            cfg.CreateMap<NewsfeedItem, NewsfeedResponseItem>();
             cfg.CreateMap<UserComment, CommentModel>();
         }
     }

@@ -32,10 +32,10 @@ namespace SFeed.RedisRepository.Implementation
             this.wallPostRepo = wallPostRepo;
         }
 
-        public IEnumerable<NewsfeedWallPostModel> GetUserFeed(string userId, int skip, int take)
+        public IEnumerable<NewsfeedResponseModel> GetUserFeed(string userId, int skip, int take)
         {
             var userFeedKey = GetEntryKey(FeedPrefix, userId);
-            List<NewsfeedWallPostModel> responseItems = new List<NewsfeedWallPostModel>();
+            List<NewsfeedResponseModel> responseItems = new List<NewsfeedResponseModel>();
             var startIndex = skip;
             var counter = 0;
 
@@ -59,12 +59,12 @@ namespace SFeed.RedisRepository.Implementation
                                 foreach (var action in userActionsOnPost)
                                 {
                                     var values = action.Split(':');
-                                    mappedActions.Add(new NewsfeedAction { Action = (NewsfeedEventType)Convert.ToInt16(values[1]), By = values[0] });
+                                    mappedActions.Add(new NewsfeedAction { Action = (NewsfeedActionType)Convert.ToInt16(values[1]), By = values[0] });
                                 }
                                 var totalCommentCount = commentCountRepo.GetCommentCount(currentPost.Id);
                                 var totalLikeCount = entryLikeRepo.GetPostLikeCount(currentPost.Id);
 
-                                var model = new NewsfeedWallPostModel
+                                var model = new NewsfeedResponseModel
                                 {
                                     Body = currentPost.Body,
                                     CreatedDate = currentPost.CreatedDate,

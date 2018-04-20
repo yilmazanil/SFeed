@@ -140,6 +140,8 @@
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="v2\ICommentCacheRepository.cs" />
+    <Compile Include="v2\INewsfeedResponseProvider.cs" />
+    <Compile Include="v2\NewsfeedResponseProvider.cs" />
     <Compile Include="v2\RedisCommentRepository.cs" />
   </ItemGroup>
   <ItemGroup>

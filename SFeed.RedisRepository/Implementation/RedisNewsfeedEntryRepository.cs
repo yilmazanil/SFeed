@@ -38,7 +38,7 @@ namespace SFeed.RedisRepository.Implementation
         {
             var activityEntry = MapToActivity(entry);
             var keys = MapKeys(entry.ReferencePostId, followers);
-            var isPostRemoval = entry.FeedType == NewsfeedEventType.wallpost;
+            var isPostRemoval = entry.ActionType == NewsfeedActionType.wallpost;
 
             using (var client = GetClientInstance())
             {
@@ -124,7 +124,7 @@ namespace SFeed.RedisRepository.Implementation
 
         private string MapToActivity(NewsfeedEventModel newsFeedEntry)
         {
-            return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.FeedType);
+            return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.ActionType);
         }
 
         private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
