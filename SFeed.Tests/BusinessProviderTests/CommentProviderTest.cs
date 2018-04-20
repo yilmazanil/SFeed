@@ -39,7 +39,7 @@ namespace SFeed.Tests.BusinessProviderTests
 
             var commentId = commentProvider.AddComment(commentCreateRequest);
 
-            var postComments = commentProvider.GetComments(samplePostId, 0, 100);
+            var postComments = commentProvider.GetComments(samplePostId, 0, 200);
 
             var shouldExist = postComments.Any(c => c.Id == commentId && c.CreatedBy == sampleCommentUser);
 

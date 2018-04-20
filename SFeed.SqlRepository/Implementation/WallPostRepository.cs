@@ -66,6 +66,22 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
+        public bool RemovePost(string postId)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+                var post = entities.WallPost.FirstOrDefault(p => p.Id == postId);
+                if (post != null)
+                {
+                    post.IsDeleted = true;
+                    entities.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+        }
+
+
         public WallPostDetailedModel GetPostDetailed(string postId)
         {
             GetWallPost_Result postResult;
@@ -82,20 +98,6 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
-        public bool RemovePost(string postId)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                var post = entities.WallPost.FirstOrDefault(p => p.Id == postId);
-                if (post != null)
-                {
-                    post.IsDeleted = true;
-                    entities.SaveChanges();
-                    return true;
-                }
-                return false;
-            }
-        }
 
         public IEnumerable<string> GetUserPostIds(string userId)
         {

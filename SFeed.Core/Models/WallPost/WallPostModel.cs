@@ -18,5 +18,6 @@ namespace SFeed.Core.Models.WallPost
         public DateTime CreatedDate { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
+
     }
 }

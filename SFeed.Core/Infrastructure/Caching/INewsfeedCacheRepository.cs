@@ -22,6 +22,6 @@ namespace SFeed.Core.Infrastructure.Caching
         /// </summary>
         /// <param name="user">User to remove from</param>
         /// <param name="postIds">Post ids</param>
-        void RemovePostsFromUser(string user, IEnumerable<string> postIds);
+        //void RemovePostsFromUser(string user, IEnumerable<string> postIds);
     }
 }

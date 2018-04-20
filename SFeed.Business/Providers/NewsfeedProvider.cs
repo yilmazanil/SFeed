@@ -14,7 +14,7 @@ namespace SFeed.Business.Providers
     {
         INewsfeedCacheRepository feedCacheRepo;
         IFollowerProvider followerProvider;
-        INewsfeedResponseCacheRepository newsFeedResponseRepo;
+        INewsfeedReaderCacheRepository newsFeedResponseRepo;
 
         public NewsfeedProvider() : this(
             new RedisNewsfeedEntryRepository(),
@@ -26,7 +26,7 @@ namespace SFeed.Business.Providers
         public NewsfeedProvider(
             INewsfeedCacheRepository feedCacheRepo,
             IFollowerProvider followerProvider,
-            INewsfeedResponseCacheRepository newsFeedResponseRepo)
+            INewsfeedReaderCacheRepository newsFeedResponseRepo)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.followerProvider = followerProvider;

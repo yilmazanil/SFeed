@@ -13,17 +13,16 @@ namespace SFeed.RedisRepository.Implementation
         public void AddEvent(NewsfeedEventModel entry, IEnumerable<string> followers)
         {
             var activityEntry = MapToActivity(entry);
-            var keys = MapKeys(entry.ReferencePostId, followers);
+            var keys = MapRedisKeys(entry.ReferencePostId, followers);
 
             using (var client = GetClientInstance())
             {
-               
                 using (var trans = client.CreateTransaction())
                 {
                     foreach (var key in keys)
                     { 
                         //Add post id to user feed, overwrites if exists
-                        trans.QueueCommand(r => r.IncrementItemInSortedSet(key.PostFeedKey, entry.ReferencePostId, 1));
+                        trans.QueueCommand(r => r.AddItemToSet(key.PostFeedKey, entry.ReferencePostId));
                         //keep only last 100 newsfeed items
                         //trans.QueueCommand(r => r.RemoveRangeFromSortedSet(key.PostFeedKey, 0, 100));
                         //Increment rank of feed item by 1 uses zincr adds if not exists
@@ -37,7 +36,7 @@ namespace SFeed.RedisRepository.Implementation
         public void RemoveEvent(NewsfeedEventModel entry, IEnumerable<string> followers)
         {
             var activityEntry = MapToActivity(entry);
-            var keys = MapKeys(entry.ReferencePostId, followers);
+            var keys = MapRedisKeys(entry.ReferencePostId, followers);
             var isPostRemoval = entry.ActionType == NewsfeedActionType.wallpost;
 
             using (var client = GetClientInstance())
@@ -49,7 +48,7 @@ namespace SFeed.RedisRepository.Implementation
                         foreach (var key in keys)
                         {
                             //Remove post id from user feed
-                            trans.QueueCommand(r => r.RemoveItemFromSortedSet(key.PostFeedKey, entry.ReferencePostId));
+                            trans.QueueCommand(r => r.RemoveItemFromSet(key.PostFeedKey, entry.ReferencePostId));
                             //Increment rank of feed item by 1 uses zincr adds if not exists
                             trans.QueueCommand(r => r.Remove(key.PostActionsKey));
                         }
@@ -77,32 +76,32 @@ namespace SFeed.RedisRepository.Implementation
         /// </summary>
         /// <param name="follower"></param>
         /// <param name="postIds"></param>
-        public void RemovePostsFromUser(string follower, IEnumerable<string> postIds)
-        {
-            //slowest method alternative could be fetching the 
-            //activities from alternative data storage mechanism
+        //public void RemovePostsFromUser(string follower, IEnumerable<string> postIds)
+        //{
+        //    //slowest method alternative could be fetching the 
+        //    //activities from alternative data storage mechanism
 
-            var userFeedKey = GetEntryKey(FeedPrefix, follower);
-            var postDetailKeys = new Dictionary<string, string>();
-            foreach (var postId in postIds)
-            {
-                postDetailKeys.Add(postId, GetEntryKey(follower, postId));
-            }
+        //    var userFeedKey = GetEntryKey(FeedPrefix, follower);
+        //    var postDetailKeys = new Dictionary<string, string>();
+        //    foreach (var postId in postIds)
+        //    {
+        //        postDetailKeys.Add(postId, GetEntryKey(follower, postId));
+        //    }
 
-            using (var client = GetClientInstance())
-            {
-                using (var trans = client.CreateTransaction())
-                {
-                    foreach (var postDetailKey in postDetailKeys)
-                    {
-                        trans.QueueCommand(r => r.RemoveItemFromSet(userFeedKey, postDetailKey.Key));
-                        trans.QueueCommand(r => r.Remove(postDetailKey.Value));
-                    }
-                    trans.Commit();
-                }
-            }
-        }
-        private IEnumerable<FollowerRedisKeys> MapKeys(string postId, IEnumerable<string> followers)
+        //    using (var client = GetClientInstance())
+        //    {
+        //        using (var trans = client.CreateTransaction())
+        //        {
+        //            foreach (var postDetailKey in postDetailKeys)
+        //            {
+        //                trans.QueueCommand(r => r.RemoveItemFromSet(userFeedKey, postDetailKey.Key));
+        //                trans.QueueCommand(r => r.Remove(postDetailKey.Value));
+        //            }
+        //            trans.Commit();
+        //        }
+        //    }
+        //}
+        private IEnumerable<FollowerRedisKeys> MapRedisKeys(string postId, IEnumerable<string> followers)
         {
             var retVal = new List<FollowerRedisKeys>();
 
@@ -127,14 +126,14 @@ namespace SFeed.RedisRepository.Implementation
             return string.Concat(newsFeedEntry.By, ":", (short)newsFeedEntry.ActionType);
         }
 
-        private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
-        {
-            var activity = activityStringRepresentation.Split(':');
-            return new ActivityEntry
-            {
-                By = activity[0],
-                ActivityId = Convert.ToInt16(activity[1])
-            };
-        }
+        //private ActivityEntry ConvertToActivityEntry(string activityStringRepresentation)
+        //{
+        //    var activity = activityStringRepresentation.Split(':');
+        //    return new ActivityEntry
+        //    {
+        //        By = activity[0],
+        //        ActivityId = Convert.ToInt16(activity[1])
+        //    };
+        //}
     }
 }

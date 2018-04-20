@@ -5,10 +5,11 @@ using SFeed.Core.Models.Caching;
 using SFeed.RedisRepository.Base;
 using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.Newsfeed;
+using System.Linq;
 
 namespace SFeed.RedisRepository.Implementation
 {
-    public class RedisNewsfeedResponseRepository : RedisRepositoryBase, INewsfeedResponseCacheRepository
+    public class RedisNewsfeedResponseRepository : RedisRepositoryBase, INewsfeedReaderCacheRepository
     {
         public string FeedPrefix => RedisNameConstants.FeedRepoPrefix;
 
@@ -41,9 +42,18 @@ namespace SFeed.RedisRepository.Implementation
 
             using (var client = GetClientInstance())
             {
-                var postIds = client.GetRangeFromSortedSetByHighestScore(userFeedKey, skip, take);
-                if (postIds != null && postIds.Count > 0)
+                var allPostIds = client.GetAllItemsFromSet(userFeedKey);
+                if (allPostIds != null && allPostIds.Count > 0)
                 {
+                    IEnumerable<string> postIds;
+                    if (allPostIds.Count > take)
+                    {
+                        postIds = allPostIds.Skip(skip).Take(take);
+                    }
+                    else
+                    {
+                        postIds = allPostIds.Take(take);
+                    }
                     foreach (var postId in postIds)
                     {
                         //Read post from cache

@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\Caching\ICommentCountCacheRepository.cs" />
-    <Compile Include="Infrastructure\Caching\INewsfeedResponseCacheRepository.cs" />
+    <Compile Include="Infrastructure\Caching\INewsfeedReaderCacheRepository.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
     <Compile Include="Infrastructure\Caching\ILikeCountCacheRepository.cs" />
