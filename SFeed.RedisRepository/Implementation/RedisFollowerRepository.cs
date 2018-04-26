@@ -1,8 +1,6 @@
 ﻿using SFeed.Core.Infrastructure.Caching;
 using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
-using SFeed.Core.Models.Follower;
-using System;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -16,7 +14,7 @@ namespace SFeed.RedisRepository.Implementation
             var entryKey = GetEntryKey(UserCachePrefix, userId);
             using (var redisClient = GetClientInstance())
             {
-                redisClient.Sets[entryKey].Add(followerId);
+                redisClient.AddItemToSet(entryKey,followerId);
             }
         }
 
@@ -25,7 +23,7 @@ namespace SFeed.RedisRepository.Implementation
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
             using (var redisClient = GetClientInstance())
             {
-                redisClient.Sets[entryKey].Add(followerId);
+                redisClient.AddItemToSet(entryKey, followerId);
             }
         }
 
@@ -34,7 +32,7 @@ namespace SFeed.RedisRepository.Implementation
             var entryKey = GetEntryKey(UserCachePrefix, userId);
             using (var redisClient = GetClientInstance())
             {
-                redisClient.Sets[entryKey].Remove(followerId);
+                redisClient.RemoveItemFromSet(entryKey, followerId);
             }
         }
 
@@ -43,7 +41,7 @@ namespace SFeed.RedisRepository.Implementation
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
             using (var redisClient = GetClientInstance())
             {
-                redisClient.Sets[entryKey].Remove(followerId);
+                redisClient.RemoveItemFromSet(entryKey, followerId);
             }
         }
 
@@ -62,6 +60,42 @@ namespace SFeed.RedisRepository.Implementation
             using (var redisClient = GetClientInstance())
             {
                return redisClient.Sets[entryKey].GetAll();
+            }
+        }
+
+        public void ResetUserFollowers(string userId, IEnumerable<string> followerIds)
+        {
+            var entryKey = GetEntryKey(UserCachePrefix, userId);
+            using (var redisClient = GetClientInstance())
+            {
+                using (var transaction = redisClient.CreateTransaction())
+                {
+                    transaction.QueueCommand(t => t.RemoveEntry(entryKey));
+
+                    foreach (var followerId in followerIds)
+                    {
+                        transaction.QueueCommand(t => t.AddItemToSet(entryKey, followerId));
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void ResetGroupFollowers(string groupId, IEnumerable<string> followerIds)
+        {
+            var entryKey = GetEntryKey(GroupCachePrefix, groupId);
+            using (var redisClient = GetClientInstance())
+            {
+                using (var transaction = redisClient.CreateTransaction())
+                {
+                    transaction.QueueCommand(t => t.RemoveEntry(entryKey));
+
+                    foreach (var followerId in followerIds)
+                    {
+                        transaction.QueueCommand(t => t.AddItemToSet(entryKey, followerId));
+                    }
+                    transaction.Commit();
+                }
             }
         }
     }

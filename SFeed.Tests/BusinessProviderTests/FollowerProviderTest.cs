@@ -98,8 +98,8 @@ namespace SFeed.Tests.BusinessProviderTests
             var userFollowersCount = followerProvider.GetUserFollowers(targetUser).Count();
             var cachedGroupFollowersCount = followerProvider.GetGroupFollowersCached(targetGroup).Count();
             var cachedUserFollowersCount = followerProvider.GetUserFollowersCached(targetUser).Count();
-            var userFollowerPagedCount = followerProvider.GetUserFollowersPaged(targetUser, 20, 20).TotalCount;
-            var groupFollowerPagedCount = followerProvider.GetGroupFollowersPaged(targetGroup, 20, 20).TotalCount;
+            var userFollowerPagedCount = followerProvider.GetUserFollowers(targetUser).Count();
+            var groupFollowerPagedCount = followerProvider.GetGroupFollowers(targetGroup).Count();
 
             var shouldGroupFollowerCountBeEqual = groupFollowersCount == cachedGroupFollowersCount;
             var shouldUserFollowerCountBeEqual = userFollowersCount == cachedUserFollowersCount;
@@ -135,13 +135,13 @@ namespace SFeed.Tests.BusinessProviderTests
 
             while (true)
             {
-                var result =  followerProvider.GetGroupFollowersPaged(targetGroup, skip, pagingSize);
-                fetchedRecords.AddRange(result.Records);
-                skip += pagingSize;
-                if (skip > result.TotalCount)
-                {
+                var result =  followerProvider.GetGroupFollowers(targetGroup);
+                fetchedRecords.AddRange(result);
+                //skip += pagingSize;
+                //if (skip > result.TotalCount)
+                //{
                     break;
-                }
+                //}
             }
     
             foreach (var item in groupFollowers)
@@ -154,13 +154,13 @@ namespace SFeed.Tests.BusinessProviderTests
 
             while (true)
             {
-                var result = followerProvider.GetUserFollowersPaged(targetUser, skip, pagingSize);
-                fetchedRecords.AddRange(result.Records);
-                skip += pagingSize;
-                if (skip > result.TotalCount)
-                {
+                var result = followerProvider.GetUserFollowers(targetUser);
+                fetchedRecords.AddRange(result);
+                //skip += pagingSize;
+                //if (skip > result.TotalCount)
+                //{
                     break;
-                }
+                //}
             }
 
             foreach (var item in userFollowers)

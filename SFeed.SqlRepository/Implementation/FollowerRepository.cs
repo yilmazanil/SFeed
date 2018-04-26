@@ -1,10 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository;
-using SFeed.Core.Models.Follower;
-using SFeed.Core.Models;
-using SFeed.Core.Models.Wall;
-using System;
 
 namespace SFeed.SqlRepository.Implementation
 {
@@ -68,22 +64,6 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public FollowerPagedModel GetFollowersUserPaged(string userId, int skip, int size)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                var followers = entities.UserFollower.Where(p => p.UserId == userId).Select(p => p.FollowerId);
-                var resultSet = followers.OrderBy(p => p).Skip(skip).Take(size).ToList();
-                var totalCount = followers.Count();
-
-                return new FollowerPagedModel
-                {
-                    Records = resultSet,
-                    TotalCount = totalCount
-                };
-            }
-        }
-
         public IEnumerable<string> GetFollowersGroup(string groupId)
         {
             using (var entities = new SocialFeedEntities())
@@ -92,23 +72,7 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public FollowerPagedModel GetFollowersGroupPaged(string groupId, int skip, int size)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                var followers = entities.GroupFollower.Where(p => p.GroupId == groupId).Select(p => p.FollowerId);
-                var resultSet = followers.OrderBy(p => p).Skip(skip).Take(size).ToList();
-                var totalCount = followers.Count();
-
-                return new FollowerPagedModel
-                {
-                    Records = resultSet,
-                    TotalCount = totalCount
-                };
-            }
-        }
-
-        public IEnumerable<string> GetFollowingUsers(string userId)
+        public IEnumerable<string> GetFollowedUsers(string userId)
         {
             using (var entities = new SocialFeedEntities())
             {
@@ -116,51 +80,12 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public FollowerPagedModel GetFollowingUsersPaged(string userId, int skip, int size)
+        public IEnumerable<string> GetFollowedGroups(string userId)
         {
             using (var entities = new SocialFeedEntities())
             {
-                var users = entities.UserFollower.Where(p => p.FollowerId == userId);
-                var resultSet = users.OrderBy(p => p.UserId).Skip(skip).Take(size).Select(p=>p.UserId).ToList();
-                var totalCount = users.Count();
-
-                return new FollowerPagedModel
-                {
-                    Records = resultSet,
-                    TotalCount = totalCount
-                };
+                return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => p.GroupId);
             }
         }
-
-        public IEnumerable<WallModel> GetFollowingGroups(string userId)
-        {
-            //TODO:Update Private/Public condition
-            using (var entities = new SocialFeedEntities())
-            {
-                return entities.GroupFollower.Where(p => p.FollowerId == userId).Select(p => new WallModel
-                {
-                    OwnerId = p.GroupId,
-                    WallOwnerType = WallType.group
-                }).ToList();
-            }
-        }
-
-        public FollowerPagedModel GetFollowingGroupsPaged(string userId, int skip, int size)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                var groups = entities.GroupFollower.Where(p => p.FollowerId == userId);
-                var resultSet = groups.OrderBy(p => p.GroupId).Skip(skip).Take(size).Select(p => p.GroupId).ToList();
-
-                var totalCount = groups.Count();
-
-                return new FollowerPagedModel
-                {
-                    Records = resultSet,
-                    TotalCount = totalCount
-                };
-            }
-        }
-
     }
 }

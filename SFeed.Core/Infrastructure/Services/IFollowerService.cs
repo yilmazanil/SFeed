@@ -1,9 +1,9 @@
 ﻿using SFeed.Core.Models.Follower;
 using System.Collections.Generic;
 
-namespace SFeed.Core.Infrastructure.Providers
+namespace SFeed.Core.Infrastructue.Services
 {
-    public interface IFollowerProvider
+    public interface IFollowerService
     {
         /// <summary>
         /// Follow a user
@@ -41,34 +41,22 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="groupId">Group</param>
         /// <returns></returns>
         IEnumerable<string> GetGroupFollowers(string groupId);
-        ///// <summary>
-        ///// Returns followers of a user paged
-        ///// </summary>
-        ///// <param name="userId">User</param>
-        ///// <param name="skip">Skip size</param>
-        ///// <param name="size">Return set size</param>
-        ///// <returns></returns>
-        //FollowerPagedModel GetUserFollowersPaged(string userId, int skip, int size);
-        ///// <summary>
-        ///// Returns followers of a group paged
-        ///// </summary>
-        ///// <param name="groupId">Group</param>
-        ///// <param name="skip">Skip size</param>
-        ///// <param name="size">Return set size</param>
-        ///// <returns></returns>
-        //FollowerPagedModel GetGroupFollowersPaged(string groupId, int skip, int size);
         /// <summary>
-        /// Returns all followers of a user from cache
+        /// Returns followers of a user paged
         /// </summary>
         /// <param name="userId">User</param>
+        /// <param name="skip">Skip size</param>
+        /// <param name="size">Return set size</param>
         /// <returns></returns>
-        IEnumerable<string> GetUserFollowersCached(string userId);
+        FollowerPagedModel GetUserFollowersPaged(string userId, int skip, int size);
         /// <summary>
-        /// Returns all followers of a group from cache
+        /// Returns followers of a group paged
         /// </summary>
         /// <param name="groupId">Group</param>
+        /// <param name="skip">Skip size</param>
+        /// <param name="size">Return set size</param>
         /// <returns></returns>
-        IEnumerable<string> GetGroupFollowersCached(string groupId);
+        FollowerPagedModel GetGroupFollowersPaged(string groupId, int skip, int size);
         /// <summary>
         /// Returns the users that a given user follows
         /// </summary>
@@ -76,7 +64,7 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="skip">Skip size</param>
         /// <param name="size">Size of return set</param>
         /// <returns></returns>
-        IEnumerable<string> GetFollowedUsers(string userId);
+        FollowerPagedModel GetFollowedUsersPaged(string userId, int skip, int size);
         /// <summary>
         /// Returns the groups that a given user follows
         /// </summary>
@@ -84,9 +72,6 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="skip">Skip size</param>
         /// <param name="size">Size of return set</param>
         /// <returns></returns
-        IEnumerable<string> GetFollowedGroups(string groupId);
-
-        void ResetUserFollowersCache(string userId, IEnumerable<string> followerIds);
-        void ResetGroupFollowersCache(string groupId, IEnumerable<string> followerIds);
+        FollowerPagedModel GetFollowedGroupsPaged(string groupId, int skip, int size);
     }
 }

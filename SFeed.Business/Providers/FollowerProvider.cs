@@ -4,15 +4,15 @@ using SFeed.SqlRepository.Implementation;
 using SFeed.RedisRepository.Implementation;
 using SFeed.Core.Infrastructure.Caching;
 using SFeed.Core.Infrastructure.Repository;
-using SFeed.Core.Models.Follower;
 using log4net;
 using System;
+using SFeed.Core.Models.Wall;
 
 namespace SFeed.Business.Providers
 {
     public class FollowerProvider : IFollowerProvider
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(IFollowerProvider));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(FollowerProvider));
 
         IFollowerCacheRepository followerCacheRepo;
         IFollowerRepository followerRepo;
@@ -94,24 +94,14 @@ namespace SFeed.Business.Providers
             return followerRepo.GetFollowersUser(userId);
         }
 
-        public IEnumerable<string> GetGroupFollowers(string groupId)
-        {
-            return followerRepo.GetFollowersGroup(groupId);
-        }
-
-        public FollowerPagedModel GetUserFollowersPaged(string userId, int skip, int size)
-        {
-            return followerRepo.GetFollowersUserPaged(userId, skip, size);
-        }
-
-        public FollowerPagedModel GetGroupFollowersPaged(string groupId, int skip, int size)
-        {
-            return followerRepo.GetFollowersGroupPaged(groupId, skip, size);
-        }
-
         public IEnumerable<string> GetUserFollowersCached(string userId)
         {
             return followerCacheRepo.GetUserFollowers(userId);
+        }
+
+        public IEnumerable<string> GetGroupFollowers(string groupId)
+        {
+            return followerRepo.GetFollowersGroup(groupId);
         }
 
         public IEnumerable<string> GetGroupFollowersCached(string groupId)
@@ -119,14 +109,24 @@ namespace SFeed.Business.Providers
             return followerCacheRepo.GetGroupFollowers(groupId);
         }
 
-        public FollowerPagedModel GetFollowingUsersPaged(string userId, int skip, int size)
+        public IEnumerable<string> GetFollowedUsers(string userId)
         {
-            return followerRepo.GetFollowingUsersPaged(userId, skip, size);
+            return followerRepo.GetFollowedUsers(userId);
         }
 
-        public FollowerPagedModel GetFollowingGroupsPaged(string groupId, int skip, int size)
+        public IEnumerable<string> GetFollowedGroups(string groupId)
         {
-            return followerRepo.GetFollowingGroupsPaged(groupId, skip, size);
+            return followerRepo.GetFollowedGroups(groupId);
+        }
+
+        public void ResetUserFollowersCache(string userId, IEnumerable<string> followerIds)
+        {
+            followerCacheRepo.ResetUserFollowers(userId, followerIds);
+        }
+
+        public void ResetGroupFollowersCache(string groupId, IEnumerable<string> followerIds)
+        {
+            followerCacheRepo.ResetUserFollowers(groupId, followerIds);
         }
     }
 }

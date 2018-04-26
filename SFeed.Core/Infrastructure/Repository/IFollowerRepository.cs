@@ -1,5 +1,4 @@
-﻿using SFeed.Core.Models.Follower;
-using SFeed.Core.Models.Wall;
+﻿using SFeed.Core.Models.Wall;
 using System.Collections.Generic;
 
 namespace SFeed.Core.Infrastructure.Repository
@@ -46,40 +45,17 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <returns></returns>
         IEnumerable<string> GetFollowersGroup(string groupId);
         /// <summary>
-        /// Returns the followers of a user paged
-        /// </summary>
-        /// <param name="userId">UserId</param>
-        /// <returns></returns>
-        FollowerPagedModel GetFollowersUserPaged(string userId, int skip, int size);
-        /// <summary>
-        /// Returns the followers of a group paged
-        /// </summary>
-        /// <param name="groupId">GroupId</param>
-        /// <returns></returns>
-        FollowerPagedModel GetFollowersGroupPaged(string groupId, int skip, int size);
-        /// <summary>
         /// Returns the users that provided user follows
         /// </summary>
         /// <param name="userId">UserId</param>
         /// <returns></returns>
-        IEnumerable<string> GetFollowingUsers(string userId);
-        /// <summary>
-        /// Returns the users that provided user follows paged
-        /// </summary>
-        /// <param name="userId">UserId</param>
-        /// <returns></returns>
-        FollowerPagedModel GetFollowingUsersPaged(string userId,int skip, int size);
+        IEnumerable<string> GetFollowedUsers(string userId);
         /// <summary>
         /// Returns the groups that provided user follows
         /// </summary>
         /// <param name="userId">UserId</param>
         /// <returns></returns>
-        IEnumerable<WallModel> GetFollowingGroups(string userId);
-        /// <summary>
-        /// Returns the groups that provided user follows paged
-        /// </summary>
-        /// <param name="userId">UserId</param>
-        /// <returns></returns>
-        FollowerPagedModel GetFollowingGroupsPaged(string userId, int skip, int size);
+        IEnumerable<string> GetFollowedGroups(string userId);
+
     }
 }

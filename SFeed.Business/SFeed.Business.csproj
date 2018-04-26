@@ -72,6 +72,7 @@
     <Compile Include="Providers\EntryLikeProvider.cs" />
     <Compile Include="Providers\NewsfeedProvider.cs" />
     <Compile Include="Providers\WallPostProvider.cs" />
+    <Compile Include="Services\FollowerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFeed.Core\SFeed.Core.csproj">
