@@ -95,7 +95,7 @@ namespace SFeed.Business.Providers
             //user posts to another user wall
             if (targetWall.WallOwnerType == WallType.user)
             {
-                followers = followerProvider.GetUserFollowers(entryBy);
+                followers = followerProvider.GetUserFollowersCached(entryBy);
 
                 if (string.Equals(entryBy, targetWall.OwnerId))
                 {
@@ -104,7 +104,7 @@ namespace SFeed.Business.Providers
                 else if (targetWall.IsPublic)
                 {
                     //target user profile is public, add target user followers
-                    var targetUserFollowers = followerProvider.GetUserFollowers(entryBy);
+                    var targetUserFollowers = followerProvider.GetUserFollowersCached(targetWall.OwnerId);
                     followers = followers.Union(targetUserFollowers);
                 }
             }
@@ -114,13 +114,13 @@ namespace SFeed.Business.Providers
                 if (!targetWall.IsPublic)
                 {
                     //For private group posts, only users that can follow target group gets newsfeed item
-                    followers = followerProvider.GetGroupFollowers(targetWall.OwnerId);
+                    followers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
                 }
                 else
                 {
                     //for public groups notify both
                     followers = followerProvider.GetUserFollowers(entryBy);
-                    var groupFollowers = followerProvider.GetGroupFollowers(targetWall.OwnerId);
+                    var groupFollowers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
                     followers = followers.Union(groupFollowers);
                 }
             }

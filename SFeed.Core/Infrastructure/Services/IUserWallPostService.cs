@@ -6,10 +6,10 @@ namespace SFeed.Core.Infrastructue.Services
 {
     public interface IUserWallPostService : IDisposable
     {
-        WallPostDetailedModel GetPost(string postId);
+        WallPostWithDetailsModel GetPost(string postId);
         string CreatePost(WallPostCreateRequest request);
-        void UpdatePost(WallPostDetailedModel request);
+        void UpdatePost(WallPostWithDetailsModel request);
         void DeletePost(string postId);
-        IEnumerable<WallPostDetailedModel> GetUserWall(string wallOwnerId);
+        IEnumerable<WallPostWithDetailsModel> GetUserWall(string wallOwnerId);
     }
 }

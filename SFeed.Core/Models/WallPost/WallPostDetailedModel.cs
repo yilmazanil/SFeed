@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFeed.Core.Models.WallPost
 {
-    public class WallPostDetailedModel : WallPostModel
+    public class WallPostWithDetailsModel : WallPostModel
     {
         public int LikeCount { get; set; }
 

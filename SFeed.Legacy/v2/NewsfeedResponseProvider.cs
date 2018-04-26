@@ -8,9 +8,9 @@ using SFeed.Core.Models.Caching;
 
 namespace SFeed.Business.Providers
 {
-    public class NewsfeedResponseProvider : INewsfeedResponseProvider
+    public class NewsfeedResponseProvider : INewsfeedReaderCacheRepository
     {
-        INewsfeedResponseCacheRepository newsFeedResponseRepo;
+        INewsfeedReaderCacheRepository newsFeedResponseRepo;
 
         public NewsfeedResponseProvider() : this(
             new RedisNewsfeedResponseRepository()
@@ -18,11 +18,12 @@ namespace SFeed.Business.Providers
         {
 
         }
-        public NewsfeedResponseProvider(INewsfeedResponseCacheRepository newsFeedResponseRepo)
+        public NewsfeedResponseProvider(INewsfeedReaderCacheRepository newsFeedResponseRepo)
         {
             this.newsFeedResponseRepo = newsFeedResponseRepo;
         }
-        public IEnumerable<NewsfeedWallPostModel> GetUserNewsfeed(string userId, int skip, int take)
+
+        public IEnumerable<NewsfeedResponseModel> GetUserFeed(string userId, int skip, int take)
         {
             return newsFeedResponseRepo.GetUserFeed(userId, skip, take);
         }

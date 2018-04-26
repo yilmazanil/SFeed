@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\Caching\ICommentCountCacheRepository.cs" />
     <Compile Include="Infrastructure\Caching\INewsfeedReaderCacheRepository.cs" />
+    <Compile Include="Infrastructure\Common\IRepository.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
     <Compile Include="Infrastructure\Providers\ICommentProvider.cs" />
     <Compile Include="Infrastructure\Caching\ILikeCountCacheRepository.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Infrastructure\Providers\IFollowerProvider.cs" />
     <Compile Include="Infrastructure\Providers\INewsfeedProvider.cs" />
     <Compile Include="Infrastructure\Providers\IUserWallPostProvider.cs" />
-    <Compile Include="Infrastructure\Common\IRepository.cs" />
     <Compile Include="Infrastructure\Services\IUserFollowerService.cs" />
     <Compile Include="Infrastructure\Services\IUserNewsfeedService.cs" />
     <Compile Include="Infrastructure\Services\IUserWallPostService.cs" />

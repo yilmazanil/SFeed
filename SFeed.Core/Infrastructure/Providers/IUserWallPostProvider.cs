@@ -27,7 +27,7 @@ namespace SFeed.Core.Infrastructure.Providers
         /// </summary>
         /// <param name="postId">Id of post</param>
         /// <returns></returns>
-        WallPostDetailedModel GetPostDetailed(string postId);
+        WallPostWithDetailsModel GetPostDetailed(string postId);
         /// <summary>
         /// Returns post
         /// </summary>
@@ -41,7 +41,7 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="olderThan">Max post publish date</param>
         /// <param name="size">Number of posts to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size);
+        IEnumerable<WallPostWithDetailsModel> GetUserWallDetailed(string userId, DateTime olderThan, int size);
         /// <summary>
         /// Returns posts from a user wall
         /// </summary>
@@ -57,7 +57,7 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="olderThan">Max post publish date</param>
         /// <param name="size">Number of posts to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size);
+        IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size);
         /// <summary>
         /// Returns posts from a group wall with details
         /// </summary>

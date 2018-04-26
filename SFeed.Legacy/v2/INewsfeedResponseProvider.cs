@@ -7,6 +7,6 @@ namespace SFeed.Core.Infrastructure.Providers
 {
     public interface INewsfeedResponseProvider
     {
-        IEnumerable<NewsfeedWallPostModel> GetUserNewsfeed(string userId, int skip, int take);
+        IEnumerable<NewsfeedResponseModel> GetUserNewsfeed(string userId, int skip, int take);
     }
 }

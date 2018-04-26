@@ -93,7 +93,7 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetPost(postId);
         }
 
-        public WallPostDetailedModel GetPostDetailed(string postId)
+        public WallPostWithDetailsModel GetPostDetailed(string postId)
         {
             return wallPostRepo.GetPostDetailed(postId);
         }
@@ -103,7 +103,7 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetUserWall(userId, olderThan, size);
         }
 
-        public IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
+        public IEnumerable<WallPostWithDetailsModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
         {
             return wallPostRepo.GetUserWallDetailed(userId, olderThan, size);
         }
@@ -113,7 +113,7 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetGroupWall(groupId, olderThan, size);
         }
 
-        public IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
+        public IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
         {
             return wallPostRepo.GetGroupWallDetailed(groupId, olderThan, size);
         }

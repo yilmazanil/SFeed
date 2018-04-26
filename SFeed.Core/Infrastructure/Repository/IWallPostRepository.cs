@@ -24,7 +24,7 @@ namespace SFeed.Core.Infrastructure.Repository
         /// </summary>
         /// <param name="postId">Id of post</param>
         /// <returns></returns>
-        WallPostDetailedModel GetPostDetailed(string postId);
+        WallPostWithDetailsModel GetPostDetailed(string postId);
         /// <summary>
         /// Returns post for provied Id
         /// </summary>
@@ -44,7 +44,7 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <param name="olderThan">Filter for CreatedDate</param>
         /// <param name="size">Number of items to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size);
+        IEnumerable<WallPostWithDetailsModel> GetUserWallDetailed(string userId, DateTime olderThan, int size);
         /// <summary>
         /// Returns posts belong to a user wall
         /// </summary>
@@ -60,7 +60,7 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <param name="olderThan">Filter for CreatedDate</param>
         /// <param name="size">Number of items to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size);
+        IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size);
         // <summary>
         /// Returns posts belong to a group wall
         /// </summary>
@@ -69,17 +69,5 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <param name="size">Number of items to return</param>
         /// <returns></returns>
         IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size);
-        /// <summary>
-        /// Returns Ids of all posts from a given user accross all walls
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        IEnumerable<string> GetUserPostIds(string userId);
-        /// <summary>
-        /// Returns Ids of posts belonging to a wall
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        IEnumerable<string> GetWallPostIds(WallModel targetWall);
     }
 }

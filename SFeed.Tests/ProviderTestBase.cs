@@ -11,6 +11,8 @@ namespace SFeed.Tests
 {
     public class ProviderTestBase
     {
+        private Random randomGenerator = new Random();
+
         protected List<string> RandomUserNames = new List<string>
         { "Moira","Lasandra","Meg","Shery","Georgianne","Janean","Glenn","Colby","Eusebio","Joellen","My","Melodie","Joella","Lenna","Marguerita",
           "Jamel","Gilda","Marya","Tamela","Geneva","Florrie","Delphia","Walker","Arnulfo","Dacia","Arielle","Marhta","Alda","Pauline","Burl","Doug",
@@ -51,13 +53,13 @@ namespace SFeed.Tests
 
         protected string GetRandomUserName()
         {
-            var index = new Random().Next(0, RandomUserNames.Count - 1);
+            var index = randomGenerator.Next(0, RandomUserNames.Count - 1);
             return RandomUserNames[index];
         }
 
         protected string GetRandomGroupName()
         {
-            var index = new Random().Next(0, RandomGroupNames.Count - 1);
+            var index = randomGenerator.Next(0, RandomGroupNames.Count - 1);
             return RandomGroupNames[index];
         }
 

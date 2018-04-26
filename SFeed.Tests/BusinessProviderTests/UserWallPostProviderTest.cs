@@ -4,12 +4,14 @@ using System.Linq;
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Core.Models.WallPost;
 using System;
+using log4net;
 
 namespace SFeed.Tests.BusinessProviderTests
 {
     [TestClass]
     public class UserWallPostProviderTest : ProviderTestBase
     {
+        private static readonly ILog logger = LogManager.GetLogger(typeof(UserWallPostProviderTest));
         private IWallPostProvider wallPostProvider;
 
         [TestInitialize]
@@ -21,6 +23,7 @@ namespace SFeed.Tests.BusinessProviderTests
         [TestMethod]
         public void Should_Create_Post()
         {
+            logger.Error("Test");
             var sampleUser = GetRandomUserName();
             var sampleUserWall = GetRandomUserWallOwner(true);
             var sampleGroupWall = GetRandomGroupWallOwner(true);
@@ -35,42 +38,45 @@ namespace SFeed.Tests.BusinessProviderTests
         [TestMethod]
         public void Should_Create_And_Get_Post()
         {
-            var sampleUser = GetRandomUserName();
-            var sampleUserWall = GetRandomUserWallOwner(true);
-            var sampleGroupWall = GetRandomGroupWallOwner(true);
+            for (int i = 0; i < 10000; i++)
+            {
+                var sampleUser = GetRandomUserName();
+                var sampleUserWall = GetRandomUserWallOwner(true);
+                var sampleGroupWall = GetRandomGroupWallOwner(true);
 
-            var userWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
-            var groupWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleGroupWall);
-            var userPostId = wallPostProvider.AddPost(userWallPostRequest);
-            var groupPostId = wallPostProvider.AddPost(groupWallPostRequest);
+                var userWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleUserWall);
+                var groupWallPostRequest = GetSampleWallCreateRequest(sampleUser, sampleGroupWall);
+                var userPostId = wallPostProvider.AddPost(userWallPostRequest);
+                var groupPostId = wallPostProvider.AddPost(groupWallPostRequest);
 
-            var userPostDetailedModel = wallPostProvider.GetPostDetailed(userPostId);
-            var groupPostDetailedModel = wallPostProvider.GetPostDetailed(groupPostId);
+                var userPostDetailedModel = wallPostProvider.GetPostDetailed(userPostId);
+                var groupPostDetailedModel = wallPostProvider.GetPostDetailed(groupPostId);
 
-            Assert.AreEqual(userPostId, userPostDetailedModel.Id);
-            Assert.AreEqual(groupPostId, groupPostDetailedModel.Id);
+                Assert.AreEqual(userPostId, userPostDetailedModel.Id);
+                Assert.AreEqual(groupPostId, groupPostDetailedModel.Id);
 
-            Assert.AreEqual(userPostDetailedModel.Body, userWallPostRequest.Body);
-            Assert.AreEqual(userPostDetailedModel.PostedBy, userWallPostRequest.PostedBy);
-            Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userWallPostRequest.TargetWall.OwnerId);
+                Assert.AreEqual(userPostDetailedModel.Body, userWallPostRequest.Body);
+                Assert.AreEqual(userPostDetailedModel.PostedBy, userWallPostRequest.PostedBy);
+                Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userWallPostRequest.TargetWall.OwnerId);
 
-            Assert.AreEqual(groupPostDetailedModel.Body, groupWallPostRequest.Body);
-            Assert.AreEqual(groupPostDetailedModel.PostedBy, groupWallPostRequest.PostedBy);
-            Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupWallPostRequest.TargetWall.OwnerId);
+                Assert.AreEqual(groupPostDetailedModel.Body, groupWallPostRequest.Body);
+                Assert.AreEqual(groupPostDetailedModel.PostedBy, groupWallPostRequest.PostedBy);
+                Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupWallPostRequest.TargetWall.OwnerId);
 
-            var userPostModel = wallPostProvider.GetPost(userPostId);
-            var groupPostModel = wallPostProvider.GetPost(groupPostId);
+                var userPostModel = wallPostProvider.GetPost(userPostId);
+                var groupPostModel = wallPostProvider.GetPost(groupPostId);
 
-            Assert.AreEqual(userPostModel.Id, userPostDetailedModel.Id);
-            Assert.AreEqual(groupPostModel.Id, groupPostDetailedModel.Id);
+                Assert.AreEqual(userPostModel.Id, userPostDetailedModel.Id);
+                Assert.AreEqual(groupPostModel.Id, groupPostDetailedModel.Id);
 
-            Assert.AreEqual(userPostDetailedModel.Body, userPostModel.Body);
-            Assert.AreEqual(userPostDetailedModel.PostedBy, userPostModel.PostedBy);
-            Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userPostModel.WallOwner.OwnerId);
+                Assert.AreEqual(userPostDetailedModel.Body, userPostModel.Body);
+                Assert.AreEqual(userPostDetailedModel.PostedBy, userPostModel.PostedBy);
+                Assert.AreEqual(userPostDetailedModel.WallOwner.OwnerId, userPostModel.WallOwner.OwnerId);
 
-            Assert.AreEqual(groupPostDetailedModel.Body, groupPostModel.Body);
-            Assert.AreEqual(groupPostDetailedModel.PostedBy, groupPostModel.PostedBy);
-            Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupPostModel.WallOwner.OwnerId);
+                Assert.AreEqual(groupPostDetailedModel.Body, groupPostModel.Body);
+                Assert.AreEqual(groupPostDetailedModel.PostedBy, groupPostModel.PostedBy);
+                Assert.AreEqual(groupPostDetailedModel.WallOwner.OwnerId, groupPostModel.WallOwner.OwnerId);
+            }
 
         }
 

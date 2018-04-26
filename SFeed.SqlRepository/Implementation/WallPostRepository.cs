@@ -10,6 +10,8 @@ namespace SFeed.SqlRepository.Implementation
 {
     public class WallPostRepository : IWallPostRepository
     {
+        #region CRUD
+
         public WallPostCreateResponse SavePost(WallPostCreateRequest model)
         {
             var newEntryId = Guid.NewGuid().ToString();
@@ -81,8 +83,7 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-
-        public WallPostDetailedModel GetPostDetailed(string postId)
+        public WallPostWithDetailsModel GetPostDetailed(string postId)
         {
             GetWallPost_Result postResult;
             IEnumerable<GetLatestComments_Result> commentResult;
@@ -98,39 +99,9 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
+        #endregion
 
-        public IEnumerable<string> GetUserPostIds(string userId)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                return entities.WallPost.Where(p => p.CreatedBy == userId && p.IsDeleted == false).Select(p => p.Id).ToList();
-            }
-        }
-
-        public IEnumerable<string> GetWallPostIds(WallModel targetWall)
-        {
-            using (var entities = new SocialFeedEntities())
-            {
-                if (targetWall.WallOwnerType == WallType.group)
-                {
-                    return entities.GroupWall.Where(p => p.GroupId == targetWall.OwnerId && p.WallPost.IsDeleted == false).Select(p => p.WallPostId).ToList();
-                }
-                else
-                {
-                    return entities.UserWall.Where(p => p.UserId == targetWall.OwnerId && p.WallPost.IsDeleted == false).Select(p => p.WallPostId).ToList();
-                }
-            }
-        }
-
-        public IEnumerable<WallPostDetailedModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
-        {
-            IEnumerable<GetWall_Result> procedureResult;
-            using (var entities = new SocialFeedEntities())
-            {
-                procedureResult = entities.GetUserWall(userId, olderThan, size).ToList();
-            }
-            return MapWall(procedureResult, new WallModel { OwnerId = userId, WallOwnerType = WallType.user });
-        }
+        #region Wall
 
         public IEnumerable<WallPostModel> GetUserWall(string userId, DateTime olderThan, int size)
         {
@@ -148,14 +119,14 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
-        public IEnumerable<WallPostDetailedModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
+        public IEnumerable<WallPostWithDetailsModel> GetUserWallDetailed(string userId, DateTime olderThan, int size)
         {
             IEnumerable<GetWall_Result> procedureResult;
             using (var entities = new SocialFeedEntities())
             {
-                procedureResult = entities.GetGroupWall(groupId, olderThan, size).ToList();
+                procedureResult = entities.GetUserWall(userId, olderThan, size).ToList();
             }
-            return MapWall(procedureResult, new WallModel { OwnerId = groupId, WallOwnerType = WallType.group });
+            return MapWall(procedureResult, new WallModel { OwnerId = userId, WallOwnerType = WallType.user });
         }
 
         public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
@@ -174,7 +145,20 @@ namespace SFeed.SqlRepository.Implementation
             }
         }
 
+        public IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
+        {
+            IEnumerable<GetWall_Result> procedureResult;
+            using (var entities = new SocialFeedEntities())
+            {
+                procedureResult = entities.GetGroupWall(groupId, olderThan, size).ToList();
+            }
+            return MapWall(procedureResult, new WallModel { OwnerId = groupId, WallOwnerType = WallType.group });
+        }
+
+        #endregion
+
         #region Mapping
+
         private WallPostModel MapWallPost(WallPost model)
         {
             if (model != null)
@@ -201,11 +185,11 @@ namespace SFeed.SqlRepository.Implementation
             return null;
         }
 
-        private WallPostDetailedModel MapWallPost(GetWallPost_Result postResult,
+        private WallPostWithDetailsModel MapWallPost(GetWallPost_Result postResult,
           IEnumerable<GetLatestComments_Result> commentResult)
         {
 
-            var mapped = new WallPostDetailedModel
+            var mapped = new WallPostWithDetailsModel
             {
                 Body = postResult.Body,
                 CommentCount = postResult.CommentCount.Value,
@@ -249,9 +233,9 @@ namespace SFeed.SqlRepository.Implementation
             return mapped;
         }
 
-        private IEnumerable<WallPostDetailedModel> MapWall(IEnumerable<GetWall_Result> procedureResult, WallModel wallOwner)
+        private IEnumerable<WallPostWithDetailsModel> MapWall(IEnumerable<GetWall_Result> procedureResult, WallModel wallOwner)
         {
-            var result = new List<WallPostDetailedModel>();
+            var result = new List<WallPostWithDetailsModel>();
             if (procedureResult != null)
             {
                 foreach (var record in procedureResult)
@@ -260,7 +244,7 @@ namespace SFeed.SqlRepository.Implementation
                     var existingRecord = result.FirstOrDefault(p => p.Id == record.Id);
                     if (existingRecord == null)
                     {
-                        var relatedPost = new WallPostDetailedModel
+                        var relatedPost = new WallPostWithDetailsModel
                         {
                             Body = record.Body,
                             CommentCount = record.CommentCount.Value,
@@ -302,6 +286,7 @@ namespace SFeed.SqlRepository.Implementation
             }
             return null;
         }
+
         #endregion
 
     }
