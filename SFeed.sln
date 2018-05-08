@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Tests", "SFeed.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.Legacy", "SFeed.Legacy\SFeed.Legacy.csproj", "{78443C83-0C0B-4F89-927B-6475013C1D1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFeed.FormsApp", "SFeed.FormsApp\SFeed.FormsApp.csproj", "{9E7AC2E7-F5DB-45D1-9FDD-6B2A47D023C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{78443C83-0C0B-4F89-927B-6475013C1D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78443C83-0C0B-4F89-927B-6475013C1D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78443C83-0C0B-4F89-927B-6475013C1D1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E7AC2E7-F5DB-45D1-9FDD-6B2A47D023C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E7AC2E7-F5DB-45D1-9FDD-6B2A47D023C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E7AC2E7-F5DB-45D1-9FDD-6B2A47D023C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E7AC2E7-F5DB-45D1-9FDD-6B2A47D023C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

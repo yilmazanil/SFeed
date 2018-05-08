@@ -11,6 +11,12 @@ namespace SFeed.RedisRepository.Base
             return RedisConnectionProvider.GetClient();
         }
 
+        protected virtual IRedisClient GetReadOnlyClientInstance()
+        {
+            return RedisConnectionProvider.GetReadOnlyClient();
+        }
+
+
         protected virtual string GetEntryKey(string cachePrefix, string id)
         {
             return string.Concat(cachePrefix, ":", id);

@@ -50,7 +50,7 @@ namespace SFeed.RedisRepository.Implementation
         public IEnumerable<string> GetUserFollowers(string userId)
         {
             var entryKey = GetEntryKey(UserCachePrefix, userId);
-            using (var redisClient = GetClientInstance())
+            using (var redisClient = GetReadOnlyClientInstance())
             {
                 return redisClient.Sets[entryKey].GetAll();
             }
@@ -59,7 +59,7 @@ namespace SFeed.RedisRepository.Implementation
         public IEnumerable<string> GetGroupFollowers(string groupId)
         {
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
-            using (var redisClient = GetClientInstance())
+            using (var redisClient = GetReadOnlyClientInstance())
             {
                return redisClient.Sets[entryKey].GetAll();
             }
