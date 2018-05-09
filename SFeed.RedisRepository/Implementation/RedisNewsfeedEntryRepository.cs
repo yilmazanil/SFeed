@@ -20,7 +20,7 @@ namespace SFeed.RedisRepository.Implementation
                 using (var trans = client.CreateTransaction())
                 {
                     foreach (var key in keys)
-                    { 
+                    {
                         //Add post id to user feed, overwrites if exists
                         trans.QueueCommand(r => r.AddItemToSet(key.PostFeedKey, entry.ReferencePostId));
                         //keep only last 100 newsfeed items
@@ -69,6 +69,29 @@ namespace SFeed.RedisRepository.Implementation
                     trans.Commit();
                 }
             }
+        }
+
+        public void UpdateFeed(string userId, IEnumerable<NewsfeedEventModel> events)
+        {
+            var feedKey = GetEntryKey(FeedPrefix, userId);
+            using (var client = GetClientInstance())
+            {
+                var keys = client.ScanAllKeys(feedKey);
+                client.RemoveAll(keys);
+                using (var transaction = client.CreateTransaction())
+                {
+                   
+                    foreach (var userEvent in events)
+                    {
+                        var activityEntry = MapToActivity(userEvent);
+                        var actionKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", userEvent.ReferencePostId));
+                        transaction.QueueCommand(r => r.AddItemToSet(feedKey, userEvent.ReferencePostId));
+                        transaction.QueueCommand(r => r.IncrementItemInSortedSet(actionKey, activityEntry, 1));
+                    }
+                    transaction.Commit();
+                }
+            }
+
         }
 
         /// <summary>

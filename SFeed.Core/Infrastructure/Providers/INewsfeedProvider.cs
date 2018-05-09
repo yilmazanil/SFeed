@@ -10,5 +10,6 @@ namespace SFeed.Core.Infrastructure.Providers
         void RemoveNewsfeedItem(NewsfeedItem newsFeedEntry);
         void RemovePost(NewsfeedItem newsFeedEntry);
         IEnumerable<NewsfeedResponseModel> GetUserNewsfeed(string userId, int skip, int take);
+        void GenerateNewsfeed(string userId);
     }
 }

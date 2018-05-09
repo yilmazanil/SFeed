@@ -53,6 +53,7 @@
     <Compile Include="Infrastructure\Repository\IEntryLikeRepository.cs" />
     <Compile Include="Infrastructure\Repository\IFollowerRepository.cs" />
     <Compile Include="Infrastructure\Repository\IWallPostRepository.cs" />
+    <Compile Include="Infrastructure\Repository\INewsfeedRepository.cs" />
     <Compile Include="Infrastructure\Services\ICommentService.cs" />
     <Compile Include="Models\Comments\CommentCreateRequest.cs" />
     <Compile Include="Models\Comments\CommentCreateResponse.cs" />

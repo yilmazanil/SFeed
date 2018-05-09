@@ -23,5 +23,7 @@ namespace SFeed.Core.Infrastructure.Caching
         /// <param name="user">User to remove from</param>
         /// <param name="postIds">Post ids</param>
         //void RemovePostsFromUser(string user, IEnumerable<string> postIds);
+
+        void UpdateFeed(string userId, IEnumerable<NewsfeedEventModel> events);
     }
 }

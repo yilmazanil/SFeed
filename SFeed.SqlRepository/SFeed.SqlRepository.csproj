@@ -54,6 +54,9 @@
     <Compile Include="GetComments_Result.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetInitialFeedPosts_Result.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetLatestComments_Result.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
@@ -72,6 +75,7 @@
     <Compile Include="Implementation\CommentRepository.cs" />
     <Compile Include="Implementation\EntryLikeRepository.cs" />
     <Compile Include="Implementation\FollowerRepository.cs" />
+    <Compile Include="Implementation\NewsfeedRepository.cs" />
     <Compile Include="Implementation\WallPostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SFeedEntities.Context.cs">

@@ -105,5 +105,14 @@ namespace SFeed.SqlRepository
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetComments_Result>("GetComments", postIdParameter, skipParameter, sizeParameter);
         }
+    
+        public virtual ObjectResult<GetInitialFeedPosts_Result> GetInitialFeedPosts(string userId)
+        {
+            var userIdParameter = userId != null ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetInitialFeedPosts_Result>("GetInitialFeedPosts", userIdParameter);
+        }
     }
 }

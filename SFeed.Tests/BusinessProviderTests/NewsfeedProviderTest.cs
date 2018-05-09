@@ -64,5 +64,11 @@ namespace SFeed.Tests.BusinessProviderTests
             }
             userNewsfeedProvider.RemovePost(newsFeedEntry);
         }
+
+        [TestMethod]
+        public void Newsfeed_Should_Initialize_Newsfeed()
+        {
+            userNewsfeedProvider.GenerateNewsfeed("Adah");
+        }
     }
 }

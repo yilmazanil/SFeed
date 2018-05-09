@@ -7,30 +7,36 @@ using SFeed.Core.Infrastructure.Caching;
 using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.Caching;
 using System;
+using SFeed.Core.Infrastructure.Repository;
+using SFeed.SqlRepository.Implementation;
 
 namespace SFeed.Business.Providers
 {
     public class NewsfeedProvider : INewsfeedProvider
     {
         INewsfeedCacheRepository feedCacheRepo;
+        INewsfeedRepository feedRepo;
         IFollowerProvider followerProvider;
         INewsfeedReaderCacheRepository newsFeedResponseRepo;
 
         public NewsfeedProvider() : this(
             new RedisNewsfeedEntryRepository(),
             new FollowerProvider(),
-            new RedisNewsfeedResponseRepository())
+            new RedisNewsfeedResponseRepository(),
+            new NewsfeedRepository())
         {
 
         }
         public NewsfeedProvider(
             INewsfeedCacheRepository feedCacheRepo,
             IFollowerProvider followerProvider,
-            INewsfeedReaderCacheRepository newsFeedResponseRepo)
+            INewsfeedReaderCacheRepository newsFeedResponseRepo,
+            INewsfeedRepository newsFeedRepo)
         {
             this.feedCacheRepo = feedCacheRepo;
             this.followerProvider = followerProvider;
             this.newsFeedResponseRepo = newsFeedResponseRepo;
+            this.feedRepo = newsFeedRepo;
         }
 
         public void AddNewsfeedItem(NewsfeedItem newsFeedEntry)
@@ -130,6 +136,12 @@ namespace SFeed.Business.Providers
         public IEnumerable<NewsfeedResponseModel> GetUserNewsfeed(string userId, int skip, int take)
         {
             return newsFeedResponseRepo.GetUserFeed(userId, skip, take);
+        }
+
+        public void GenerateNewsfeed(string userId)
+        {
+            var feeds = feedRepo.Generate(userId);
+            feedCacheRepo.UpdateFeed(userId, feeds);
         }
     }
 }
