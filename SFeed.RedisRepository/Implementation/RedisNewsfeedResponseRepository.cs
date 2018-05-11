@@ -95,13 +95,13 @@ namespace SFeed.RedisRepository.Implementation
                             }
                             else
                             {
-                                client.RemoveItemFromSortedSet(userFeedKey, postId);
+                                client.RemoveItemFromSet(userFeedKey, postId);
                                 client.RemoveEntry(userActionsOnPostKey);
                             }
                         }
                         else
                         {
-                            client.RemoveItemFromSortedSet(userFeedKey, postId);
+                            client.RemoveItemFromSet(userFeedKey, postId);
                         }
                     }
                    
