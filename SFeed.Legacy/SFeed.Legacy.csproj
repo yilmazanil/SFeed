@@ -90,6 +90,11 @@
     <Compile Include="RedisRepository\Implementation\RedisPostLikeCounter.cs" />
     <Compile Include="RedisRepository\Implementation\RedisUserFollowerRepository.cs" />
     <Compile Include="RedisRepository\Implementation\RedisWallPostRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisCommentCountRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisEntryLikeRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisFollowerRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisNewsfeedEntryRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisWallPostRepository.cs" />
     <Compile Include="SqlRepository\Base\SqlRepositoryBase.cs" />
     <Compile Include="SqlRepository\GroupFollower.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
@@ -177,6 +182,7 @@
       <LastGenOutput>SFeedEntities.cs</LastGenOutput>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

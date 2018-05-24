@@ -220,6 +220,30 @@
     <edmx:ConceptualModels>
       <Schema Namespace="SocialFeedDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SocialFeedEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="GetLatestComments" ReturnType="Collection(SocialFeedDataModel.GetLatestComments_Result)">
+          <Parameter Name="PostId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetWallPost" ReturnType="Collection(SocialFeedDataModel.GetWallPost_Result)">
+          <Parameter Name="PostId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetUserWall" ReturnType="Collection(SocialFeedDataModel.GetWall_Result)">
+            <Parameter Name="UserId" Mode="In" Type="String" />
+            <Parameter Name="OlderThan" Mode="In" Type="DateTime" />
+            <Parameter Name="Size" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetGroupWall" ReturnType="Collection(SocialFeedDataModel.GetWall_Result)">
+            <Parameter Name="GroupId" Mode="In" Type="String" />
+            <Parameter Name="OlderThan" Mode="In" Type="DateTime" />
+            <Parameter Name="Size" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetComments" ReturnType="Collection(SocialFeedDataModel.GetComments_Result)">
+            <Parameter Name="PostId" Mode="In" Type="String" />
+            <Parameter Name="Skip" Mode="In" Type="Int32" />
+            <Parameter Name="Size" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetInitialFeedPosts" ReturnType="Collection(SocialFeedDataModel.GetInitialFeedPosts_Result)">
+          <Parameter Name="UserId" Mode="In" Type="String" />
+          </FunctionImport>
           <EntitySet Name="GroupFollower" EntityType="SocialFeedDataModel.GroupFollower" />
           <EntitySet Name="GroupWall" EntityType="SocialFeedDataModel.GroupWall" />
           <EntitySet Name="UserComment" EntityType="SocialFeedDataModel.UserComment" />
@@ -253,31 +277,65 @@
             <End Role="WallPost" EntitySet="WallPost" />
             <End Role="WallPostLike" EntitySet="WallPostLike" />
           </AssociationSet>
-          <FunctionImport Name="GetLatestComments" ReturnType="Collection(SocialFeedDataModel.GetLatestComments_Result)">
-          <Parameter Name="PostId" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="GetWallPost" ReturnType="Collection(SocialFeedDataModel.GetWallPost_Result)">
-          <Parameter Name="PostId" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="GetUserWall" ReturnType="Collection(SocialFeedDataModel.GetWall_Result)">
-            <Parameter Name="UserId" Mode="In" Type="String" />
-            <Parameter Name="OlderThan" Mode="In" Type="DateTime" />
-            <Parameter Name="Size" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="GetGroupWall" ReturnType="Collection(SocialFeedDataModel.GetWall_Result)">
-            <Parameter Name="GroupId" Mode="In" Type="String" />
-            <Parameter Name="OlderThan" Mode="In" Type="DateTime" />
-            <Parameter Name="Size" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="GetComments" ReturnType="Collection(SocialFeedDataModel.GetComments_Result)">
-            <Parameter Name="PostId" Mode="In" Type="String" />
-            <Parameter Name="Skip" Mode="In" Type="Int32" />
-            <Parameter Name="Size" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="GetInitialFeedPosts" ReturnType="Collection(SocialFeedDataModel.GetInitialFeedPosts_Result)">
-            <Parameter Name="UserId" Mode="In" Type="String" />
-          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="GetLatestComments_Result">
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetWallPost_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="Byte" Name="PostType" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="CommentCount" Nullable="true" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+          <Property Type="String" Name="UserId" Nullable="true" MaxLength="255" />
+          <Property Type="String" Name="GroupId" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="GetWall_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="Byte" Name="PostType" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int64" Name="RowNumber" Nullable="true" />
+          <Property Type="String" Name="CommentBody" Nullable="true" />
+          <Property Type="String" Name="CommentCreatedBy" Nullable="true" MaxLength="255" />
+          <Property Type="DateTime" Name="CommentCreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int64" Name="CommentId" Nullable="true" />
+          <Property Type="DateTime" Name="CommentModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="WallPostId" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="CommentLikeCount" Nullable="true" />
+          <Property Type="Int32" Name="CommentCount" Nullable="true" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetComments_Result">
+          <Property Type="Int64" Name="RowNumber" Nullable="true" />
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Body" Nullable="false" />
+          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Int32" Name="LikeCount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetInitialFeedPosts_Result">
+          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="EventDetail" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="EventBy" Nullable="true" MaxLength="255" />
+        </ComplexType>
         <EntityType Name="GroupFollower">
           <Key>
             <PropertyRef Name="GroupId" />
@@ -441,154 +499,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <ComplexType Name="GetLatestComments_Result">
-          <Property Type="Int64" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Body" Nullable="false" />
-          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
-          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
-          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
-          <Property Type="Int32" Name="LikeCount" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="GetWallPost_Result">
-          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="Body" Nullable="false" />
-          <Property Type="Byte" Name="PostType" Nullable="false" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
-          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
-          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
-          <Property Type="Int32" Name="CommentCount" Nullable="true" />
-          <Property Type="Int32" Name="LikeCount" Nullable="true" />
-          <Property Type="String" Name="UserId" Nullable="true" MaxLength="255" />
-          <Property Type="String" Name="GroupId" Nullable="true" MaxLength="50" />
-        </ComplexType>
-        <ComplexType Name="GetWall_Result">
-          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="Body" Nullable="false" />
-          <Property Type="Byte" Name="PostType" Nullable="false" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
-          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
-          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
-          <Property Type="Int64" Name="RowNumber" Nullable="true" />
-          <Property Type="String" Name="CommentBody" Nullable="true" />
-          <Property Type="String" Name="CommentCreatedBy" Nullable="true" MaxLength="255" />
-          <Property Type="DateTime" Name="CommentCreatedDate" Nullable="true" Precision="23" />
-          <Property Type="Int64" Name="CommentId" Nullable="true" />
-          <Property Type="DateTime" Name="CommentModifiedDate" Nullable="true" Precision="23" />
-          <Property Type="String" Name="WallPostId" Nullable="true" MaxLength="50" />
-          <Property Type="Int32" Name="CommentLikeCount" Nullable="true" />
-          <Property Type="Int32" Name="CommentCount" Nullable="true" />
-          <Property Type="Int32" Name="LikeCount" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="GetComments_Result">
-          <Property Type="Int64" Name="RowNumber" Nullable="true" />
-          <Property Type="Int64" Name="Id" Nullable="false" />
-          <Property Type="String" Name="Body" Nullable="false" />
-          <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="255" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
-          <Property Type="String" Name="WallPostId" Nullable="false" MaxLength="50" />
-          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
-          <Property Type="Int32" Name="LikeCount" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="GetInitialFeedPosts_Result">
-          <Property Type="String" Name="Id" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="EventDetail" Nullable="false" MaxLength="8" />
-          <Property Type="String" Name="EventBy" Nullable="true" MaxLength="255" />
-        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SocialFeedDataModelStoreContainer" CdmEntityContainer="SocialFeedEntities">
-          <EntitySetMapping Name="GroupFollower">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupFollower">
-              <MappingFragment StoreEntitySet="GroupFollower">
-                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
-                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GroupWall">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupWall">
-              <MappingFragment StoreEntitySet="GroupWall">
-                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
-                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserComment">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.UserComment">
-              <MappingFragment StoreEntitySet="UserComment">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Body" ColumnName="Body" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserCommentLike">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.UserCommentLike">
-              <MappingFragment StoreEntitySet="UserCommentLike">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserFollower">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.UserFollower">
-              <MappingFragment StoreEntitySet="UserFollower">
-                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserWall">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.UserWall">
-              <MappingFragment StoreEntitySet="UserWall">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WallPost">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPost">
-              <MappingFragment StoreEntitySet="WallPost">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="PostType" ColumnName="PostType" />
-                <ScalarProperty Name="Body" ColumnName="Body" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WallPostLike">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostLike">
-              <MappingFragment StoreEntitySet="WallPostLike">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WallPostType">
-            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostType">
-              <MappingFragment StoreEntitySet="WallPostType">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="GetLatestComments" FunctionName="SocialFeedDataModel.Store.GetLatestComments">
             <ResultMapping>
               <ComplexTypeMapping TypeName="SocialFeedDataModel.GetLatestComments_Result">
@@ -690,6 +606,90 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="GroupFollower">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupFollower">
+              <MappingFragment StoreEntitySet="GroupFollower">
+                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupWall">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.GroupWall">
+              <MappingFragment StoreEntitySet="GroupWall">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserComment">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserComment">
+              <MappingFragment StoreEntitySet="UserComment">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserCommentLike">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserCommentLike">
+              <MappingFragment StoreEntitySet="UserCommentLike">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CommentId" ColumnName="CommentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserFollower">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserFollower">
+              <MappingFragment StoreEntitySet="UserFollower">
+                <ScalarProperty Name="FollowerId" ColumnName="FollowerId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserWall">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.UserWall">
+              <MappingFragment StoreEntitySet="UserWall">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPost">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPost">
+              <MappingFragment StoreEntitySet="WallPost">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PostType" ColumnName="PostType" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPostLike">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostLike">
+              <MappingFragment StoreEntitySet="WallPostLike">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="WallPostId" ColumnName="WallPostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WallPostType">
+            <EntityTypeMapping TypeName="SocialFeedDataModel.WallPostType">
+              <MappingFragment StoreEntitySet="WallPostType">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

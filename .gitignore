@@ -297,5 +297,7 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
 *.config
 SFeed.Tests/App.config
+SFeed.SqlRepository/App.config

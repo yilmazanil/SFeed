@@ -12,44 +12,44 @@ namespace SFeed.RedisRepository.Implementation
         public void DecrementCommentLikeCount(long commentId)
         {
             var entryKey = GetEntryKey(commentLikeCounterPrefix, commentId.ToString());
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.StringDecrement(entryKey);
+            Decrement(entryKey);
         }
 
         public void DecrementPostLikeCount(string postId)
         {
             var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.StringDecrement(entryKey);
+            Decrement(entryKey);
         }
 
         public void IncrementCommentLikeCount(long commentId)
         {
             var entryKey = GetEntryKey(commentLikeCounterPrefix , commentId.ToString());
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.StringIncrement(entryKey);
+            Increment(entryKey);
         }
 
         public void IncrementPostLikeCount(string postId)
         {
             var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.StringIncrement(entryKey);
+            Increment(entryKey);
         }
         public int GetPostLikeCount(string postId)
         {
             var entryKey = GetEntryKey(postLikeCounterPrefix, postId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            var value = db.StringGet(entryKey);
-            return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            using (var client = GetClientInstance())
+            {
+                var value = client.GetValue(entryKey);
+                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            }
         }
 
         public int GetCommentLikeCount(long commentId)
         {
             var entryKey = GetEntryKey(commentLikeCounterPrefix, commentId.ToString());
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            var value = db.StringGet(entryKey);
-            return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            using (var client = GetClientInstance())
+            {
+                var value = client.GetValue(entryKey);
+                return !string.IsNullOrWhiteSpace(value) ? Convert.ToInt32(value) : 0;
+            }
         }
     }
 }

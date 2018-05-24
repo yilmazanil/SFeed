@@ -38,7 +38,7 @@ namespace SFeed.Tests.BusinessProviderTests
         [TestMethod]
         public void Should_Create_And_Get_Post()
         {
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var sampleUser = GetRandomUserName();
                 var sampleUserWall = GetRandomUserWallOwner(true);

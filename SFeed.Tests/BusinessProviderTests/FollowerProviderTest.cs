@@ -2,7 +2,6 @@
 using SFeed.Core.Infrastructure.Providers;
 using SFeed.Business.Providers;
 using System.Linq;
-using SFeed.Core.Models;
 using System.Collections.Generic;
 
 namespace SFeed.Tests.BusinessProviderTests

@@ -7,7 +7,7 @@ namespace SFeed.RedisRepository.Base
 {
     public static class RedisConnectionProvider
     {
-        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["RedisConnection"].ConnectionString;
+        //private static readonly string connectionString = ConfigurationManager.ConnectionStrings["RedisConnection"].ConnectionString;
 
         private static readonly IEnumerable<string> RedisSlaves = ConfigurationManager.ConnectionStrings["RedisSlaveConnections"].ConnectionString.Split(',');
 

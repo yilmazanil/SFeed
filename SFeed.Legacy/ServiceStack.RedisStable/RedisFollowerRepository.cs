@@ -1,7 +1,8 @@
 ﻿using SFeed.Core.Infrastructure.Caching;
 using SFeed.RedisRepository.Base;
 using System.Collections.Generic;
-using System.Linq;
+using SFeed.Core.Models.Follower;
+using System;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -13,43 +14,55 @@ namespace SFeed.RedisRepository.Implementation
         public void FollowUser(string userId, string followerId)
         {
             var entryKey = GetEntryKey(UserCachePrefix, userId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.SetAdd(entryKey, followerId);
+            using (var redisClient = GetClientInstance())
+            {
+                redisClient.Sets[entryKey].Add(followerId);
+            }
         }
 
         public void FollowGroup(string groupId, string followerId)
         {
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.SetAdd(entryKey, followerId);
+            using (var redisClient = GetClientInstance())
+            {
+                redisClient.Sets[entryKey].Add(followerId);
+            }
         }
 
         public void UnfollowUser(string userId, string followerId)
         {
             var entryKey = GetEntryKey(UserCachePrefix, userId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.SetRemove(entryKey, followerId);
+            using (var redisClient = GetClientInstance())
+            {
+                redisClient.Sets[entryKey].Remove(followerId);
+            }
         }
 
         public void UnfollowGroup(string groupId, string followerId)
         {
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            db.SetRemove(entryKey, followerId);
+            using (var redisClient = GetClientInstance())
+            {
+                redisClient.Sets[entryKey].Remove(followerId);
+            }
         }
 
         public IEnumerable<string> GetUserFollowers(string userId)
         {
             var entryKey = GetEntryKey(UserCachePrefix, userId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            return db.SetMembers(entryKey).Select(p=>p.ToString());
+            using (var redisClient = GetReadOnlyClientInstance())
+            {
+                return redisClient.Sets[entryKey].GetAll();
+            }
         }
 
         public IEnumerable<string> GetGroupFollowers(string groupId)
         {
             var entryKey = GetEntryKey(GroupCachePrefix, groupId);
-            var db = StackExchangeRedisConnectionProvider.GetDataBase();
-            return db.SetMembers(entryKey).Select(p => p.ToString());
+            using (var redisClient = GetReadOnlyClientInstance())
+            {
+               return redisClient.Sets[entryKey].GetAll();
+            }
         }
     }
 }
