@@ -3,6 +3,7 @@ using log4net;
 using SFeed.Business.MapperConfig;
 using SFeed.Business.Providers;
 using SFeed.Core.Models.Newsfeed;
+using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace SFeed.FormsApp
             SetUsername();
             FillFollowers();
             GenerateWallPostGrid();
+            WallSelectionComboBox.SelectedIndex = 0;
+
         }
 
         private void ChangeUsernameButton_Click(object sender, EventArgs e)
@@ -68,6 +71,7 @@ namespace SFeed.FormsApp
         {
             WallOwnerTextBox.Visible = !ShareToOwnWallCheckbox.Checked;
             WallOwnerLabel.Visible = !ShareToOwnWallCheckbox.Checked;
+            WallSelectionComboBox.Visible = !ShareToOwnWallCheckbox.Checked;
         }
 
         private void ShareButton_Click(object sender, EventArgs e)
@@ -78,38 +82,31 @@ namespace SFeed.FormsApp
                 return;
             }
 
-            logger.Debug("Posting to user Wall");
             var request = new WallPostCreateRequest();
             request.Body = ShareTextBox.Text;
             request.PostedBy = FormHelper.Username;
             request.PostType = WallPostType.text;
             if (ShareToOwnWallCheckbox.Checked)
             {
-                request.TargetWall = new Core.Models.Wall.WallModel { OwnerId = FormHelper.Username, WallOwnerType = Core.Models.Wall.WallType.user };
+                request.TargetWall = new WallModel { OwnerId = FormHelper.Username, WallOwnerType = WallType.user };
             }
             else
             {
-                request.TargetWall = new Core.Models.Wall.WallModel { OwnerId = WallOwnerTextBox.Text, WallOwnerType = Core.Models.Wall.WallType.user };
+                var ownerType = WallSelectionComboBox.Text == "Grup" ? WallType.group : WallType.user;
+                request.TargetWall = new WallModel { OwnerId = WallOwnerTextBox.Text, WallOwnerType = ownerType };
             }
-            logger.Debug("Initializing WallPostProvider");
-            var provider = new WallPostProvider();
-            logger.Debug("Initializing WallPostProvider Complete");
-            var postId = provider.AddPost(request);
-            logger.Debug("Posting to user Wall complete");
 
-            logger.Debug("Initializing NewsfeedProvider");
+            var provider = new WallPostProvider();
+            var postId = provider.AddPost(request);
             var feedProvider = new NewsfeedProvider();
-            logger.Debug("Initializing NewsfeedProvider Complete");
             var newsFeedEntry = new NewsfeedItem
             {
                 By = request.PostedBy,
                 ReferencePostId = postId,
                 FeedType = NewsfeedActionType.wallpost,
-                WallOwner = new Core.Models.Wall.NewsfeedWallModel { IsPublic = true, OwnerId = request.PostedBy, WallOwnerType = Core.Models.Wall.WallType.user }
+                WallOwner = new NewsfeedWallModel { IsPublic = true, OwnerId = request.PostedBy, WallOwnerType = WallType.user }
             };
-            logger.Debug("Adding Feed Item");
             feedProvider.AddNewsfeedItem(newsFeedEntry);
-            logger.Debug("Adding Feed Item Complete");
         }
 
         private void FillFollowers()
@@ -158,7 +155,7 @@ namespace SFeed.FormsApp
             WallPostGridView.Columns.Add("ModifiedDate", "Güncellenme Tarihi");
             WallPostGridView.Columns.Add("LikeCount", "Beğeni Sayısı");
             WallPostGridView.Columns.Add("CommentCount", "Yorum Sayısı");
- 
+
             var likeButton = new DataGridViewCheckBoxColumn();
             likeButton.Name = "Like";
             likeButton.HeaderText = "Beğen";
@@ -201,7 +198,7 @@ namespace SFeed.FormsApp
 
 
             var provider = new NewsfeedProvider();
-            var posts = provider.GetUserNewsfeed(FormHelper.Username, 0 , 1000);
+            var posts = provider.GetUserNewsfeed(FormHelper.Username, 0, 1000);
 
 
             foreach (var post in posts)
@@ -221,7 +218,7 @@ namespace SFeed.FormsApp
         private void WallPostGridView_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
             var likeColumnIndex = WallPostGridView.Columns["Like"].Index;
-            if (e.ColumnIndex == likeColumnIndex && e.RowIndex>=0)
+            if (e.ColumnIndex == likeColumnIndex && e.RowIndex >= 0)
             {
                 WallPostGridView.EndEdit();
                 var row = WallPostGridView.Rows[e.RowIndex];
@@ -290,6 +287,47 @@ namespace SFeed.FormsApp
         private void RefreshNewsFeedButton_Click(object sender, EventArgs e)
         {
             GenerateNewsFeedGrid();
+        }
+
+        private void RefreshGroupWallButton_Click(object sender, EventArgs e)
+        {
+            var groupName = GroupWallGroupNameTextBox.Text;
+
+
+            GroupWallGridView.Rows.Clear();
+            GroupWallGridView.Columns.Clear();
+            GroupWallGridView.Columns.Add("Id", "Id");
+            GroupWallGridView.Columns.Add("Body", "İçerik");
+            GroupWallGridView.Columns.Add("PostedBy", "Paylaşan");
+            GroupWallGridView.Columns.Add("CreatedDate", "Paylaşım Tarihi");
+            GroupWallGridView.Columns.Add("ModifiedDate", "Güncellenme Tarihi");
+            GroupWallGridView.Columns.Add("LikeCount", "Beğeni Sayısı");
+            GroupWallGridView.Columns.Add("CommentCount", "Yorum Sayısı");
+
+            var likeButton = new DataGridViewCheckBoxColumn();
+            likeButton.Name = "Like";
+            likeButton.HeaderText = "Beğen";
+            GroupWallGridView.Columns.Add(likeButton);
+            var commentButton = new DataGridViewButtonColumn();
+            commentButton.Name = "Comment";
+            commentButton.HeaderText = "Comment";
+            commentButton.Text = "Beğen";
+            GroupWallGridView.Columns.Add(commentButton);
+            var commentCountButton = new DataGridViewButtonColumn();
+            commentCountButton.Name = "CommentDetails";
+            commentCountButton.HeaderText = "Yorumlar";
+            commentCountButton.Text = "Yorumlar";
+            GroupWallGridView.Columns.Add(commentCountButton);
+
+
+            var provider = new WallPostProvider();
+            var posts = provider.GetGroupWallDetailed(groupName, DateTime.Now, 1000);
+
+
+            foreach (var post in posts)
+            {
+                GroupWallGridView.Rows.Add(post.Id, post.Body, post.PostedBy, post.CreatedDate, post.ModifiedDate, post.LikeCount, post.CommentCount, false);
+            }
         }
     }
 }

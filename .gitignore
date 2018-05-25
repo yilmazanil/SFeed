@@ -301,3 +301,4 @@ __pycache__/
 *.config
 SFeed.Tests/App.config
 SFeed.SqlRepository/App.config
+*.config

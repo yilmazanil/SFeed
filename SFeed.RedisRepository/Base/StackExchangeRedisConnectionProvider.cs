@@ -27,7 +27,7 @@ namespace SFeed.RedisRepository.Base
 
         internal static IServer GetServer()
         {
-            return redisConnectionMultiplexer.GetServer(ConfigurationManager.ConnectionStrings["RedisMasterConnection"].ConnectionString);
+            return redisConnectionMultiplexer.GetServer(ConfigurationManager.ConnectionStrings["RedisMasterConnection"].ConnectionString, 6379);
         }
     }
 }

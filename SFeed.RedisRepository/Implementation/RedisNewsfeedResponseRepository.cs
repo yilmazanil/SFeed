@@ -6,6 +6,7 @@ using SFeed.RedisRepository.Base;
 using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.Newsfeed;
 using System.Linq;
+using StackExchange.Redis;
 
 namespace SFeed.RedisRepository.Implementation
 {
@@ -39,75 +40,74 @@ namespace SFeed.RedisRepository.Implementation
             List<NewsfeedResponseModel> responseItems = new List<NewsfeedResponseModel>();
             var startIndex = skip;
             var counter = 0;
+            var db = StackExchangeRedisConnectionProvider.GetDataBase();
+            var allPostIds = db.SetMembers(userFeedKey).ToList();
 
-            using (var client = GetClientInstance())
+            if (allPostIds != null && allPostIds.Count > 0)
             {
-                var allPostIds = client.GetAllItemsFromSet(userFeedKey);
-                if (allPostIds != null && allPostIds.Count > 0)
+                IEnumerable<RedisValue> postIds;
+                if (allPostIds.Count > take)
                 {
-                    IEnumerable<string> postIds;
-                    if (allPostIds.Count > take)
+                    postIds = allPostIds.Skip(skip).Take(take);
+                }
+                else
+                {
+                    postIds = allPostIds.Take(take);
+                }
+                foreach (var postId in postIds)
+                {
+                    //Read post from cache
+                    var currentPost = wallPostRepo.GetPost(postId);
+                    if (currentPost != null)
                     {
-                        postIds = allPostIds.Skip(skip).Take(take);
-                    }
-                    else
-                    {
-                        postIds = allPostIds.Take(take);
-                    }
-                    foreach (var postId in postIds)
-                    {
-                        //Read post from cache
-                        var currentPost = wallPostRepo.GetPost(postId);
-                        if (currentPost != null)
+                        var userActionsOnPostKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
+                        //10000 is just a random rank assumed to be the max events on a post
+                        var userActionsOnPost = db.SortedSetRangeByScoreWithScores(userActionsOnPostKey, 0, 10000);
+                        if (userActionsOnPost != null && userActionsOnPost.Length > 0)
                         {
-                            var userActionsOnPostKey = GetEntryKey(FeedPrefix, string.Concat(userId, ":", postId));
-                            //10000 is just a random rank assumed to be the max events on a post
-                            var userActionsOnPost = client.GetRangeFromSortedSet(userActionsOnPostKey, 0, 10000);
-                            if (userActionsOnPost != null && userActionsOnPost.Count > 0)
+                            var mappedActions = new List<NewsfeedAction>();
+                            foreach (var action in userActionsOnPost)
                             {
-                                var mappedActions = new List<NewsfeedAction>();
-                                foreach (var action in userActionsOnPost)
-                                {
-                                    var values = action.Split(':');
-                                    mappedActions.Add(new NewsfeedAction { Action = (NewsfeedActionType)Convert.ToInt16(values[1]), By = values[0] });
-                                }
-                                var totalCommentCount = commentCountRepo.GetCommentCount(currentPost.Id);
-                                var totalLikeCount = entryLikeRepo.GetPostLikeCount(currentPost.Id);
-
-                                var model = new NewsfeedResponseModel
-                                {
-                                    Body = currentPost.Body,
-                                    CreatedDate = currentPost.CreatedDate,
-                                    Id = currentPost.Id,
-                                    ModifiedDate = currentPost.ModifiedDate,
-                                    PostedBy = currentPost.PostedBy,
-                                    PostType = currentPost.PostType,
-                                    WallOwner = new WallModel { OwnerId = currentPost.TargetWall.Id, WallOwnerType = (WallType)currentPost.TargetWall.WallOwnerTypeId},
-                                    FeedDescription = mappedActions,
-                                    LikeCount = totalLikeCount,
-                                    CommentCount = totalCommentCount
-                                };
-                                responseItems.Add(model);
-
-                                counter++;
-                                if (counter == take) break;
-
+                                var values = action.Element.ToString().Split(':');
+                                mappedActions.Add(new NewsfeedAction { Action = (NewsfeedActionType)Convert.ToInt16(values[1]), By = values[0] });
                             }
-                            else
+                            var totalCommentCount = commentCountRepo.GetCommentCount(currentPost.Id);
+                            var totalLikeCount = entryLikeRepo.GetPostLikeCount(currentPost.Id);
+
+                            var model = new NewsfeedResponseModel
                             {
-                                client.RemoveItemFromSet(userFeedKey, postId);
-                                client.RemoveEntry(userActionsOnPostKey);
-                            }
+                                Body = currentPost.Body,
+                                CreatedDate = currentPost.CreatedDate,
+                                Id = currentPost.Id,
+                                ModifiedDate = currentPost.ModifiedDate,
+                                PostedBy = currentPost.PostedBy,
+                                PostType = currentPost.PostType,
+                                WallOwner = new WallModel { OwnerId = currentPost.TargetWall.Id, WallOwnerType = (WallType)currentPost.TargetWall.WallOwnerTypeId },
+                                FeedDescription = mappedActions,
+                                LikeCount = totalLikeCount,
+                                CommentCount = totalCommentCount
+                            };
+                            responseItems.Add(model);
+
+                            counter++;
+                            if (counter == take) break;
+
                         }
                         else
                         {
-                            client.RemoveItemFromSet(userFeedKey, postId);
+                            db.SetRemove(userFeedKey, postId);
+                            db.KeyDelete(userActionsOnPostKey);
                         }
                     }
-                   
+                    else
+                    {
+                        db.SetRemove(userFeedKey, postId);
+                    }
                 }
-                return responseItems;
+
             }
+            return responseItems;
+
         }
     }
 }

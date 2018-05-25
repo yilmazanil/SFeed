@@ -94,6 +94,7 @@
     <Compile Include="ServiceStack.RedisStable\RedisEntryLikeRepository.cs" />
     <Compile Include="ServiceStack.RedisStable\RedisFollowerRepository.cs" />
     <Compile Include="ServiceStack.RedisStable\RedisNewsfeedEntryRepository.cs" />
+    <Compile Include="ServiceStack.RedisStable\RedisNewsfeedResponseRepository.cs" />
     <Compile Include="ServiceStack.RedisStable\RedisWallPostRepository.cs" />
     <Compile Include="SqlRepository\Base\SqlRepositoryBase.cs" />
     <Compile Include="SqlRepository\GroupFollower.cs">

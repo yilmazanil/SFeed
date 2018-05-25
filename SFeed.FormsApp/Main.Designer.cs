@@ -50,32 +50,40 @@
             this.FollowersLabel = new System.Windows.Forms.Label();
             this.FollowersListBox = new System.Windows.Forms.ListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.RefreshWallPostButton = new System.Windows.Forms.Button();
             this.WallPostGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.WallPostBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.RefreshWallPostButton = new System.Windows.Forms.Button();
-            this.NewsFeedGridView = new System.Windows.Forms.DataGridView();
             this.RefreshNewsFeedButton = new System.Windows.Forms.Button();
+            this.NewsFeedGridView = new System.Windows.Forms.DataGridView();
+            this.WallPostBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.WallSelectionComboBox = new System.Windows.Forms.ComboBox();
+            this.GroupWallTab = new System.Windows.Forms.TabPage();
+            this.GroupWallGroupNameTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.RefreshGroupWallButton = new System.Windows.Forms.Button();
+            this.GroupWallGridView = new System.Windows.Forms.DataGridView();
             this.MainTabControl.SuspendLayout();
             this.ShareTab.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.WallPostGridView)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.WallPostBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NewsFeedGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WallPostBindingSource)).BeginInit();
+            this.GroupWallTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GroupWallGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // UsernameTextBox
             // 
-            this.UsernameTextBox.Location = new System.Drawing.Point(620, 17);
+            this.UsernameTextBox.Location = new System.Drawing.Point(1067, 17);
             this.UsernameTextBox.Name = "UsernameTextBox";
             this.UsernameTextBox.Size = new System.Drawing.Size(100, 20);
             this.UsernameTextBox.TabIndex = 0;
             // 
             // ChangeUsernameButton
             // 
-            this.ChangeUsernameButton.Location = new System.Drawing.Point(726, 15);
+            this.ChangeUsernameButton.Location = new System.Drawing.Point(1173, 15);
             this.ChangeUsernameButton.Name = "ChangeUsernameButton";
             this.ChangeUsernameButton.Size = new System.Drawing.Size(84, 23);
             this.ChangeUsernameButton.TabIndex = 1;
@@ -86,7 +94,7 @@
             // ChangeUsernameLabel
             // 
             this.ChangeUsernameLabel.AutoSize = true;
-            this.ChangeUsernameLabel.Location = new System.Drawing.Point(544, 20);
+            this.ChangeUsernameLabel.Location = new System.Drawing.Point(991, 20);
             this.ChangeUsernameLabel.Name = "ChangeUsernameLabel";
             this.ChangeUsernameLabel.Size = new System.Drawing.Size(70, 13);
             this.ChangeUsernameLabel.TabIndex = 2;
@@ -97,12 +105,12 @@
             this.ShareTextBox.Location = new System.Drawing.Point(6, 6);
             this.ShareTextBox.Multiline = true;
             this.ShareTextBox.Name = "ShareTextBox";
-            this.ShareTextBox.Size = new System.Drawing.Size(785, 365);
+            this.ShareTextBox.Size = new System.Drawing.Size(1229, 556);
             this.ShareTextBox.TabIndex = 3;
             // 
             // ShareButton
             // 
-            this.ShareButton.Location = new System.Drawing.Point(707, 377);
+            this.ShareButton.Location = new System.Drawing.Point(1151, 579);
             this.ShareButton.Name = "ShareButton";
             this.ShareButton.Size = new System.Drawing.Size(84, 27);
             this.ShareButton.TabIndex = 4;
@@ -115,7 +123,7 @@
             this.ShareToOwnWallCheckbox.AutoSize = true;
             this.ShareToOwnWallCheckbox.Checked = true;
             this.ShareToOwnWallCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShareToOwnWallCheckbox.Location = new System.Drawing.Point(594, 385);
+            this.ShareToOwnWallCheckbox.Location = new System.Drawing.Point(1038, 587);
             this.ShareToOwnWallCheckbox.Name = "ShareToOwnWallCheckbox";
             this.ShareToOwnWallCheckbox.Size = new System.Drawing.Size(107, 17);
             this.ShareToOwnWallCheckbox.TabIndex = 5;
@@ -125,7 +133,7 @@
             // 
             // WallOwnerTextBox
             // 
-            this.WallOwnerTextBox.Location = new System.Drawing.Point(592, 404);
+            this.WallOwnerTextBox.Location = new System.Drawing.Point(1036, 606);
             this.WallOwnerTextBox.Name = "WallOwnerTextBox";
             this.WallOwnerTextBox.Size = new System.Drawing.Size(109, 20);
             this.WallOwnerTextBox.TabIndex = 6;
@@ -134,7 +142,7 @@
             // WallOwnerLabel
             // 
             this.WallOwnerLabel.AutoSize = true;
-            this.WallOwnerLabel.Location = new System.Drawing.Point(707, 407);
+            this.WallOwnerLabel.Location = new System.Drawing.Point(1151, 609);
             this.WallOwnerLabel.Name = "WallOwnerLabel";
             this.WallOwnerLabel.Size = new System.Drawing.Size(69, 13);
             this.WallOwnerLabel.TabIndex = 7;
@@ -143,18 +151,23 @@
             // 
             // MainTabControl
             // 
+            this.MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MainTabControl.Controls.Add(this.ShareTab);
             this.MainTabControl.Controls.Add(this.tabPage2);
             this.MainTabControl.Controls.Add(this.tabPage1);
             this.MainTabControl.Controls.Add(this.tabPage3);
+            this.MainTabControl.Controls.Add(this.GroupWallTab);
             this.MainTabControl.Location = new System.Drawing.Point(12, 44);
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(822, 473);
+            this.MainTabControl.Size = new System.Drawing.Size(1265, 671);
             this.MainTabControl.TabIndex = 8;
             // 
             // ShareTab
             // 
+            this.ShareTab.Controls.Add(this.WallSelectionComboBox);
             this.ShareTab.Controls.Add(this.ShareTextBox);
             this.ShareTab.Controls.Add(this.WallOwnerTextBox);
             this.ShareTab.Controls.Add(this.WallOwnerLabel);
@@ -163,7 +176,7 @@
             this.ShareTab.Location = new System.Drawing.Point(4, 22);
             this.ShareTab.Name = "ShareTab";
             this.ShareTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ShareTab.Size = new System.Drawing.Size(803, 434);
+            this.ShareTab.Size = new System.Drawing.Size(1257, 645);
             this.ShareTab.TabIndex = 0;
             this.ShareTab.Text = "Paylaş";
             this.ShareTab.UseVisualStyleBackColor = true;
@@ -182,7 +195,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(803, 434);
+            this.tabPage2.Size = new System.Drawing.Size(1257, 645);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Takip";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -275,17 +288,27 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(814, 447);
+            this.tabPage1.Size = new System.Drawing.Size(1257, 645);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Duvar";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // RefreshWallPostButton
+            // 
+            this.RefreshWallPostButton.Location = new System.Drawing.Point(1166, 21);
+            this.RefreshWallPostButton.Name = "RefreshWallPostButton";
+            this.RefreshWallPostButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshWallPostButton.TabIndex = 1;
+            this.RefreshWallPostButton.Text = "Yenile";
+            this.RefreshWallPostButton.UseVisualStyleBackColor = true;
+            this.RefreshWallPostButton.Click += new System.EventHandler(this.RefreshWallPostButton_Click);
             // 
             // WallPostGridView
             // 
             this.WallPostGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.WallPostGridView.Location = new System.Drawing.Point(6, 50);
             this.WallPostGridView.Name = "WallPostGridView";
-            this.WallPostGridView.Size = new System.Drawing.Size(777, 366);
+            this.WallPostGridView.Size = new System.Drawing.Size(1245, 589);
             this.WallPostGridView.TabIndex = 0;
             this.WallPostGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.WallPostGridView_CellContentClick);
             this.WallPostGridView.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WallPostGridView_CellMouseUp);
@@ -297,32 +320,14 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(814, 447);
+            this.tabPage3.Size = new System.Drawing.Size(1257, 645);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Haber Kaynağı";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // RefreshWallPostButton
-            // 
-            this.RefreshWallPostButton.Location = new System.Drawing.Point(708, 21);
-            this.RefreshWallPostButton.Name = "RefreshWallPostButton";
-            this.RefreshWallPostButton.Size = new System.Drawing.Size(75, 23);
-            this.RefreshWallPostButton.TabIndex = 1;
-            this.RefreshWallPostButton.Text = "Yenile";
-            this.RefreshWallPostButton.UseVisualStyleBackColor = true;
-            this.RefreshWallPostButton.Click += new System.EventHandler(this.RefreshWallPostButton_Click);
-            // 
-            // NewsFeedGridView
-            // 
-            this.NewsFeedGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.NewsFeedGridView.Location = new System.Drawing.Point(7, 54);
-            this.NewsFeedGridView.Name = "NewsFeedGridView";
-            this.NewsFeedGridView.Size = new System.Drawing.Size(801, 387);
-            this.NewsFeedGridView.TabIndex = 0;
-            // 
             // RefreshNewsFeedButton
             // 
-            this.RefreshNewsFeedButton.Location = new System.Drawing.Point(719, 16);
+            this.RefreshNewsFeedButton.Location = new System.Drawing.Point(1166, 15);
             this.RefreshNewsFeedButton.Name = "RefreshNewsFeedButton";
             this.RefreshNewsFeedButton.Size = new System.Drawing.Size(75, 23);
             this.RefreshNewsFeedButton.TabIndex = 1;
@@ -330,11 +335,81 @@
             this.RefreshNewsFeedButton.UseVisualStyleBackColor = true;
             this.RefreshNewsFeedButton.Click += new System.EventHandler(this.RefreshNewsFeedButton_Click);
             // 
+            // NewsFeedGridView
+            // 
+            this.NewsFeedGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.NewsFeedGridView.Location = new System.Drawing.Point(7, 54);
+            this.NewsFeedGridView.Name = "NewsFeedGridView";
+            this.NewsFeedGridView.Size = new System.Drawing.Size(1244, 585);
+            this.NewsFeedGridView.TabIndex = 0;
+            // 
+            // WallSelectionComboBox
+            // 
+            this.WallSelectionComboBox.FormattingEnabled = true;
+            this.WallSelectionComboBox.Items.AddRange(new object[] {
+            "Kullanıcı",
+            "Grup"});
+            this.WallSelectionComboBox.Location = new System.Drawing.Point(909, 605);
+            this.WallSelectionComboBox.Name = "WallSelectionComboBox";
+            this.WallSelectionComboBox.Size = new System.Drawing.Size(121, 21);
+            this.WallSelectionComboBox.TabIndex = 8;
+            this.WallSelectionComboBox.Visible = false;
+            // 
+            // GroupWallTab
+            // 
+            this.GroupWallTab.Controls.Add(this.GroupWallGridView);
+            this.GroupWallTab.Controls.Add(this.RefreshGroupWallButton);
+            this.GroupWallTab.Controls.Add(this.label1);
+            this.GroupWallTab.Controls.Add(this.GroupWallGroupNameTextBox);
+            this.GroupWallTab.Location = new System.Drawing.Point(4, 22);
+            this.GroupWallTab.Name = "GroupWallTab";
+            this.GroupWallTab.Padding = new System.Windows.Forms.Padding(3);
+            this.GroupWallTab.Size = new System.Drawing.Size(1257, 645);
+            this.GroupWallTab.TabIndex = 4;
+            this.GroupWallTab.Text = "Grup Duvarı";
+            this.GroupWallTab.UseVisualStyleBackColor = true;
+            // 
+            // GroupWallGroupNameTextBox
+            // 
+            this.GroupWallGroupNameTextBox.Location = new System.Drawing.Point(1060, 6);
+            this.GroupWallGroupNameTextBox.Name = "GroupWallGroupNameTextBox";
+            this.GroupWallGroupNameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.GroupWallGroupNameTextBox.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(993, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Grup Adı:";
+            // 
+            // RefreshGroupWallButton
+            // 
+            this.RefreshGroupWallButton.Location = new System.Drawing.Point(1166, 6);
+            this.RefreshGroupWallButton.Name = "RefreshGroupWallButton";
+            this.RefreshGroupWallButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshGroupWallButton.TabIndex = 2;
+            this.RefreshGroupWallButton.Text = "Yenile";
+            this.RefreshGroupWallButton.UseVisualStyleBackColor = true;
+            this.RefreshGroupWallButton.Click += new System.EventHandler(this.RefreshGroupWallButton_Click);
+            // 
+            // GroupWallGridView
+            // 
+            this.GroupWallGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.GroupWallGridView.Location = new System.Drawing.Point(8, 35);
+            this.GroupWallGridView.Name = "GroupWallGridView";
+            this.GroupWallGridView.Size = new System.Drawing.Size(1233, 595);
+            this.GroupWallGridView.TabIndex = 3;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 543);
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(1293, 741);
             this.Controls.Add(this.MainTabControl);
             this.Controls.Add(this.ChangeUsernameLabel);
             this.Controls.Add(this.ChangeUsernameButton);
@@ -350,8 +425,11 @@
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.WallPostGridView)).EndInit();
             this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.WallPostBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NewsFeedGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WallPostBindingSource)).EndInit();
+            this.GroupWallTab.ResumeLayout(false);
+            this.GroupWallTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GroupWallGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -386,6 +464,12 @@
         private System.Windows.Forms.Button RefreshWallPostButton;
         private System.Windows.Forms.Button RefreshNewsFeedButton;
         private System.Windows.Forms.DataGridView NewsFeedGridView;
+        private System.Windows.Forms.ComboBox WallSelectionComboBox;
+        private System.Windows.Forms.TabPage GroupWallTab;
+        private System.Windows.Forms.Button RefreshGroupWallButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox GroupWallGroupNameTextBox;
+        private System.Windows.Forms.DataGridView GroupWallGridView;
     }
 }
 
