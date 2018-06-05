@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\Caching\ICommentCountCacheRepository.cs" />
+    <Compile Include="Infrastructure\Caching\IGroupWallRepository.cs" />
     <Compile Include="Infrastructure\Caching\INewsfeedReaderCacheRepository.cs" />
     <Compile Include="Infrastructure\Common\IRepository.cs" />
     <Compile Include="Infrastructure\Providers\IUserLikeProvider.cs" />
@@ -58,8 +59,10 @@
     <Compile Include="Models\Comments\CommentCreateRequest.cs" />
     <Compile Include="Models\Comments\CommentCreateResponse.cs" />
     <Compile Include="Models\Comments\CommentUpdateRequest.cs" />
+    <Compile Include="Models\Configuration\ConfigurationParameter.cs" />
     <Compile Include="Models\EntryLike\EntryLikePagedModel.cs" />
     <Compile Include="Models\Follower\FollowerPagedModel.cs" />
+    <Compile Include="Models\GroupWall\GroupWallResponseModel.cs" />
     <Compile Include="Models\Newsfeed\NewsfeedAction.cs" />
     <Compile Include="Models\WallPost\WallPostModel.cs" />
     <Compile Include="Models\Wall\NewsfeedWallModel.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Models\WallPost\WallPostType.cs" />
     <Compile Include="Models\WallPost\WallPostUpdateRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WallPostModelJsonConverter.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

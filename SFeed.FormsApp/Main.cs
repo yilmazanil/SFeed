@@ -35,7 +35,33 @@ namespace SFeed.FormsApp
             FillFollowers();
             GenerateWallPostGrid();
             WallSelectionComboBox.SelectedIndex = 0;
+            FollowingTypeCombobox.SelectedIndex = 0;
+            StopFollowingMenuItem.Click += StopFollowingMenuItem_Click;
 
+        }
+
+        private void StopFollowingMenuItem_Click(object sender, EventArgs e)
+        {
+            var item = FollowingListBox.SelectedItem.ToString();
+
+            var parts = item.Split(' ');
+            var length = parts.Length;
+            var toUnfollow = string.Empty;
+            for (int i = 0; i < length - 1; i++)
+            {
+                toUnfollow += parts[i];
+            }
+
+            var followerProvider = new FollowerProvider();
+            if (item.EndsWith("Grup)"))
+            {
+                followerProvider.UnfollowGroup(FormHelper.Username, toUnfollow);
+            }
+            else
+            {
+                followerProvider.UnfollowUser(FormHelper.Username, toUnfollow);
+            }
+            FillFollowers();
         }
 
         private void ChangeUsernameButton_Click(object sender, EventArgs e)
@@ -114,7 +140,9 @@ namespace SFeed.FormsApp
             var followerProvider = new FollowerProvider();
             var followers = followerProvider.GetUserFollowers(FormHelper.Username).ToList();
             var cachedFollowers = followerProvider.GetUserFollowersCached(FormHelper.Username).ToList();
-            var following = followerProvider.GetFollowingUsersPaged(FormHelper.Username, 0, 1000).Records.ToList();
+            var followingUsers = followerProvider.GetFollowingUsersPaged(FormHelper.Username, 0, 1000).Records.Select(p=>string.Concat(p," (Kullanıcı)")).ToList();
+            var followingGroups = followerProvider.GetFollowingGroupsPaged(FormHelper.Username, 0, 1000).Records.Select(p=>string.Concat(p," (Grup)")).ToList();
+            var following = followingUsers.Union(followingGroups).ToList();
 
             FollowersListBox.DataSource = null;
             FollowersListBox.Items.Clear();
@@ -131,11 +159,18 @@ namespace SFeed.FormsApp
         {
             if (string.IsNullOrWhiteSpace(FollowUserTextBox.Text))
             {
-                MessageBox.Show("Takip edilecek kullanıcı adı seçmediniz!");
+                MessageBox.Show("Takip edilecek kullanıcı/grup seçmediniz!");
                 return;
             }
             var followerProvider = new FollowerProvider();
-            followerProvider.FollowUser(FormHelper.Username, FollowUserTextBox.Text);
+            if (FollowingTypeCombobox.Text == "Grup")
+            {
+                followerProvider.FollowGroup(FormHelper.Username, FollowUserTextBox.Text);
+            }
+            else
+            {
+                followerProvider.FollowUser(FormHelper.Username, FollowUserTextBox.Text);
+            }
             FillFollowers();
         }
 
@@ -321,12 +356,66 @@ namespace SFeed.FormsApp
 
 
             var provider = new WallPostProvider();
-            var posts = provider.GetGroupWallDetailed(groupName, DateTime.Now, 1000);
+            var posts = provider.GetGroupWall(groupName, 0, 100);
 
 
             foreach (var post in posts)
             {
                 GroupWallGridView.Rows.Add(post.Id, post.Body, post.PostedBy, post.CreatedDate, post.ModifiedDate, post.LikeCount, post.CommentCount, false);
+            }
+        }
+
+        private void FollowingListBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            var index = FollowingListBox.IndexFromPoint(e.Location);
+            if (index != ListBox.NoMatches)
+            {
+                FollowingListBox.SelectedIndex = index;
+                FollowingContextMenuStrip.Visible = true;
+            }
+            else
+            {
+                FollowingContextMenuStrip.Visible = false;
+            }
+        }
+
+        private void ShareMultipleButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(ShareTextBox.Text))
+            {
+                MessageBox.Show("İçerik girmediniz!");
+                return;
+            }
+
+            var request = new WallPostCreateRequest();
+            request.Body = ShareTextBox.Text;
+            request.PostedBy = FormHelper.Username;
+            request.PostType = WallPostType.text;
+            if (ShareToOwnWallCheckbox.Checked)
+            {
+                request.TargetWall = new WallModel { OwnerId = FormHelper.Username, WallOwnerType = WallType.user };
+            }
+            else
+            {
+                var ownerType = WallSelectionComboBox.Text == "Grup" ? WallType.group : WallType.user;
+                request.TargetWall = new WallModel { OwnerId = WallOwnerTextBox.Text, WallOwnerType = ownerType };
+            }
+
+            var provider = new WallPostProvider();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var postId = provider.AddPost(request);
+                var feedProvider = new NewsfeedProvider();
+                var newsFeedEntry = new NewsfeedItem
+                {
+                    By = request.PostedBy,
+                    ReferencePostId = postId,
+                    FeedType = NewsfeedActionType.wallpost,
+                    WallOwner = new NewsfeedWallModel { IsPublic = true, OwnerId = request.PostedBy, WallOwnerType = WallType.user }
+                };
+                feedProvider.AddNewsfeedItem(newsFeedEntry);
             }
         }
     }

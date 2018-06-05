@@ -1,4 +1,5 @@
-﻿using SFeed.Core.Models.WallPost;
+﻿using SFeed.Core.Models.GroupWall;
+using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
 
@@ -65,6 +66,6 @@ namespace SFeed.Core.Infrastructure.Providers
         /// <param name="olderThan">Max post publish date</param>
         /// <param name="size">Number of posts to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size);
+        IEnumerable<GroupWallResponseModel> GetGroupWall(string groupId, int skip, int size);
     }
 }

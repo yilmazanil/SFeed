@@ -36,6 +36,7 @@ namespace SFeed.SqlRepository
         public virtual DbSet<WallPost> WallPost { get; set; }
         public virtual DbSet<WallPostLike> WallPostLike { get; set; }
         public virtual DbSet<WallPostType> WallPostType { get; set; }
+        public virtual DbSet<ApplicationConfiguration> ApplicationConfiguration { get; set; }
     
         public virtual ObjectResult<GetLatestComments_Result> GetLatestComments(string postId)
         {

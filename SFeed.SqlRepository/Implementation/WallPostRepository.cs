@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using SFeed.Core.Infrastructure.Repository;
 using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.Comments;
+using SFeed.Core.Models.GroupWall;
 
 namespace SFeed.SqlRepository.Implementation
 {
@@ -129,20 +130,40 @@ namespace SFeed.SqlRepository.Implementation
             return MapWall(procedureResult, new WallModel { OwnerId = userId, WallOwnerType = WallType.user });
         }
 
-        public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
+        public IEnumerable<GroupWallResponseModel> GetGroupWall(string groupId, int skip, int size)
         {
-            List<GroupWall> posts;
+            //TODO:Optimize with sp
+            List<GroupWallResponseModel> response = new List<GroupWallResponseModel>();
             using (var entities = new SocialFeedEntities())
             {
-                posts = entities.GroupWall.Include("WallPost")
-                    .Where(p => p.GroupId == groupId && p.WallPost.CreatedDate < olderThan && p.WallPost.IsDeleted == false)
-                    .OrderByDescending(p => p.WallPost.CreatedDate).Take(size).ToList();
-            }
+                var posts = entities.GroupWall.Include("WallPost")
+                    .Where(p => p.GroupId == groupId && p.WallPost.IsDeleted == false)
+                    .OrderByDescending(p => p.WallPost.CreatedDate).Skip(skip).Take(size).ToList();
+               
+                //TODO:Optimize with sp
+                foreach (var post in posts)
+                {
+                    var postLikes = entities.WallPostLike.Count(p => p.WallPostId == post.WallPostId);
+                    var postComments = entities.UserComment.Count(p => p.WallPostId == post.WallPostId);
 
-            foreach (var post in posts)
-            {
-                yield return MapWallPost(post.WallPost);
+                    var item = new GroupWallResponseModel
+                    {
+                        Body = post.WallPost.Body,
+                        CommentCount = postComments,
+                        CreatedDate = post.WallPost.CreatedDate,
+                        Id = post.WallPostId,
+                        LikeCount = postLikes,
+                        ModifiedDate = post.WallPost.ModifiedDate,
+                        PostedBy = post.WallPost.CreatedBy,
+                        PostType = post.WallPost.PostType,
+                        WallOwner = new WallModel { OwnerId = post.GroupId, WallOwnerType = WallType.group }
+                    };
+
+                    response.Add(item);
+                }
             }
+            return response;
+           
         }
 
         public IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
@@ -285,6 +306,17 @@ namespace SFeed.SqlRepository.Implementation
                 return comment;
             }
             return null;
+        }
+
+
+        public IEnumerable<string> GetGroupWallIds(string groupId, int size)
+        {
+            using (var entities = new SocialFeedEntities())
+            {
+               return entities.GroupWall.Include("WallPost")
+                    .Where(p => p.GroupId == groupId && p.WallPost.IsDeleted == false)
+                    .OrderByDescending(p => p.WallPost.CreatedDate).Take(size).Select(p=>p.WallPostId).ToList();
+            }
         }
 
         #endregion

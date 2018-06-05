@@ -97,37 +97,46 @@ namespace SFeed.Business.Providers
 
         private IEnumerable<string> GetFollowers(string entryBy, NewsfeedWallModel targetWall)
         {
-            IEnumerable<string> followers;
-            //user posts to another user wall
-            if (targetWall.WallOwnerType == WallType.user)
-            {
-                followers = followerProvider.GetUserFollowersCached(entryBy);
+            var configProvider = new ApplicationConfigurationRepository();
+            var parameters = configProvider.FetchConfiguration();
 
-                if (string.Equals(entryBy, targetWall.OwnerId))
+            bool displayOnOwnFeed = true;
+            bool displayOnlyOnPrivateGroupFollowers = true;
+            bool displayOnPrivateGroupFollowersFeed = true;
+            bool displayOnPublicGroupFollowersFeed = true;
+            bool displayOnUserFollowers = true;
+            bool displayOnWallOwnerFollowersFeed = true;
+
+            IEnumerable<string> followers = new List<string>();
+
+            if (displayOnOwnFeed)
+            {
+                followers = followers.Union(new List<string> { entryBy });
+            }
+
+            if (targetWall.WallOwnerType == WallType.group && !targetWall.IsPublic && displayOnlyOnPrivateGroupFollowers)
+            {
+                var privateGroupFollowers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
+                followers = followers.Union(privateGroupFollowers);
+            }
+            else
+            {
+                if (targetWall.WallOwnerType == WallType.group
+                    && ((!targetWall.IsPublic && displayOnPrivateGroupFollowersFeed)
+                        || (targetWall.IsPublic && displayOnPublicGroupFollowersFeed)))
                 {
-                    //user posted to his/her own wall no action required
+                    var groupFollowers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
+                    followers = followers.Union(groupFollowers);
                 }
-                else if (targetWall.IsPublic)
+                else if (displayOnWallOwnerFollowersFeed)
                 {
-                    //target user profile is public, add target user followers
                     var targetUserFollowers = followerProvider.GetUserFollowersCached(targetWall.OwnerId);
                     followers = followers.Union(targetUserFollowers);
                 }
-            }
-            //user posts to a group wall
-            else
-            {
-                if (!targetWall.IsPublic)
+                if (displayOnUserFollowers)
                 {
-                    //For private group posts, only users that can follow target group gets newsfeed item
-                    followers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
-                }
-                else
-                {
-                    //for public groups notify both
-                    followers = followerProvider.GetUserFollowers(entryBy);
-                    var groupFollowers = followerProvider.GetGroupFollowersCached(targetWall.OwnerId);
-                    followers = followers.Union(groupFollowers);
+                    var userFollowers = followerProvider.GetUserFollowersCached(entryBy);
+                    followers = followers.Union(userFollowers);
                 }
             }
             return followers.Distinct();

@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationConfiguration.cs">
+      <DependentUpon>SFeedEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetComments_Result.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
@@ -72,6 +75,7 @@
     <Compile Include="GroupWall.cs">
       <DependentUpon>SFeedEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Implementation\ApplicationConfigurationRepository.cs" />
     <Compile Include="Implementation\CommentRepository.cs" />
     <Compile Include="Implementation\EntryLikeRepository.cs" />
     <Compile Include="Implementation\FollowerRepository.cs" />

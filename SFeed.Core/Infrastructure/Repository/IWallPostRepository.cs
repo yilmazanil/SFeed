@@ -1,4 +1,5 @@
-﻿using SFeed.Core.Models.Wall;
+﻿using SFeed.Core.Models.GroupWall;
+using SFeed.Core.Models.Wall;
 using SFeed.Core.Models.WallPost;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,8 @@ namespace SFeed.Core.Infrastructure.Repository
         /// <param name="olderThan">Filter for CreatedDate</param>
         /// <param name="size">Number of items to return</param>
         /// <returns></returns>
-        IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size);
+        IEnumerable<GroupWallResponseModel> GetGroupWall(string groupId, int skip, int size);
+
+        IEnumerable<string> GetGroupWallIds(string groupId, int size);
     }
 }

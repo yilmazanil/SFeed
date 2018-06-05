@@ -14,5 +14,6 @@
         public static readonly string LikeCounterNamePrefix = "likeCounter";
         public static readonly string PostLikeCounterNamePrefix = "postLikeCounter";
         public static readonly string CommentLikeCounterNamePrefix = "commentLikeCounter";
+        public static readonly string GroupWallPrefix = "groupWall";
     }
 }

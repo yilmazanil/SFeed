@@ -74,6 +74,8 @@
     <Compile Include="Implementation\RedisCommentCountRepository.cs" />
     <Compile Include="Implementation\RedisEntryLikeRepository.cs" />
     <Compile Include="Implementation\RedisFollowerRepository.cs" />
+    <Compile Include="Implementation\RedisGroupWallRepository.cs" />
+    <Compile Include="Implementation\RedisNewsfeedAlternative.cs" />
     <Compile Include="Implementation\RedisNewsfeedEntryRepository.cs" />
     <Compile Include="Implementation\RedisNewsfeedResponseRepository.cs" />
     <Compile Include="Implementation\RedisWallPostRepository.cs" />

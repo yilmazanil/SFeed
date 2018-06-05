@@ -9,6 +9,8 @@ using System;
 using SFeed.Core.Infrastructure.Caching;
 using SFeed.Core.Models.Wall;
 using log4net;
+using SFeed.Core.Models.GroupWall;
+using System.Linq;
 
 namespace SFeed.Business.Providers
 {
@@ -18,20 +20,24 @@ namespace SFeed.Business.Providers
 
         private IWallPostRepository wallPostRepo;
         private IWallPostCacheRepository wallPostCacheRepo;
+        private IGroupWallRepository groupWallCacheRepo;
 
         public WallPostProvider() : this(
             new WallPostRepository(),
-            new RedisWallPostRepository())
+            new RedisWallPostRepository(),
+            new RedisGroupWallRepository())
         {
 
         }
 
         public WallPostProvider(
             IWallPostRepository wallPostRepo,
-            IWallPostCacheRepository wallPostCacheRepo)
+            IWallPostCacheRepository wallPostCacheRepo,
+            IGroupWallRepository groupWallCacheRepo)
         {
             this.wallPostRepo = wallPostRepo;
             this.wallPostCacheRepo = wallPostCacheRepo;
+            this.groupWallCacheRepo = groupWallCacheRepo;
         }
 
         public string AddPost(WallPostCreateRequest request)
@@ -44,6 +50,11 @@ namespace SFeed.Business.Providers
                 {
                     var cacheEntry = MapRequestToCacheModel(request, result);
                     wallPostCacheRepo.SavePost(cacheEntry);
+                    if (request.TargetWall.WallOwnerType == WallType.group)
+                    {
+                        var postIds = wallPostRepo.GetGroupWallIds(request.TargetWall.OwnerId, 40);
+                        groupWallCacheRepo.RefreshGroupWall(request.TargetWall.OwnerId, postIds);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -108,9 +119,24 @@ namespace SFeed.Business.Providers
             return wallPostRepo.GetUserWallDetailed(userId, olderThan, size);
         }
 
-        public IEnumerable<WallPostModel> GetGroupWall(string groupId, DateTime olderThan, int size)
+        public IEnumerable<GroupWallResponseModel> GetGroupWall(string groupId, int skip, int size)
         {
-            return wallPostRepo.GetGroupWall(groupId, olderThan, size);
+            if (skip > 0 || size > 100)
+            {
+                return wallPostRepo.GetGroupWall(groupId, skip, size);
+            }
+            else
+            {
+                var cachedPosts = groupWallCacheRepo.GetGroupWall(groupId);
+                if (cachedPosts != null && cachedPosts.Any())
+                {
+                    return cachedPosts;
+                }
+                else
+                {
+                    return wallPostRepo.GetGroupWall(groupId, skip, size);
+                }
+            }
         }
 
         public IEnumerable<WallPostWithDetailsModel> GetGroupWallDetailed(string groupId, DateTime olderThan, int size)
@@ -130,5 +156,6 @@ namespace SFeed.Business.Providers
                 CreatedDate = response.CreatedDate
             };
         }
+
     }
 }
